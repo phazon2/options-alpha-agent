@@ -19,14 +19,34 @@ produced from a mock.
 | Starting equity $100,000 | ✅ |
 | Options level 3 (multi-leg spreads) | ✅ |
 | Option chain + quotes readable | ✅ |
-| Greeks from the snapshot feed | ❌ not supplied — computed locally |
+| Greeks + implied volatility | ✅ via `--feed indicative` |
+| Multi-leg order through the Alpaca CLI | ✅ verified dry-run |
 
 ## Layout
 
-    src/agent/config.py   environment-only configuration; refuses non-paper keys
-    src/agent/broker.py   read-only Alpaca access (account, clock, chain, quotes)
-    scripts/probe.py      live readiness probe; writes a receipt
-    docs/receipts/        evidence, generated only from real API calls
+    src/agent/config.py      environment-only configuration; refuses non-paper keys
+    src/agent/broker.py      read-only Alpaca access (account, clock, chain, quotes)
+    src/agent/execution.py   order execution through Alpaca's official CLI
+    scripts/probe.py         live readiness probe; writes a receipt
+    scripts/verify_execution.py  dry-run a real multi-leg spread through the CLI
+    docs/receipts/           evidence, generated only from real API calls
+
+## Execution path
+
+Orders go through Alpaca's official CLI, which the event requires in place of
+raw REST, and which Alpaca ships for cron jobs and CI:
+
+    go install github.com/alpacahq/cli/cmd/alpaca@latest
+    alpaca doctor          # confirms paper profile + env credentials
+
+Paper is the CLI's default; `execution.py` additionally refuses to start when
+`ALPACA_LIVE_TRADE` is set, so real money is unreachable by construction.
+
+## Market data
+
+Greeks and implied volatility require `--feed indicative`. The default `opra`
+feed returns `403 OPRA agreement is not signed`, and the plain snapshots
+endpoint returns nulls — so delta targeting must read the indicative chain.
 
 ## Running the probe
 

@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-08-30T06:33:10.539005+00:00",
+  "source": "live Alpaca paper API \u2014 not mocked",
+  "account_number": "PA3BY0HJORNC",
+  "equity": 100000.0,
+  "options_trading_level": 3,
+  "account_created_at": "2026-08-30T06:15:44.540023Z",
+  "market_next_open": "2026-08-31T09:30:00-04:00",
+  "checks": [
+    {
+      "name": "account active",
+      "passed": true,
+      "detail": "ACTIVE"
+    },
+    {
+      "name": "starting equity is $100,000",
+      "passed": true,
+      "detail": "$100,000.00"
+    },
+    {
+      "name": "options level 3 (multi-leg)",
+      "passed": true,
+      "detail": "level 3"
+    },
+    {
+      "name": "account is dedicated to this event",
+      "passed": true,
+      "detail": "created 2026-08-30T06:15:44.540023Z"
+    },
+    {
+      "name": "market clock reachable",
+      "passed": true,
+      "detail": "next open 2026-08-31T09:30:00-04:00"
+    },
+    {
+      "name": "SPY option chain readable",
+      "passed": true,
+      "detail": "100 contracts"
+    },
+    {
+      "name": "option quotes readable",
+      "passed": true,
+      "detail": "50 quoted contracts"
+    },
+    {
+      "name": "greeks supplied by feed",
+      "passed": false,
+      "detail": "0/50 \u2014 compute locally if 0"
+    },
+    {
+      "name": "SPY equity data readable",
+      "passed": true,
+      "detail": "last close $769.28"
+    }
+  ],
+  "passed": 8,
+  "total": 9
+}

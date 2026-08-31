@@ -126,6 +126,36 @@ class AlpacaPaper:
         )
         return data.get("snapshots", {})
 
+    def option_chain(
+        self,
+        underlying: str,
+        expiration_date: str,
+        option_type: str = "put",
+        feed: str = "indicative",
+        limit: int = 1000,
+        strike_gte: float | None = None,
+        strike_lte: float | None = None,
+    ) -> dict[str, Any]:
+        """Chain snapshots including greeks and IV.
+
+        The default `opra` feed requires a signed OPRA agreement and returns
+        403 without one; `indicative` supplies greeks and IV on the free tier.
+        """
+        params: dict[str, Any] = {
+            "expiration_date": expiration_date,
+            "type": option_type,
+            "feed": feed,
+            "limit": limit,
+        }
+        if strike_gte is not None:
+            params["strike_price_gte"] = strike_gte
+        if strike_lte is not None:
+            params["strike_price_lte"] = strike_lte
+        data = self._get(
+            f"{MARKET_DATA_BASE}/v1beta1/options/snapshots/{underlying}", **params
+        )
+        return data.get("snapshots", {})
+
     def latest_stock_bar(self, symbol: str, feed: str = "iex") -> dict[str, Any]:
         data = self._get(
             f"{MARKET_DATA_BASE}/v2/stocks/{symbol}/bars/latest", feed=feed

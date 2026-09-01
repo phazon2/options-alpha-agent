@@ -162,6 +162,7 @@ class AlpacaCLIExecutor:
         time_in_force: str = "day",
         client_order_id: str | None = None,
         dry_run: bool = False,
+        allow_debit: bool = False,
     ) -> ExecutionResult:
         """Submit a defined-risk multi-leg options order.
 
@@ -171,14 +172,18 @@ class AlpacaCLIExecutor:
         is not stated in the docs; it is what the fills show — an order sent
         at +0.15 filled at -0.13, which only satisfies "pay at most 0.15".
 
-        So a credit spread must be sent with a negative limit. Sending a
+        So opening a credit spread must use a negative limit. Sending a
         positive one silently permits paying a debit for a position that was
         supposed to pay you.
+
+        Closing a credit spread is the mirror case: buying the position back
+        costs a debit, so a close passes a positive limit with allow_debit.
         """
-        if net_limit > 0:
+        if net_limit > 0 and not allow_debit:
             raise ExecutionError(
                 f"net_limit {net_limit:+.2f} is positive, which authorises "
-                f"paying a debit. Credit spreads take a negative limit."
+                f"paying a debit. Opening a credit spread takes a negative "
+                f"limit; pass allow_debit=True only when closing one."
             )
         if not 2 <= len(legs) <= 4:
             raise ExecutionError(

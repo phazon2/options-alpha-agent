@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Options Alpha Agent — live decision ledger</title>
+<style>
+:root{
+  --ground:#EDEFF3; --surface:#fff; --surface-2:#F4F6F9;
+  --ink:#111721; --ink-2:#39434F; --muted:#657081; --faint:#8D96A4;
+  --rule:#D2D8E0; --accent:#2A46A0;
+  --ok:#106B52; --ok-soft:#DDEFE8; --crit:#A32222; --crit-soft:#F8E3E1;
+  --warn:#8E5B0C; --warn-soft:#F6ECD9;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --ground:#0D1117; --surface:#151B24; --surface-2:#1B222D;
+  --ink:#E6EBF2; --ink-2:#C2CBD8; --muted:#8B96A6; --faint:#6C7789;
+  --rule:#28323F; --accent:#8AA5F2;
+  --ok:#43C193; --ok-soft:#122A24; --crit:#F2776F; --crit-soft:#2E1917;
+  --warn:#DDA646; --warn-soft:#2B2213;
+  color-scheme:dark;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 64px;display:flex;flex-direction:column;gap:26px}
+h1{font-size:clamp(24px,3.6vw,34px);margin:0;letter-spacing:-.02em;text-wrap:balance}
+h2{font-size:17px;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;display:flex;flex-direction:column;gap:8px}
+header .lede{color:var(--ink-2);max-width:64ch}
+.stamp{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:3px}
+.card .k{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
+.card b{font-family:var(--mono);font-size:25px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.card .sub{font-size:12px;color:var(--muted)}
+.pos{color:var(--ok)} .neg{color:var(--crit)}
+section{display:flex;flex-direction:column;gap:11px}
+.shead{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  border-bottom:1px solid var(--rule);padding-bottom:7px;flex-wrap:wrap}
+.shead p{font-size:13px;color:var(--muted);max-width:62ch}
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:13px}
+th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);background:var(--surface-2);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.m{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px 7px;border-radius:99px;white-space:nowrap;border:1px solid transparent}
+.t-ok{background:var(--ok-soft);color:var(--ok)}
+.t-veto{background:var(--crit-soft);color:var(--crit)}
+.t-warn{background:var(--warn-soft);color:var(--warn)}
+.t-mute{background:var(--surface-2);color:var(--muted);border-color:var(--rule)}
+.led{display:flex;flex-direction:column;gap:6px}
+.entry{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--rule);
+  border-radius:3px;padding:10px 13px;display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:start}
+.entry.ok{border-left-color:var(--ok)} .entry.veto{border-left-color:var(--crit)}
+.entry.info{border-left-color:var(--accent)}
+.entry .at{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap}
+.entry .body{min-width:0}
+.entry .why{font-size:12.5px;color:var(--ink-2)}
+.entry code{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:3px;padding:1px 4px;word-break:break-all}
+footer{border-top:1px solid var(--rule);padding-top:16px;font-size:12px;color:var(--muted);
+  display:flex;flex-direction:column;gap:7px}
+footer a{color:var(--accent)}
+.err{background:var(--crit-soft);color:var(--crit);border:1px solid var(--crit);
+  border-radius:4px;padding:14px 16px;font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">lablab.ai × Alpaca · Options Alpha Agents</span>
+    <h1>Options Alpha Agent</h1>
+    <p class="lede">An autonomous options agent on Alpaca paper trading. A model may only propose
+      defined-risk spreads; a deterministic risk gate holds the veto, and every decision — including
+      the refusals — is written to an append-only ledger.</p>
+    <p class="stamp" id="stamp">loading…</p>
+  </header>
+
+  <div class="cards" id="cards"></div>
+
+  <section>
+    <div class="shead"><h2>Decision ledger</h2>
+      <p>Newest first. Vetoes are shown, not hidden — a refusal to trade is a decision.</p></div>
+    <div class="led" id="ledger"></div>
+  </section>
+
+  <section>
+    <div class="shead"><h2>Open legs</h2><p>Live from the Alpaca account.</p></div>
+    <div class="scroll"><table id="positions"><thead><tr>
+      <th>Contract</th><th>Qty</th><th>Entry</th><th>Now</th><th>Unrealised</th>
+    </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section>
+    <div class="shead"><h2>Orders</h2><p>Every multi-leg order sent to Alpaca.</p></div>
+    <div class="scroll"><table id="orders"><thead><tr>
+      <th>Submitted</th><th>Status</th><th>Qty</th><th>Limit</th><th>Filled</th><th>Legs</th>
+    </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <footer>
+    <p>Paper trading only. Results are hypothetical and are not investment advice.
+      Figures are read live from the Alpaca paper account and the agent's ledger; none are simulated.</p>
+    <p><a href="https://github.com/phazon2/options-alpha-agent">Source</a></p>
+  </footer>
+</div>
+
+<script>
+const money = v => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc = s => String(s??"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const when = s => { try { return new Date(s).toISOString().replace("T"," ").slice(5,16)+"Z"; } catch { return s||"—"; } };
+
+function cards(d){
+  const a=d.account, c=d.counters, pnl=parseFloat(a.pnl);
+  const cls = pnl>0?"pos":pnl<0?"neg":"";
+  return [
+    `<div class="card"><span class="k">Equity</span><b>${money(parseFloat(a.equity))}</b><span class="sub">from ${money(parseFloat(a.starting_equity))}</span></div>`,
+    `<div class="card"><span class="k">P&amp;L</span><b class="${cls}">${pnl>=0?"+":"\u2212"}${money(Math.abs(pnl))}</b><span class="sub">${a.pnl_pct}% of starting equity</span></div>`,
+    `<div class="card"><span class="k">Decisions</span><b>${c.decisions}</b><span class="sub">${c.approved} approved · ${c.vetoed} vetoed</span></div>`,
+    `<div class="card"><span class="k">Orders filled</span><b>${c.orders_filled}</b><span class="sub">${c.orders_submitted} submitted</span></div>`,
+    `<div class="card"><span class="k">Open legs</span><b>${c.open_legs}</b><span class="sub">unrealised ${money(parseFloat(a.unrealized||0))}</span></div>`,
+    `<div class="card"><span class="k">Account</span><b style="font-size:16px">${esc(a.number)}</b><span class="sub">options level ${a.options_level}</span></div>`,
+  ].join("");
+}
+
+function ledgerRow(e){
+  let cls="info", tag=`<span class="tag t-mute">${esc(e.kind)}</span>`, why="";
+  if(e.kind==="risk_verdict"){
+    cls = e.approved ? "ok" : "veto";
+    tag = e.approved ? `<span class="tag t-ok">approved ${e.quantity}x</span>`
+                     : `<span class="tag t-veto">vetoed</span>`;
+    const reasons = (e.reasons||[]).join("; ");
+    why = `${esc(e.short)} / ${esc(e.long)} · width $${esc(e.width)} · credit $${esc(e.credit)}`
+        + ` · max loss $${esc(e.max_loss)}` + (e.short_delta?` · delta ${e.short_delta}`:"")
+        + (reasons?`<br><strong>${esc(reasons)}</strong>`:"");
+  } else if(e.kind==="order_submitted"){
+    cls="info"; tag=`<span class="tag t-warn">${e.dry_run?"dry run":"submitted"}</span>`;
+    why = `order <code>${esc(e.order_id||"—")}</code> · status ${esc(e.status||"—")} · max loss $${esc(e.max_loss)}`;
+  } else if(e.kind==="abstain"){
+    cls="veto"; tag=`<span class="tag t-veto">abstained</span>`;
+    why = esc(e.reason);
+  } else if(e.kind==="cycle_start"){
+    why = `equity $${esc(e.equity)} · ${e.open_positions} open · expiry ${esc(e.expiry)}`;
+  } else if(e.kind==="execution_error"){
+    cls="veto"; tag=`<span class="tag t-veto">error</span>`; why=esc(e.error);
+  }
+  return `<div class="entry ${cls}"><span class="at">${when(e.at)}</span>
+    <div class="body"><div class="why">${why}</div></div>${tag}</div>`;
+}
+
+fetch("data.json?ts=" + Date.now()).then(r => {
+  if(!r.ok) throw new Error("data.json returned " + r.status);
+  return r.json();
+}).then(d => {
+  document.getElementById("stamp").textContent =
+    "Generated " + when(d.generated_at) + " · account " + d.account.number + " · paper trading";
+  document.getElementById("cards").innerHTML = cards(d);
+  document.getElementById("ledger").innerHTML =
+    (d.ledger||[]).slice().reverse().map(ledgerRow).join("") || "<p>No decisions recorded yet.</p>";
+
+  const pt = document.querySelector("#positions tbody");
+  pt.innerHTML = (d.positions||[]).map(p => {
+    const u = parseFloat(p.unrealized||0);
+    return `<tr><td class="m">${esc(p.symbol)}</td><td class="m">${esc(p.qty)}</td>
+      <td class="m">${esc(p.entry)}</td><td class="m">${esc(p.current??"—")}</td>
+      <td class="m ${u>0?"pos":u<0?"neg":""}">${money(u)}</td></tr>`;
+  }).join("") || `<tr><td colspan="5">No open positions.</td></tr>`;
+
+  const ot = document.querySelector("#orders tbody");
+  ot.innerHTML = (d.orders||[]).map(o => {
+    const legs = (o.legs||[]).map(l => `${esc(l.side)} ${esc(l.symbol)}`).join("<br>") || "—";
+    const t = o.status==="filled" ? "t-ok" : o.status==="new" ? "t-warn" : "t-mute";
+    return `<tr><td class="m">${when(o.submitted_at)}</td>
+      <td><span class="tag ${t}">${esc(o.status)}</span></td>
+      <td class="m">${esc(o.qty)}</td><td class="m">${esc(o.limit_price??"—")}</td>
+      <td class="m">${esc(o.filled_avg_price??"—")}</td>
+      <td class="m" style="font-size:11px">${legs}</td></tr>`;
+  }).join("") || `<tr><td colspan="6">No orders yet.</td></tr>`;
+}).catch(e => {
+  document.getElementById("cards").innerHTML =
+    `<div class="err">Could not load <code>data.json</code>: ${esc(e.message)}.
+     The agent writes it on each cycle.</div>`;
+  document.getElementById("stamp").textContent = "data unavailable";
+});
+</script>
+</body>
+</html>

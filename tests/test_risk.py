@@ -12,6 +12,17 @@ from agent.risk import AccountState, RiskGate, RiskLimits, SpreadProposal  # noq
 
 FUNDED = AccountState(equity=Decimal("100000"), open_positions=0)
 
+# Pinned explicitly so tuning the shipped defaults cannot silently change what
+# these tests assert. Each case states the limit it is exercising.
+LIMITS = RiskLimits(
+    max_loss_per_trade=Decimal("500"),
+    max_loss_per_day=Decimal("1500"),
+    max_open_positions=4,
+    max_contracts_per_order=5,
+    min_credit_to_width=Decimal("0.15"),
+    max_equity_fraction_per_trade=Decimal("0.01"),
+)
+
 
 def spread(width="5", credit="1.00", quantity=1) -> SpreadProposal:
     return SpreadProposal(
@@ -29,8 +40,14 @@ def check(name, condition):
     return condition
 
 
+def test_defaults_are_contest_sized() -> bool:
+    """The shipped defaults are deliberately larger than the test limits."""
+    d = RiskLimits()
+    return d.max_loss_per_trade >= Decimal("1000") and d.max_open_positions >= 5
+
+
 def main() -> int:
-    gate = RiskGate()
+    gate = RiskGate(LIMITS)
     results = []
 
     v = gate.evaluate(spread(), FUNDED)
@@ -59,13 +76,23 @@ def main() -> int:
     v = gate.evaluate(spread(quantity=0), FUNDED)
     results.append(check("zero quantity is rejected", not v.approved))
 
-    tight = RiskGate(RiskLimits(max_loss_per_trade=Decimal("100")))
+    tight = RiskGate(
+        RiskLimits(
+            max_loss_per_trade=Decimal("100"),
+            max_equity_fraction_per_trade=Decimal("0.01"),
+        )
+    )
     v = tight.evaluate(spread(), FUNDED)
     results.append(check("$400 risk under a $100 cap cannot size one contract", not v.approved))
 
     v = gate.evaluate(spread(), AccountState(Decimal("100000"), 0, Decimal("1200")))
     results.append(
         check("remaining daily room of $300 blocks a $400 trade", not v.approved)
+    )
+
+    results.append(
+        check("shipped defaults are sized for the contest, not the test",
+              test_defaults_are_contest_sized())
     )
 
     passed = sum(results)

@@ -157,7 +157,7 @@ class AlpacaCLIExecutor:
         self,
         legs: list[Leg],
         qty: int,
-        limit_price: float,
+        net_limit: float,
         *,
         time_in_force: str = "day",
         client_order_id: str | None = None,
@@ -165,9 +165,21 @@ class AlpacaCLIExecutor:
     ) -> ExecutionResult:
         """Submit a defined-risk multi-leg options order.
 
-        `limit_price` is the net price for the package: positive is a debit,
-        and for a credit spread it is the credit being collected.
+        `net_limit` is the net price for the package and its SIGN MATTERS.
+        Alpaca treats a positive limit as the maximum net DEBIT you will pay
+        and a negative limit as the minimum net CREDIT you will accept. This
+        is not stated in the docs; it is what the fills show — an order sent
+        at +0.15 filled at -0.13, which only satisfies "pay at most 0.15".
+
+        So a credit spread must be sent with a negative limit. Sending a
+        positive one silently permits paying a debit for a position that was
+        supposed to pay you.
         """
+        if net_limit > 0:
+            raise ExecutionError(
+                f"net_limit {net_limit:+.2f} is positive, which authorises "
+                f"paying a debit. Credit spreads take a negative limit."
+            )
         if not 2 <= len(legs) <= 4:
             raise ExecutionError(
                 f"A multi-leg order takes 2 to 4 legs, got {len(legs)}."
@@ -181,7 +193,7 @@ class AlpacaCLIExecutor:
             "--order-class", "mleg",
             "--qty", str(qty),
             "--type", "limit",
-            "--limit-price", f"{limit_price:.2f}",
+            "--limit-price", f"{net_limit:.2f}",
             "--time-in-force", time_in_force,
             "--legs", json.dumps(payload),
         ]

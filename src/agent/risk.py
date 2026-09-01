@@ -19,15 +19,41 @@ CONTRACT_MULTIPLIER = 100
 class RiskLimits:
     """Hard caps. Chosen once, then enforced without exception."""
 
-    max_loss_per_trade: Decimal = Decimal("500")
-    max_loss_per_day: Decimal = Decimal("1500")
-    max_open_positions: int = 4
-    max_contracts_per_order: int = 5
+    max_loss_per_trade: Decimal = Decimal("1500")
+    max_loss_per_day: Decimal = Decimal("4000")
+    max_open_positions: int = 6
+    max_contracts_per_order: int = 20
     # A credit spread must pay at least this fraction of the width, otherwise
     # the reward does not justify the capital at risk.
     min_credit_to_width: Decimal = Decimal("0.15")
     # Never risk more than this share of starting equity on one trade.
-    max_equity_fraction_per_trade: Decimal = Decimal("0.01")
+    max_equity_fraction_per_trade: Decimal = Decimal("0.015")
+
+    @classmethod
+    def from_env(cls) -> "RiskLimits":
+        """Limits are tunable without a code change, but never silently."""
+        import os
+
+        def dec(name: str, default: Decimal) -> Decimal:
+            raw = os.environ.get(name)
+            return Decimal(raw) if raw else default
+
+        return cls(
+            max_loss_per_trade=dec("RISK_MAX_LOSS_PER_TRADE", cls.max_loss_per_trade),
+            max_loss_per_day=dec("RISK_MAX_LOSS_PER_DAY", cls.max_loss_per_day),
+            max_open_positions=int(
+                os.environ.get("RISK_MAX_OPEN_POSITIONS", cls.max_open_positions)
+            ),
+            max_contracts_per_order=int(
+                os.environ.get("RISK_MAX_CONTRACTS", cls.max_contracts_per_order)
+            ),
+            min_credit_to_width=dec(
+                "RISK_MIN_CREDIT_TO_WIDTH", cls.min_credit_to_width
+            ),
+            max_equity_fraction_per_trade=dec(
+                "RISK_MAX_EQUITY_FRACTION", cls.max_equity_fraction_per_trade
+            ),
+        )
 
 
 @dataclass(frozen=True)

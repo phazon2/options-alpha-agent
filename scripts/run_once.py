@@ -16,7 +16,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from agent.broker import AlpacaPaper  # noqa: E402
 from agent.execution import AlpacaCLIExecutor, ExecutionError, Leg  # noqa: E402
 from agent.ledger import DecisionLedger  # noqa: E402
-from agent.risk import AccountState, RiskGate, SpreadProposal  # noqa: E402
+from dataclasses import replace  # noqa: E402
+
+from agent.risk import AccountState, RiskGate, RiskLimits, SpreadProposal  # noqa: E402
 from agent.strategy import NoTradeFound, parse_chain, select_put_credit_spread  # noqa: E402
 
 UNDERLYING = "SPY"
@@ -42,18 +44,20 @@ def main() -> int:
     account_raw = executor.account()
     equity = Decimal(account_raw["equity"])
     positions = executor.positions()
+    # Each vertical spread holds two option legs; count spreads, not legs.
+    open_spreads = len(positions) // 2
 
     expiry = args.expiry or pick_expiry(date.today())
     ledger.record(
         "cycle_start",
         market_open=clock.is_open,
         equity=str(equity),
-        open_positions=len(positions),
+        open_positions=open_spreads,
         expiry=expiry,
     )
     print(f"market open   {clock.is_open}")
     print(f"equity        ${equity:,.2f}")
-    print(f"positions     {len(positions)}")
+    print(f"open spreads  {open_spreads} ({len(positions)} legs)")
     print(f"expiry        {expiry}")
 
     if not clock.is_open:
@@ -87,9 +91,19 @@ def main() -> int:
         f"\n              width ${proposal.width}  credit ${proposal.credit}"
     )
 
-    gate = RiskGate()
+    # Ask for the size the risk budget actually supports. The gate can only
+    # cap a proposal, never enlarge it, so proposing 1 contract would leave
+    # the budget unused and make P&L structurally negligible.
+    limits = RiskLimits.from_env()
+    per_contract_loss = (proposal.width - proposal.credit) * 100
+    budget = min(limits.max_loss_per_trade, equity * limits.max_equity_fraction_per_trade)
+    desired = max(1, int(budget / per_contract_loss)) if per_contract_loss > 0 else 1
+    proposal = replace(proposal, quantity=desired)
+    print(f"budget        ${budget:,.2f} -> want {desired}x (${per_contract_loss:,.2f}/contract)")
+
+    gate = RiskGate(limits)
     verdict = gate.evaluate(
-        proposal, AccountState(equity=equity, open_positions=len(positions))
+        proposal, AccountState(equity=equity, open_positions=open_spreads)
     )
     print(f"risk gate     {verdict.summary}")
     ledger.record(
@@ -117,7 +131,7 @@ def main() -> int:
         result = executor.submit_multileg(
             legs,
             qty=verdict.approved_quantity,
-            limit_price=float(proposal.credit),
+            net_limit=-float(proposal.credit),
             dry_run=args.dry_run,
         )
     except ExecutionError as exc:

@@ -156,6 +156,33 @@ class AlpacaPaper:
         )
         return data.get("snapshots", {})
 
+    def daily_bars(
+        self,
+        symbol: str,
+        lookback_days: int = 60,
+        feed: str = "iex",
+        end: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Daily closes. An explicit start date is required: without one the
+        endpoint returns a single bar, which silently blinds the regime read.
+        """
+        from datetime import date, timedelta
+
+        start = (date.today() - timedelta(days=lookback_days)).isoformat()
+        params: dict[str, Any] = {
+            "timeframe": "1Day",
+            "start": start,
+            "limit": 10000,
+            "feed": feed,
+            "adjustment": "raw",
+        }
+        if end:
+            params["end"] = end
+        data = self._get(
+            f"{MARKET_DATA_BASE}/v2/stocks/{symbol}/bars", **params
+        )
+        return data.get("bars", [])
+
     def latest_stock_bar(self, symbol: str, feed: str = "iex") -> dict[str, Any]:
         data = self._get(
             f"{MARKET_DATA_BASE}/v2/stocks/{symbol}/bars/latest", feed=feed

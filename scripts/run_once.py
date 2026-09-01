@@ -13,7 +13,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from agent.analyst import consult  # noqa: E402
 from agent.broker import AlpacaPaper  # noqa: E402
+from agent.regime import read_regime  # noqa: E402
 from agent.execution import AlpacaCLIExecutor, ExecutionError, Leg  # noqa: E402
 from agent.ledger import DecisionLedger  # noqa: E402
 from dataclasses import replace  # noqa: E402
@@ -67,6 +69,60 @@ def main() -> int:
 
     spot = float(broker.latest_stock_bar(UNDERLYING).get("c") or 0)
     print(f"spot          ${spot:,.2f}")
+    # --- regime: deterministic, and it can veto before any model is asked ---
+    bars = broker.daily_bars(UNDERLYING, lookback_days=60)
+    regime = read_regime(bars)
+    print(f"regime        {regime.regime} — {regime.reason}")
+    ledger.record(
+        "regime",
+        regime=regime.regime,
+        reason=regime.reason,
+        spot=regime.spot,
+        sma_short=regime.sma_short,
+        sma_long=regime.sma_long,
+        return_20d=regime.return_20d,
+        realised_vol=regime.realised_vol,
+    )
+    if not regime.allows_put_credit_spread:
+        ledger.record("abstain", reason=f"regime is {regime.regime}: {regime.reason}")
+        print(f"\nABSTAIN — a put credit spread is the wrong side of a {regime.regime} regime")
+        return 0
+
+    # --- analyst: proposes only, and may decline ---
+    view = consult(
+        {
+            "underlying": UNDERLYING,
+            "spot": regime.spot,
+            "regime": regime.regime,
+            "regime_reason": regime.reason,
+            "realised_vol_annualised": round(regime.realised_vol, 4),
+            "return_20d_pct": round(regime.return_20d * 100, 2),
+            "sma_5": round(regime.sma_short, 2),
+            "sma_20": round(regime.sma_long, 2),
+            "open_spreads": open_spreads,
+            "equity": str(equity),
+            "expiry": expiry,
+            "structure": "put credit spread, 1-5 wide, defined risk",
+            "risk_caps": {"max_loss_per_trade_usd": 1500, "min_credit_to_width": 0.15},
+        }
+    )
+    print(f"analyst       trade={view.trade} conf={view.confidence} delta={view.target_delta}")
+    print(f"              {view.rationale}")
+    ledger.record(
+        "analyst_view",
+        model=view.model,
+        trade=view.trade,
+        confidence=view.confidence,
+        target_delta=view.target_delta,
+        rationale=view.rationale,
+        clamped=view.clamped,
+        failed=view.failed,
+    )
+    if not view.trade:
+        ledger.record("abstain", reason=f"analyst declined: {view.rationale}")
+        print("\nABSTAIN — the analyst declined")
+        return 0
+
     chain = broker.option_chain(
         UNDERLYING,
         expiration_date=expiry,
@@ -79,7 +135,9 @@ def main() -> int:
     print(f"candidates    {len(candidates)} quoted puts with greeks")
 
     try:
-        proposal, short, long_leg = select_put_credit_spread(candidates, UNDERLYING)
+        proposal, short, long_leg = select_put_credit_spread(
+            candidates, UNDERLYING, target_delta=view.target_delta
+        )
     except NoTradeFound as exc:
         ledger.record("abstain", reason=str(exc), candidates=len(candidates))
         print(f"\nABSTAIN — {exc}")

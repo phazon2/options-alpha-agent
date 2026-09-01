@@ -83,6 +83,7 @@ def select_put_credit_spread(
     underlying: str = "SPY",
     widths: list[Decimal] | None = None,
     quantity: int = 1,
+    target_delta: float | None = None,
 ) -> tuple[SpreadProposal, Candidate, Candidate]:
     """Pick a short put in the delta band, then the width paying best.
 
@@ -104,7 +105,11 @@ def select_put_credit_spread(
             f"among {len(puts)} quoted puts"
         )
 
-    target = (TARGET_DELTA_LOW + TARGET_DELTA_HIGH) / 2
+    # The analyst may steer the short strike within the band, never outside it.
+    target = target_delta if target_delta is not None else (
+        TARGET_DELTA_LOW + TARGET_DELTA_HIGH
+    ) / 2
+    target = min(max(target, TARGET_DELTA_LOW), TARGET_DELTA_HIGH)
     short = min(in_band, key=lambda c: abs(abs(c.delta) - target))
 
     best: tuple[Decimal, Decimal, Candidate] | None = None

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-02T18:30:29+00:00",
+  "generated_at": "2026-09-02T20:46:03+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
     "equity": "100150.54",
@@ -24,15 +24,15 @@
       "symbol": "SPY260904P00757000",
       "qty": "1",
       "entry": "1",
-      "current": "0.56",
-      "unrealized": "-44"
+      "current": "0.58",
+      "unrealized": "-42"
     },
     {
       "symbol": "SPY260904P00758000",
       "qty": "-1",
       "entry": "1.13",
-      "current": "0.69",
-      "unrealized": "44"
+      "current": "0.71",
+      "unrealized": "42"
     }
   ],
   "orders": [

@@ -1,0 +1,520 @@
+{
+  "generated_at": "2026-09-01T17:19:51+00:00",
+  "account": {
+    "number": "PA3BY0HJORNC",
+    "equity": "99983.88",
+    "cash": "100012.88",
+    "starting_equity": "100000",
+    "pnl": "-16.12",
+    "pnl_pct": "-0.016",
+    "options_level": 3,
+    "unrealized": "-16"
+  },
+  "counters": {
+    "decisions": 9,
+    "approved": 5,
+    "vetoed": 4,
+    "abstained": 1,
+    "orders_submitted": 5,
+    "orders_filled": 1,
+    "open_legs": 2
+  },
+  "positions": [
+    {
+      "symbol": "SPY260904P00757000",
+      "qty": "1",
+      "entry": "1",
+      "current": "2.01",
+      "unrealized": "101"
+    },
+    {
+      "symbol": "SPY260904P00758000",
+      "qty": "-1",
+      "entry": "1.13",
+      "current": "2.3",
+      "unrealized": "-117"
+    }
+  ],
+  "orders": [
+    {
+      "id": "cd44d308-8609-4044-8994-3137d255fc78",
+      "status": "new",
+      "qty": "17",
+      "limit_price": "-0.16",
+      "filled_avg_price": null,
+      "submitted_at": "2026-09-01T17:10:59.728277841Z",
+      "legs": [
+        {
+          "symbol": "SPY260904P00753000",
+          "side": "sell",
+          "filled_avg_price": null
+        },
+        {
+          "symbol": "SPY260904P00752000",
+          "side": "buy",
+          "filled_avg_price": null
+        }
+      ]
+    },
+    {
+      "id": "e0743fe5-87cf-4ad9-a1e8-c4eff1e9a5c5",
+      "status": "filled",
+      "qty": "1",
+      "limit_price": "0.15",
+      "filled_avg_price": "-0.13",
+      "submitted_at": "2026-08-31T19:33:28.902486Z",
+      "legs": [
+        {
+          "symbol": "SPY260904P00758000",
+          "side": "sell",
+          "filled_avg_price": "1.13"
+        },
+        {
+          "symbol": "SPY260904P00757000",
+          "side": "buy",
+          "filled_avg_price": "1"
+        }
+      ]
+    }
+  ],
+  "ledger": [
+    {
+      "id": "33683bb4323f",
+      "at": "2026-08-31T19:31:01+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "100000",
+      "open_positions": 0,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "2aa33d2360fb",
+      "at": "2026-08-31T19:31:02+00:00",
+      "kind": "abstain",
+      "reason": "no put with delta in [0.12, 0.28] that also has a strike 5 below it in the chain",
+      "candidates": 52
+    },
+    {
+      "id": "0e29ed483749",
+      "at": "2026-08-31T19:31:18+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "100000",
+      "open_positions": 0,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "a2e405a7d195",
+      "at": "2026-08-31T19:31:19+00:00",
+      "kind": "risk_verdict",
+      "approved": false,
+      "reasons": [
+        "credit/width 0.100 below minimum 0.15"
+      ],
+      "short": "SPY260904P00758000",
+      "long": "SPY260904P00753000",
+      "credit": "0.50",
+      "width": "5",
+      "max_loss": "450.00",
+      "quantity": 0,
+      "short_delta": -0.1945,
+      "short_iv": 0.1271
+    },
+    {
+      "id": "092e1eda25ce",
+      "at": "2026-08-31T19:32:00+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "100000",
+      "open_positions": 0,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "2171221f1a64",
+      "at": "2026-08-31T19:32:01+00:00",
+      "kind": "risk_verdict",
+      "approved": true,
+      "reasons": [],
+      "short": "SPY260904P00758000",
+      "long": "SPY260904P00757000",
+      "credit": "0.19",
+      "width": "1",
+      "max_loss": "81.00",
+      "quantity": 1,
+      "short_delta": -0.2,
+      "short_iv": 0.1293
+    },
+    {
+      "id": "528ed7662309",
+      "at": "2026-08-31T19:32:01+00:00",
+      "kind": "order_submitted",
+      "dry_run": true,
+      "argv": [
+        "order",
+        "submit",
+        "--order-class",
+        "mleg",
+        "--qty",
+        "1",
+        "--type",
+        "limit",
+        "--limit-price",
+        "0.19",
+        "--time-in-force",
+        "day",
+        "--legs",
+        "[{\"symbol\": \"SPY260904P00758000\", \"side\": \"sell\", \"position_intent\": \"sell_to_open\", \"ratio_qty\": \"1\"}, {\"symbol\": \"SPY260904P00757000\", \"side\": \"buy\", \"position_intent\": \"buy_to_open\", \"ratio_qty\": \"1\"}]",
+        "--dry-run"
+      ],
+      "order_id": null,
+      "status": null,
+      "legs": [
+        {
+          "symbol": "SPY260904P00758000",
+          "side": "sell",
+          "position_intent": "sell_to_open",
+          "ratio_qty": "1"
+        },
+        {
+          "symbol": "SPY260904P00757000",
+          "side": "buy",
+          "position_intent": "buy_to_open",
+          "ratio_qty": "1"
+        }
+      ],
+      "max_loss": "81.00"
+    },
+    {
+      "id": "dede27cc4b4b",
+      "at": "2026-08-31T19:32:23+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "100000",
+      "open_positions": 0,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "ae18b91379c5",
+      "at": "2026-08-31T19:32:23+00:00",
+      "kind": "risk_verdict",
+      "approved": false,
+      "reasons": [
+        "credit/width 0.140 below minimum 0.15"
+      ],
+      "short": "SPY260904P00758000",
+      "long": "SPY260904P00757000",
+      "credit": "0.14",
+      "width": "1",
+      "max_loss": "86.00",
+      "quantity": 0,
+      "short_delta": -0.1992,
+      "short_iv": 0.1288
+    },
+    {
+      "id": "f7a95797597f",
+      "at": "2026-08-31T19:33:06+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "100000",
+      "open_positions": 0,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "8c4387745b67",
+      "at": "2026-08-31T19:33:06+00:00",
+      "kind": "risk_verdict",
+      "approved": false,
+      "reasons": [
+        "credit/width 0.140 below minimum 0.15"
+      ],
+      "short": "SPY260904P00758000",
+      "long": "SPY260904P00756000",
+      "credit": "0.28",
+      "width": "2",
+      "max_loss": "172.00",
+      "quantity": 0,
+      "short_delta": -0.1972,
+      "short_iv": 0.1271
+    },
+    {
+      "id": "2ed94e897031",
+      "at": "2026-08-31T19:33:28+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "100000",
+      "open_positions": 0,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "ce588fa1865c",
+      "at": "2026-08-31T19:33:28+00:00",
+      "kind": "risk_verdict",
+      "approved": true,
+      "reasons": [],
+      "short": "SPY260904P00758000",
+      "long": "SPY260904P00757000",
+      "credit": "0.15",
+      "width": "1",
+      "max_loss": "85.00",
+      "quantity": 1,
+      "short_delta": -0.1966,
+      "short_iv": 0.1265
+    },
+    {
+      "id": "44810e49803d",
+      "at": "2026-08-31T19:33:28+00:00",
+      "kind": "order_submitted",
+      "dry_run": false,
+      "argv": [
+        "order",
+        "submit",
+        "--order-class",
+        "mleg",
+        "--qty",
+        "1",
+        "--type",
+        "limit",
+        "--limit-price",
+        "0.15",
+        "--time-in-force",
+        "day",
+        "--legs",
+        "[{\"symbol\": \"SPY260904P00758000\", \"side\": \"sell\", \"position_intent\": \"sell_to_open\", \"ratio_qty\": \"1\"}, {\"symbol\": \"SPY260904P00757000\", \"side\": \"buy\", \"position_intent\": \"buy_to_open\", \"ratio_qty\": \"1\"}]"
+      ],
+      "order_id": "e0743fe5-87cf-4ad9-a1e8-c4eff1e9a5c5",
+      "status": "pending_new",
+      "legs": [
+        {
+          "symbol": "SPY260904P00758000",
+          "side": "sell",
+          "position_intent": "sell_to_open",
+          "ratio_qty": "1"
+        },
+        {
+          "symbol": "SPY260904P00757000",
+          "side": "buy",
+          "position_intent": "buy_to_open",
+          "ratio_qty": "1"
+        }
+      ],
+      "max_loss": "85.00"
+    },
+    {
+      "id": "d2a20b076afb",
+      "at": "2026-09-01T17:09:47+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "99983.88",
+      "open_positions": 1,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "63845d4454b5",
+      "at": "2026-09-01T17:09:48+00:00",
+      "kind": "risk_verdict",
+      "approved": true,
+      "reasons": [],
+      "short": "SPY260904P00753000",
+      "long": "SPY260904P00752000",
+      "credit": "0.17",
+      "width": "1",
+      "max_loss": "83.00",
+      "quantity": 1,
+      "short_delta": -0.2015,
+      "short_iv": 0.1576
+    },
+    {
+      "id": "0820331af2d1",
+      "at": "2026-09-01T17:09:48+00:00",
+      "kind": "order_submitted",
+      "dry_run": true,
+      "argv": [
+        "order",
+        "submit",
+        "--order-class",
+        "mleg",
+        "--qty",
+        "1",
+        "--type",
+        "limit",
+        "--limit-price",
+        "-0.17",
+        "--time-in-force",
+        "day",
+        "--legs",
+        "[{\"symbol\": \"SPY260904P00753000\", \"side\": \"sell\", \"position_intent\": \"sell_to_open\", \"ratio_qty\": \"1\"}, {\"symbol\": \"SPY260904P00752000\", \"side\": \"buy\", \"position_intent\": \"buy_to_open\", \"ratio_qty\": \"1\"}]",
+        "--dry-run"
+      ],
+      "order_id": null,
+      "status": null,
+      "legs": [
+        {
+          "symbol": "SPY260904P00753000",
+          "side": "sell",
+          "position_intent": "sell_to_open",
+          "ratio_qty": "1"
+        },
+        {
+          "symbol": "SPY260904P00752000",
+          "side": "buy",
+          "position_intent": "buy_to_open",
+          "ratio_qty": "1"
+        }
+      ],
+      "max_loss": "83.00"
+    },
+    {
+      "id": "60258870e879",
+      "at": "2026-09-01T17:10:08+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "99983.88",
+      "open_positions": 1,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "0584d6c887eb",
+      "at": "2026-09-01T17:10:08+00:00",
+      "kind": "risk_verdict",
+      "approved": true,
+      "reasons": [],
+      "short": "SPY260904P00753000",
+      "long": "SPY260904P00752000",
+      "credit": "0.17",
+      "width": "1",
+      "max_loss": "1494.00",
+      "quantity": 18,
+      "short_delta": -0.2012,
+      "short_iv": 0.1566
+    },
+    {
+      "id": "23dfc0e8b9c6",
+      "at": "2026-09-01T17:10:08+00:00",
+      "kind": "order_submitted",
+      "dry_run": true,
+      "argv": [
+        "order",
+        "submit",
+        "--order-class",
+        "mleg",
+        "--qty",
+        "18",
+        "--type",
+        "limit",
+        "--limit-price",
+        "-0.17",
+        "--time-in-force",
+        "day",
+        "--legs",
+        "[{\"symbol\": \"SPY260904P00753000\", \"side\": \"sell\", \"position_intent\": \"sell_to_open\", \"ratio_qty\": \"1\"}, {\"symbol\": \"SPY260904P00752000\", \"side\": \"buy\", \"position_intent\": \"buy_to_open\", \"ratio_qty\": \"1\"}]",
+        "--dry-run"
+      ],
+      "order_id": null,
+      "status": null,
+      "legs": [
+        {
+          "symbol": "SPY260904P00753000",
+          "side": "sell",
+          "position_intent": "sell_to_open",
+          "ratio_qty": "1"
+        },
+        {
+          "symbol": "SPY260904P00752000",
+          "side": "buy",
+          "position_intent": "buy_to_open",
+          "ratio_qty": "1"
+        }
+      ],
+      "max_loss": "1494.00"
+    },
+    {
+      "id": "623d2f9e386f",
+      "at": "2026-09-01T17:10:36+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "99983.88",
+      "open_positions": 1,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "6d6479bb94c8",
+      "at": "2026-09-01T17:10:36+00:00",
+      "kind": "risk_verdict",
+      "approved": false,
+      "reasons": [
+        "credit/width 0.140 below minimum 0.15"
+      ],
+      "short": "SPY260904P00753000",
+      "long": "SPY260904P00752000",
+      "credit": "0.14",
+      "width": "1",
+      "max_loss": "1462.00",
+      "quantity": 0,
+      "short_delta": -0.1997,
+      "short_iv": 0.1555
+    },
+    {
+      "id": "808d84e936ac",
+      "at": "2026-09-01T17:10:58+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "99982.88",
+      "open_positions": 1,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "b5f72fbd955e",
+      "at": "2026-09-01T17:10:59+00:00",
+      "kind": "risk_verdict",
+      "approved": true,
+      "reasons": [],
+      "short": "SPY260904P00753000",
+      "long": "SPY260904P00752000",
+      "credit": "0.16",
+      "width": "1",
+      "max_loss": "1428.00",
+      "quantity": 17,
+      "short_delta": -0.2025,
+      "short_iv": 0.1566
+    },
+    {
+      "id": "29f9802faf03",
+      "at": "2026-09-01T17:10:59+00:00",
+      "kind": "order_submitted",
+      "dry_run": false,
+      "argv": [
+        "order",
+        "submit",
+        "--order-class",
+        "mleg",
+        "--qty",
+        "17",
+        "--type",
+        "limit",
+        "--limit-price",
+        "-0.16",
+        "--time-in-force",
+        "day",
+        "--legs",
+        "[{\"symbol\": \"SPY260904P00753000\", \"side\": \"sell\", \"position_intent\": \"sell_to_open\", \"ratio_qty\": \"1\"}, {\"symbol\": \"SPY260904P00752000\", \"side\": \"buy\", \"position_intent\": \"buy_to_open\", \"ratio_qty\": \"1\"}]"
+      ],
+      "order_id": "cd44d308-8609-4044-8994-3137d255fc78",
+      "status": "pending_new",
+      "legs": [
+        {
+          "symbol": "SPY260904P00753000",
+          "side": "sell",
+          "position_intent": "sell_to_open",
+          "ratio_qty": "1"
+        },
+        {
+          "symbol": "SPY260904P00752000",
+          "side": "buy",
+          "position_intent": "buy_to_open",
+          "ratio_qty": "1"
+        }
+      ],
+      "max_loss": "1428.00"
+    }
+  ]
+}

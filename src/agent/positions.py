@@ -116,7 +116,20 @@ def _parse(position: dict[str, Any]) -> OptionLeg | None:
 
 
 def assemble(positions: list[dict[str, Any]]) -> list[Spread]:
-    """Pair each short option with the long that defines its risk."""
+    """Pair each short option with the long that defines its risk.
+
+    Reconstruction from legs is inherently ambiguous. If two spreads share an
+    expiry and their strikes interleave - shorts at 758 and 757 against longs
+    at 756 and 755 - then 758/756 with 757/755 and 758/755 with 757/756 are
+    both consistent with the same four legs, and the widths differ. Nearest
+    strike is chosen because it is the conservative reading: it reports the
+    narrower spread, so the risk gate never sees less exposure than is really
+    there.
+
+    The agent avoids the ambiguity in practice by holding few spreads at
+    distinct strikes. Removing it entirely means recording spread identity at
+    entry and reconciling against the ledger rather than inferring from legs.
+    """
     legs = [leg for leg in (_parse(p) for p in positions) if leg is not None]
     shorts = [leg for leg in legs if leg.qty < 0]
     longs = [leg for leg in legs if leg.qty > 0]

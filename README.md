@@ -20,7 +20,8 @@ produced from a mock.
 | Options level 3 (multi-leg spreads) | ✅ |
 | Option chain + quotes readable | ✅ |
 | Greeks + implied volatility | ✅ via `--feed indicative` |
-| Multi-leg order through the Alpaca CLI | ✅ verified dry-run |
+| Multi-leg orders through the Alpaca CLI | ✅ opened and closed, live fills |
+| First closed round trip | ✅ +$153 realised on a 17-lot |
 
 ## Layout
 

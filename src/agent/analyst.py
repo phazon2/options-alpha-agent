@@ -39,14 +39,27 @@ SYSTEM = """You are the analyst stage of an autonomous options trading agent \
 running on Alpaca paper trading. You do not place orders. You return one JSON \
 object and nothing else.
 
-The agent sells defined-risk put credit spreads on SPY: it sells a put and buys \
-a further out-of-the-money put, collecting a credit, profiting if SPY holds \
-above the short strike. Its edge is the variance risk premium, which is thin \
-(2-4 vol points), so it must not trade into obvious trouble.
+The agent sells defined-risk vertical credit spreads on SPY, on either side. \
+A put credit spread profits if SPY holds above the short strike; a call credit \
+spread profits if it stays below. The regime filter has ALREADY chosen the \
+side and it is given to you as "side". Do not object that the trade is a call \
+rather than a put, or the reverse - that is not your decision and there is no \
+mandate to prefer either. Judge only whether selling this premium is worth it.
+
+Its edge is the variance risk premium: implied volatility usually exceeds what \
+is subsequently realised. That premium is thin, so when the short leg's \
+implied volatility is at or below realised volatility there is nothing to \
+harvest and standing aside is the correct answer.
 
 Return exactly this JSON shape:
 {"trade": true|false, "confidence": 0.0-1.0, "target_delta": 0.10-0.30,
- "rationale": "one or two sentences"}
+ "rationale": "one or two sentences",
+ "invalidated_if": "one concrete, checkable condition"}
+
+"invalidated_if" is a commitment, recorded before the trade and checked
+afterwards. It must be specific enough that a machine could evaluate it -
+name a level, a move, or a close. "SPY closes below 750 before expiry" is
+valid. "The market turns against us" is not.
 
 Decline to trade when the regime is bearish, when realised volatility is \
 spiking, or when the credit on offer is poor for the risk. Declining is a \
@@ -60,6 +73,7 @@ class AnalystView:
     confidence: float
     target_delta: float
     rationale: str
+    invalidated_if: str = ""
     model: str = MODEL
     raw: str = ""
     failed: bool = False
@@ -67,7 +81,7 @@ class AnalystView:
 
     @classmethod
     def stand_aside(cls, why: str, raw: str = "") -> "AnalystView":
-        return cls(False, 0.0, 0.20, why, MODEL, raw, failed=True)
+        return cls(False, 0.0, 0.20, why, "", MODEL, raw, failed=True)
 
 
 def _extract_json(text: str) -> dict[str, Any] | None:
@@ -89,8 +103,41 @@ def _extract_json(text: str) -> dict[str, Any] | None:
     return None
 
 
-def consult(context: dict[str, Any]) -> AnalystView:
-    """Ask the analyst whether to trade. Never raises; fails to stand-aside."""
+def _first_parsable(message: dict[str, Any]) -> tuple[dict[str, Any] | None, str]:
+    """Pull JSON from a chat message.
+
+    Reasoning models split their output: sometimes the answer is in `content`,
+    sometimes `content` is empty and it is in `reasoning`, and sometimes
+    `content` holds prose that happens not to parse. Trying only the first
+    non-empty field throws away a good answer sitting in the other one, so
+    both are tried in turn.
+    """
+    for field_name in ("content", "reasoning"):
+        text = (message.get(field_name) or "").strip()
+        if not text:
+            continue
+        parsed = _extract_json(text)
+        if parsed is not None:
+            return parsed, text
+    return None, (message.get("content") or message.get("reasoning") or "")
+
+
+def consult(context: dict[str, Any], attempts: int = 2) -> AnalystView:
+    """Ask the analyst whether to trade. Never raises; fails to stand-aside.
+
+    Reasoning models occasionally spend their budget thinking and return
+    something unparseable. That is worth one retry before standing aside,
+    since the alternative is skipping a session over a formatting slip.
+    """
+    view = AnalystView.stand_aside("not attempted")
+    for _ in range(max(1, attempts)):
+        view = _consult_once(context)
+        if not view.failed:
+            return view
+    return view
+
+
+def _consult_once(context: dict[str, Any]) -> AnalystView:
     api_key = os.environ.get("FEATHERLESS_API_KEY", "").strip()
     if not api_key:
         return AnalystView.stand_aside("FEATHERLESS_API_KEY is not set")
@@ -98,7 +145,8 @@ def consult(context: dict[str, Any]) -> AnalystView:
     prompt = (
         "Market state:\n"
         f"{json.dumps(context, indent=2, default=str)}\n\n"
-        "Should the agent open a put credit spread now? Reply with the JSON object only."
+        "Should the agent open the credit spread shown in best_available? "
+        "Reply with the JSON object only."
     )
     try:
         response = httpx.post(
@@ -110,7 +158,7 @@ def consult(context: dict[str, Any]) -> AnalystView:
                     {"role": "system", "content": SYSTEM},
                     {"role": "user", "content": prompt},
                 ],
-                "max_tokens": 1200,
+                "max_tokens": 2000,
                 "temperature": 0.2,
             },
             timeout=TIMEOUT,
@@ -124,13 +172,7 @@ def consult(context: dict[str, Any]) -> AnalystView:
         )
 
     message = (response.json().get("choices") or [{}])[0].get("message", {})
-    # Reasoning models may leave `content` empty and put the answer in
-    # `reasoning`; check both before giving up.
-    text = (message.get("content") or "").strip() or (
-        message.get("reasoning") or ""
-    ).strip()
-
-    parsed = _extract_json(text)
+    parsed, text = _first_parsable(message)
     if parsed is None:
         return AnalystView.stand_aside("analyst reply was not valid JSON", text[:400])
 
@@ -149,11 +191,19 @@ def consult(context: dict[str, Any]) -> AnalystView:
         confidence = 0.0
         clamped.append("confidence unparseable, used 0.0")
 
+    invalidated_if = str(parsed.get("invalidated_if", "")).strip()[:300]
+    trade = bool(parsed.get("trade", False))
+    if trade and not invalidated_if:
+        # A thesis with no stated way to be wrong is not a thesis.
+        clamped.append("no invalidated_if supplied; declining rather than trading")
+        trade = False
+
     return AnalystView(
-        trade=bool(parsed.get("trade", False)),
+        trade=trade,
         confidence=confidence,
         target_delta=delta,
         rationale=str(parsed.get("rationale", ""))[:400],
+        invalidated_if=invalidated_if,
         raw=text[:1000],
         clamped=clamped,
     )

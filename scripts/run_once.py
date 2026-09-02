@@ -14,6 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from agent.analyst import consult  # noqa: E402
+from agent.challenger import challenge  # noqa: E402
 from agent.broker import AlpacaPaper  # noqa: E402
 from agent.regime import read_regime  # noqa: E402
 from agent.execution import AlpacaCLIExecutor, ExecutionError, Leg  # noqa: E402
@@ -21,9 +22,34 @@ from agent.ledger import DecisionLedger  # noqa: E402
 from dataclasses import replace  # noqa: E402
 
 from agent.risk import AccountState, RiskGate, RiskLimits, SpreadProposal  # noqa: E402
-from agent.strategy import NoTradeFound, parse_chain, select_put_credit_spread  # noqa: E402
+from agent.strategy import (  # noqa: E402
+    NoTradeFound,
+    parse_chain,
+    select_call_credit_spread,
+    select_put_credit_spread,
+)
 
 UNDERLYING = "SPY"
+
+
+# Expiries to consider, in days from today. Two days out is where theta is
+# richest but gamma risk is worst — the challenger's standing objection — so
+# the agent also looks a week or two ahead, where the credit is larger and an
+# adverse day is survivable, and lets the credit-to-width comparison decide.
+CANDIDATE_DTE = (2, 3, 7, 9, 14)
+
+
+def candidate_expiries(today: date, broker, underlying: str) -> list[str]:
+    """Expiries that actually exist, nearest first."""
+    wanted = {(today + timedelta(days=d)).isoformat() for d in CANDIDATE_DTE}
+    contracts = broker.option_contracts(
+        underlying,
+        expiration_gte=(today + timedelta(days=1)).isoformat(),
+        expiration_lte=(today + timedelta(days=max(CANDIDATE_DTE))).isoformat(),
+        limit=2000,
+    )
+    listed = {c["expiration_date"] for c in contracts}
+    return sorted(wanted & listed)
 
 
 def pick_expiry(today: date) -> str:
@@ -49,7 +75,12 @@ def main() -> int:
     # Each vertical spread holds two option legs; count spreads, not legs.
     open_spreads = len(positions) // 2
 
-    expiry = args.expiry or pick_expiry(date.today())
+    expiries = (
+        [args.expiry]
+        if args.expiry
+        else candidate_expiries(date.today(), broker, UNDERLYING)
+    )
+    expiry = expiries[0] if expiries else pick_expiry(date.today())
     ledger.record(
         "cycle_start",
         market_open=clock.is_open,
@@ -83,31 +114,106 @@ def main() -> int:
         return_20d=regime.return_20d,
         realised_vol=regime.realised_vol,
     )
-    if not regime.allows_put_credit_spread:
-        ledger.record("abstain", reason=f"regime is {regime.regime}: {regime.reason}")
-        print(f"\nABSTAIN — a put credit spread is the wrong side of a {regime.regime} regime")
+    side = regime.preferred_side
+    allowed = (
+        regime.allows_put_credit_spread
+        if side == "put"
+        else regime.allows_call_credit_spread
+    )
+    if not allowed:
+        ledger.record(
+            "abstain", reason=f"regime is {regime.regime}: {regime.reason}", side=side
+        )
+        print(f"\nABSTAIN — neither side is supportable in a {regime.regime} regime")
+        return 0
+    print(f"side          {side} credit spread (trend argues this way)")
+
+    # --- scan every listed expiry and keep the best credit per unit of width ---
+    selector = select_put_credit_spread if side == "put" else select_call_credit_spread
+    best = None
+    for candidate_expiry in expiries:
+        chain = broker.option_chain(
+            UNDERLYING,
+            expiration_date=candidate_expiry,
+            option_type=side,
+            feed="indicative",
+            strike_gte=spot * 0.88,
+            strike_lte=spot * 1.12,
+        )
+        candidates = parse_chain(chain)
+        if not candidates:
+            continue
+        try:
+            found = selector(candidates, UNDERLYING)
+        except NoTradeFound:
+            continue
+        ratio = found[0].credit / found[0].width
+        dte = (date.fromisoformat(candidate_expiry) - date.today()).days
+        print(
+            f"  {candidate_expiry} ({dte}d)  ${found[0].credit} on ${found[0].width} "
+            f"wide = {ratio:.1%}"
+        )
+        if best is None or ratio > best[0]:
+            best = (ratio, candidate_expiry, found)
+
+    if best is None:
+        ledger.record("abstain", reason="no expiry offered a workable spread")
+        print("\nABSTAIN — no expiry offered a workable spread")
         return 0
 
-    # --- analyst: proposes only, and may decline ---
-    view = consult(
-        {
-            "underlying": UNDERLYING,
-            "spot": regime.spot,
-            "regime": regime.regime,
-            "regime_reason": regime.reason,
-            "realised_vol_annualised": round(regime.realised_vol, 4),
-            "return_20d_pct": round(regime.return_20d * 100, 2),
-            "sma_5": round(regime.sma_short, 2),
-            "sma_20": round(regime.sma_long, 2),
-            "open_spreads": open_spreads,
-            "equity": str(equity),
-            "expiry": expiry,
-            "structure": "put credit spread, 1-5 wide, defined risk",
-            "risk_caps": {"max_loss_per_trade_usd": 1500, "min_credit_to_width": 0.15},
-        }
+    _, expiry, (proposal, short, long_leg) = best
+    print(
+        f"best          {expiry}: sell {short.symbol} (delta {short.delta:.3f}) "
+        f"/ buy {long_leg.symbol}"
+        f"\n              width ${proposal.width}  credit ${proposal.credit}"
     )
+
+    # --- analyst: proposes only, and may decline ---
+    analyst_context = {
+        "underlying": UNDERLYING,
+        "spot": regime.spot,
+        "regime": regime.regime,
+        "regime_reason": regime.reason,
+        "realised_vol_annualised": round(regime.realised_vol, 4),
+        "return_20d_pct": round(regime.return_20d * 100, 2),
+        "sma_5": round(regime.sma_short, 2),
+        "sma_20": round(regime.sma_long, 2),
+        "available_expiries_dte": [
+            (date.fromisoformat(e) - date.today()).days for e in expiries
+        ],
+        "open_spreads": open_spreads,
+        "equity": str(equity),
+        "expiry": expiry,
+        "side": side,
+        "best_available": {
+            "expiry": expiry,
+            "days_to_expiry": (date.fromisoformat(expiry) - date.today()).days,
+            "short_symbol": short.symbol,
+            "short_delta": round(short.delta, 4),
+            "short_iv": short.implied_volatility,
+            "width": str(proposal.width),
+            "credit": str(proposal.credit),
+            "credit_to_width": round(float(proposal.credit / proposal.width), 4),
+        },
+        "structure": (
+            f"{side} credit spread, 1-5 wide, defined risk. A put spread "
+            f"profits if SPY holds above the short strike; a call spread "
+            f"profits if it stays below."
+        ),
+        "note": (
+            "best_available is the actual spread the agent will place, already "
+            "chosen as the best credit-per-width across every listed expiry. "
+            "These are live quotes, not estimates - judge the spread shown "
+            "rather than speculating about what the credit might be. The risk "
+            "gate separately enforces a 0.15 credit-to-width minimum."
+        ),
+        "risk_caps": {"max_loss_per_trade_usd": 1500, "min_credit_to_width": 0.15},
+    }
+    view = consult(analyst_context)
     print(f"analyst       trade={view.trade} conf={view.confidence} delta={view.target_delta}")
     print(f"              {view.rationale}")
+    if view.invalidated_if:
+        print(f"  wrong if    {view.invalidated_if}")
     ledger.record(
         "analyst_view",
         model=view.model,
@@ -115,6 +221,7 @@ def main() -> int:
         confidence=view.confidence,
         target_delta=view.target_delta,
         rationale=view.rationale,
+        invalidated_if=view.invalidated_if,
         clamped=view.clamped,
         failed=view.failed,
     )
@@ -123,31 +230,27 @@ def main() -> int:
         print("\nABSTAIN — the analyst declined")
         return 0
 
-    chain = broker.option_chain(
-        UNDERLYING,
-        expiration_date=expiry,
-        option_type="put",
-        feed="indicative",
-        strike_gte=spot * 0.90,
-        strike_lte=spot * 1.02,
-    )
-    candidates = parse_chain(chain)
-    print(f"candidates    {len(candidates)} quoted puts with greeks")
-
-    try:
-        proposal, short, long_leg = select_put_credit_spread(
-            candidates, UNDERLYING, target_delta=view.target_delta
-        )
-    except NoTradeFound as exc:
-        ledger.record("abstain", reason=str(exc), candidates=len(candidates))
-        print(f"\nABSTAIN — {exc}")
-        return 0
-
+    # --- challenger: tries to destroy the thesis; only survivors proceed ---
+    objection = challenge(view, analyst_context)
     print(
-        f"\nproposal      sell {short.symbol} (delta {short.delta:.3f}, bid {short.bid})"
-        f"\n              buy  {long_leg.symbol} (ask {long_leg.ask})"
-        f"\n              width ${proposal.width}  credit ${proposal.credit}"
+        f"challenger    refuted={objection.refuted} severity={objection.severity}"
+        f"\n              {objection.argument}"
     )
+    ledger.record(
+        "challenge",
+        refuted=objection.refuted,
+        severity=objection.severity,
+        argument=objection.argument,
+        failed=objection.failed,
+        blocks=objection.blocks_trade,
+        size_multiplier=objection.size_multiplier,
+    )
+    if objection.blocks_trade:
+        ledger.record(
+            "abstain", reason=f"challenger ({objection.severity}): {objection.argument}"
+        )
+        print("\nABSTAIN — the thesis did not survive the challenger")
+        return 0
 
     # Ask for the size the risk budget actually supports. The gate can only
     # cap a proposal, never enlarge it, so proposing 1 contract would leave
@@ -156,6 +259,13 @@ def main() -> int:
     per_contract_loss = (proposal.width - proposal.credit) * 100
     budget = min(limits.max_loss_per_trade, equity * limits.max_equity_fraction_per_trade)
     desired = max(1, int(budget / per_contract_loss)) if per_contract_loss > 0 else 1
+    if objection.size_multiplier < 1.0:
+        reduced = max(1, int(desired * objection.size_multiplier))
+        print(
+            f"              challenger objection ({objection.severity}) cuts size "
+            f"{desired} -> {reduced}"
+        )
+        desired = reduced
     proposal = replace(proposal, quantity=desired)
     print(f"budget        ${budget:,.2f} -> want {desired}x (${per_contract_loss:,.2f}/contract)")
 
@@ -176,6 +286,8 @@ def main() -> int:
         quantity=verdict.approved_quantity,
         short_delta=short.delta,
         short_iv=short.implied_volatility,
+        side=side,
+        expiry=expiry,
     )
     if not verdict.approved:
         print("\nABSTAIN — the gate vetoed this trade")

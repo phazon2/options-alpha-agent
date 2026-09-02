@@ -38,6 +38,22 @@ class RegimeRead:
         trade this filter exists to prevent."""
         return self.regime in ("bullish", "neutral")
 
+    @property
+    def allows_call_credit_spread(self) -> bool:
+        """The mirror: sell calls when the tape is falling or flat, never
+        into a rally."""
+        return self.regime in ("bearish", "neutral")
+
+    @property
+    def preferred_side(self) -> str:
+        """Which side the trend argues for. In a neutral tape, lean against
+        whichever way price sits relative to its longer average."""
+        if self.regime == "bullish":
+            return "put"
+        if self.regime == "bearish":
+            return "call"
+        return "call" if self.spot < self.sma_long else "put"
+
 
 def _sma(values: list[float], n: int) -> float:
     window = values[-n:] if len(values) >= n else values

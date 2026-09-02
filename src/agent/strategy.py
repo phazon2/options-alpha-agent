@@ -48,6 +48,72 @@ class NoTradeFound(RuntimeError):
     """No contract in the chain met the entry conditions. Abstaining is fine."""
 
 
+def _pick_short(candidates: list[Candidate], target_delta: float | None, calls: bool):
+    """The strike in the delta band closest to the requested target."""
+    side = [c for c in candidates if (c.delta > 0) == calls]
+    in_band = [
+        c for c in side if TARGET_DELTA_LOW <= abs(c.delta) <= TARGET_DELTA_HIGH
+    ]
+    if not in_band:
+        raise NoTradeFound(
+            f"no {'call' if calls else 'put'} with delta in "
+            f"[{TARGET_DELTA_LOW}, {TARGET_DELTA_HIGH}] among {len(side)} quoted"
+        )
+    target = target_delta if target_delta is not None else (
+        TARGET_DELTA_LOW + TARGET_DELTA_HIGH
+    ) / 2
+    target = min(max(target, TARGET_DELTA_LOW), TARGET_DELTA_HIGH)
+    return min(in_band, key=lambda c: abs(abs(c.delta) - target)), side
+
+
+def select_call_credit_spread(
+    candidates: list[Candidate],
+    underlying: str = "SPY",
+    widths: list[Decimal] | None = None,
+    quantity: int = 1,
+    target_delta: float | None = None,
+) -> tuple[SpreadProposal, Candidate, Candidate]:
+    """The bearish mirror: sell a call, buy a further-out call above it.
+
+    Profits when the underlying stays below the short strike, so it is the
+    structure for a market drifting down or sideways — the tape in which
+    selling puts is the wrong side of the trend.
+    """
+    widths = widths or CANDIDATE_WIDTHS
+    short, calls = _pick_short(candidates, target_delta, calls=True)
+    by_strike = {c.strike: c for c in calls}
+
+    best: tuple[Decimal, Decimal, Candidate] | None = None
+    for width in widths:
+        long_leg = by_strike.get(short.strike + width)
+        if long_leg is None:
+            continue
+        credit = (short.mid - long_leg.mid).quantize(Decimal("0.01"))
+        if credit <= 0:
+            continue
+        ratio = credit / width
+        if best is None or ratio > best[0]:
+            best = (ratio, credit, long_leg)
+
+    if best is None:
+        raise NoTradeFound(
+            f"call strike {short.strike} has no long leg at any width "
+            f"{[str(w) for w in widths]} with a positive credit"
+        )
+
+    _, credit, long_leg = best
+    proposal = SpreadProposal(
+        short_symbol=short.symbol,
+        long_symbol=long_leg.symbol,
+        width=long_leg.strike - short.strike,
+        credit=credit,
+        quantity=quantity,
+        underlying=underlying,
+    )
+    return proposal, short, long_leg
+
+
+
 def parse_chain(snapshots: dict[str, Any]) -> list[Candidate]:
     """Turn a raw option-chain response into usable put candidates."""
     out: list[Candidate] = []

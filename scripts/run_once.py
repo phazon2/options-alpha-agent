@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from agent.analyst import consult  # noqa: E402
 from agent.challenger import challenge  # noqa: E402
 from agent.broker import AlpacaPaper  # noqa: E402
+from agent.positions import assemble  # noqa: E402
 from agent.regime import read_regime  # noqa: E402
 from agent.execution import AlpacaCLIExecutor, ExecutionError, Leg  # noqa: E402
 from agent.ledger import DecisionLedger  # noqa: E402
@@ -72,8 +73,11 @@ def main() -> int:
     account_raw = executor.account()
     equity = Decimal(account_raw["equity"])
     positions = executor.positions()
-    # Each vertical spread holds two option legs; count spreads, not legs.
-    open_spreads = len(positions) // 2
+    # Count spreads the same way the exit manager does. Halving the leg count
+    # is not the same thing: it counts stock positions and orphaned legs as
+    # half a spread each, so the risk gate and the manager could disagree
+    # about how much is open.
+    open_spreads = len(assemble(positions))
 
     expiries = (
         [args.expiry]

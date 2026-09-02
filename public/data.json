@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-02T20:46:03+00:00",
+  "generated_at": "2026-09-02T22:11:23+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
     "equity": "100150.54",
@@ -14,7 +14,7 @@
     "decisions": 9,
     "approved": 5,
     "vetoed": 4,
-    "abstained": 21,
+    "abstained": 22,
     "orders_submitted": 5,
     "orders_filled": 3,
     "open_legs": 2
@@ -98,25 +98,6 @@
     }
   ],
   "ledger": [
-    {
-      "id": "f7fab7ef7f98",
-      "at": "2026-09-02T18:19:33+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": false,
-      "confidence": 0.0,
-      "target_delta": 0.2,
-      "rationale": "analyst reply was not valid JSON",
-      "invalidated_if": "",
-      "clamped": [],
-      "failed": true
-    },
-    {
-      "id": "f9506c0e4a62",
-      "at": "2026-09-02T18:19:33+00:00",
-      "kind": "abstain",
-      "reason": "analyst declined: analyst reply was not valid JSON"
-    },
     {
       "id": "0dc32319b800",
       "at": "2026-09-02T18:20:07+00:00",
@@ -698,6 +679,22 @@
       "at": "2026-09-02T18:30:00+00:00",
       "kind": "abstain",
       "reason": "analyst declined: IV of 11.46% barely exceeds realised vol of 11.12% \u2014 a VRP of only 0.34 pts leaves almost nothing to harvest, and 2 DTE gamma risk is high relative to that thin edge."
+    },
+    {
+      "id": "752aa82fd3f7",
+      "at": "2026-09-02T22:11:05+00:00",
+      "kind": "cycle_start",
+      "market_open": false,
+      "equity": "100150.54",
+      "open_positions": 1,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "55d927a70562",
+      "at": "2026-09-02T22:11:05+00:00",
+      "kind": "abstain",
+      "reason": "market closed",
+      "next_open": "2026-09-03T09:30:00-04:00"
     }
   ]
 }

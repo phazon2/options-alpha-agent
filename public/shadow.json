@@ -1,0 +1,36 @@
+{
+  "naive": {
+    "decisions": 2,
+    "would_trade": 2,
+    "would_pass": 0,
+    "contracts": 70,
+    "aggregate_max_loss": "7800.00",
+    "mark_to_market_now": "60.000",
+    "trades": [
+      {
+        "at": "2026-09-03T18:39:38+00:00",
+        "short": "SPY260904P00769000",
+        "long": "SPY260904P00767000",
+        "quantity": 20,
+        "credit": "0.25",
+        "width": "2",
+        "rationale": "1-DTE put credit spread at 0.25 credit with 773.81 spot offers a 14% return on margin with short strike 4.81 points OTM (0.62% buffer), and the 0.183 delta suggests manageable risk for a decisive income trade.",
+        "pnl_if_taken": "60.000"
+      },
+      {
+        "at": "2026-09-03T18:39:41+00:00",
+        "short": "SPY260910P00765000",
+        "long": "SPY260910P00764000",
+        "quantity": 50,
+        "credit": "0.14",
+        "width": "1",
+        "rationale": "Solid 14% credit on a 1-point spread with 7 DTE, short put at 765 is 9 points OTM with only -0.20 delta, offering favorable risk-reward for a defined-risk SPY put credit spread.",
+        "pnl_if_taken": "0.000"
+      }
+    ]
+  },
+  "gated": {
+    "orders_submitted_live": 11
+  },
+  "note": "Same model, same live chain, same spreads. The naive agent has no regime filter, no challenger, no Monte Carlo, no floor and no position limit. It never submits; its would-be trades are re-priced at current marks by the same scorer that grades the real agent's refusals."
+}

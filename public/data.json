@@ -273,8 +273,12 @@
       "equity": 99231.53
     },
     {
-      "at": "2026-09-03T19:44:08+00:00",
-      "equity": 99238.53
+      "at": "2026-09-03T19:50:55+00:00",
+      "equity": 99253.53
+    },
+    {
+      "at": "2026-09-03T19:51:01+00:00",
+      "equity": 99253.53
     }
   ],
   "frontier": {
@@ -475,8 +479,8 @@
       "refusals_correct": 0,
       "refusals_costly": 4,
       "loss_avoided": "0",
-      "profit_forgone": "99.000",
-      "net_of_refusing": "-99.000",
+      "profit_forgone": "103.000",
+      "net_of_refusing": "-103.000",
       "hit_rate": "0%"
     },
     "refusals": [
@@ -489,7 +493,7 @@
         "width": "5",
         "reason": "credit/width 0.100 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "48.000",
+        "pnl_if_taken": "45.000",
         "verdict": "refusal costly"
       },
       {
@@ -501,7 +505,7 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "14.000",
+        "pnl_if_taken": "12.000",
         "verdict": "refusal costly"
       },
       {
@@ -513,7 +517,7 @@
         "width": "2",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "23.000",
+        "pnl_if_taken": "28.000",
         "verdict": "refusal costly"
       },
       {
@@ -525,7 +529,7 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "14.000",
+        "pnl_if_taken": "18.000",
         "verdict": "refusal costly"
       }
     ]
@@ -696,22 +700,22 @@
       }
     ]
   },
-  "generated_at": "2026-09-03T19:44:08+00:00",
+  "generated_at": "2026-09-03T19:51:01+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
-    "equity": "99238.53",
+    "equity": "99253.53",
     "cash": "99934.53",
     "starting_equity": "100000",
-    "pnl": "-761.47",
-    "pnl_pct": "-0.761",
+    "pnl": "-746.47",
+    "pnl_pct": "-0.746",
     "options_level": 3,
-    "unrealized": "-297.858"
+    "unrealized": "-282.858"
   },
   "counters": {
     "decisions": 23,
     "approved": 19,
     "vetoed": 4,
-    "abstained": 56,
+    "abstained": 57,
     "orders_submitted": 16,
     "orders_filled": 17,
     "open_legs": 4
@@ -721,29 +725,29 @@
       "symbol": "SPY260904P00767000",
       "qty": "8",
       "entry": "0.41",
-      "current": "0.32",
-      "unrealized": "-72"
+      "current": "0.33",
+      "unrealized": "-64"
     },
     {
       "symbol": "SPY260904P00768000",
       "qty": "-8",
       "entry": "0.53",
-      "current": "0.44",
-      "unrealized": "72"
+      "current": "0.45",
+      "unrealized": "64"
     },
     {
       "symbol": "SPY260910C00777000",
       "qty": "-15",
       "entry": "1.061428",
-      "current": "2.34",
-      "unrealized": "-1917.858"
+      "current": "2.28",
+      "unrealized": "-1827.858"
     },
     {
       "symbol": "SPY260910C00778000",
       "qty": "15",
       "entry": "0.86",
-      "current": "1.94",
-      "unrealized": "1620"
+      "current": "1.89",
+      "unrealized": "1545"
     }
   ],
   "orders": [
@@ -1249,79 +1253,6 @@
     }
   ],
   "ledger": [
-    {
-      "id": "a12861ed00d2",
-      "at": "2026-09-03T18:50:14+00:00",
-      "kind": "position_review",
-      "short": "SPY260904P00768000",
-      "long": "SPY260904P00767000",
-      "quantity": 8,
-      "credit": "0.12",
-      "cost_to_close": "0.10",
-      "captured": "0.17",
-      "open_pnl": "16.00",
-      "action": "hold",
-      "reason": "captured 17%, below the 50% target"
-    },
-    {
-      "id": "3c6f98afd106",
-      "at": "2026-09-03T18:50:14+00:00",
-      "kind": "position_review",
-      "short": "SPY260910C00777000",
-      "long": "SPY260910C00778000",
-      "quantity": 15,
-      "credit": "0.201428",
-      "cost_to_close": "0.42",
-      "captured": "-1.085112",
-      "open_pnl": "-327.858000",
-      "action": "hold",
-      "reason": "captured -109%, below the 50% target"
-    },
-    {
-      "id": "a18b82c84dba",
-      "at": "2026-09-03T18:50:16+00:00",
-      "kind": "cycle_start",
-      "market_open": true,
-      "equity": "99209.53",
-      "open_positions": 2,
-      "expiry": "2026-09-04"
-    },
-    {
-      "id": "c37b8c52f917",
-      "at": "2026-09-03T18:50:16+00:00",
-      "kind": "regime",
-      "regime": "neutral",
-      "reason": "spot 773.76 mixed against SMAs (767.33/769.19)",
-      "spot": 773.76,
-      "sma_short": 767.334,
-      "sma_long": 769.18775,
-      "return_20d": 0.0007760360080708573,
-      "realised_vol": 0.11291866303039612
-    },
-    {
-      "id": "100c673c7424",
-      "at": "2026-09-03T18:50:47+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": true,
-      "confidence": 0.72,
-      "target_delta": 0.18,
-      "rationale": "VRP of 8.12 vol points is solid and IV well above matched realised vol; short delta 0.18 is in range and credit-to-width 0.16 on 1-DTE is acceptable with spot above both SMAs and the short strike.",
-      "invalidated_if": "SPY closes below 769.00 on 2026-09-04",
-      "clamped": [],
-      "failed": false
-    },
-    {
-      "id": "e707fbd33b20",
-      "at": "2026-09-03T18:51:17+00:00",
-      "kind": "challenge",
-      "refuted": true,
-      "severity": "serious",
-      "argument": "Short strike 769 sits at the 20-day SMA (769.19) and only 4.76 pts below spot\u2014within the 1-day expected move (~6.5 pts, 0.73 SD). The 0.16 credit can't justify a strike that's a natural magnet, and invalidation at 769 only triggers at max loss.",
-      "failed": false,
-      "blocks": false,
-      "size_multiplier": 0.5
-    },
     {
       "id": "d716fc28130d",
       "at": "2026-09-03T18:51:17+00:00",
@@ -1940,6 +1871,74 @@
       "at": "2026-09-03T19:44:06+00:00",
       "kind": "abstain",
       "reason": "challenger (fatal): Spot 773.29 is barely 4.30 above the 769 short strike\u2014just 0.56% cushion with 1DTE. SMA5 at 767.24 sits BELOW the short strike, so a normal pullback to recent support breaches it. Credit of 0.14 fails the 0.15 risk gate."
+    },
+    {
+      "id": "8b7c6b1ccb25",
+      "at": "2026-09-03T19:50:53+00:00",
+      "kind": "position_review",
+      "short": "SPY260904P00768000",
+      "long": "SPY260904P00767000",
+      "quantity": 8,
+      "credit": "0.12",
+      "cost_to_close": "0.12",
+      "captured": "0.00",
+      "open_pnl": "0.00",
+      "action": "hold",
+      "reason": "captured 0%, below the 50% target"
+    },
+    {
+      "id": "eb92869d210a",
+      "at": "2026-09-03T19:50:53+00:00",
+      "kind": "position_review",
+      "short": "SPY260910C00777000",
+      "long": "SPY260910C00778000",
+      "quantity": 15,
+      "credit": "0.201428",
+      "cost_to_close": "0.39",
+      "captured": "-0.936176",
+      "open_pnl": "-282.858000",
+      "action": "hold",
+      "reason": "captured -94%, below the 50% target"
+    },
+    {
+      "id": "543fcde69cce",
+      "at": "2026-09-03T19:50:55+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "99253.53",
+      "open_positions": 2,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "64a37373a3c4",
+      "at": "2026-09-03T19:50:56+00:00",
+      "kind": "regime",
+      "regime": "neutral",
+      "reason": "spot 773.26 mixed against SMAs (767.23/769.16)",
+      "spot": 773.26,
+      "sma_short": 767.234,
+      "sma_long": 769.16275,
+      "return_20d": 0.0001293393346784022,
+      "realised_vol": 0.11257054004686884
+    },
+    {
+      "id": "dae8c6f0e4b8",
+      "at": "2026-09-03T19:50:59+00:00",
+      "kind": "analyst_view",
+      "model": "zai-org/GLM-5.2",
+      "trade": false,
+      "confidence": 0.85,
+      "target_delta": 0.2,
+      "rationale": "IV of 12.96% is well above matched realised vol of 4.79%, so there is VRP to harvest, but the 0.14 credit-to-width fails the 0.15 risk gate minimum and the 1-DTE structure offers inadequate premium for the risk.",
+      "invalidated_if": "N/A \u2014 trade declined",
+      "clamped": [],
+      "failed": false
+    },
+    {
+      "id": "201f6f894126",
+      "at": "2026-09-03T19:50:59+00:00",
+      "kind": "abstain",
+      "reason": "analyst declined: IV of 12.96% is well above matched realised vol of 4.79%, so there is VRP to harvest, but the 0.14 credit-to-width fails the 0.15 risk gate minimum and the 1-DTE structure offers inadequate premium for the risk."
     }
   ]
 }

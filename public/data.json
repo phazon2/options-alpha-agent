@@ -157,8 +157,12 @@
       "equity": 99764.83
     },
     {
-      "at": "2026-09-03T15:06:52+00:00",
-      "equity": 99719.83
+      "at": "2026-09-03T15:13:39+00:00",
+      "equity": 99572.83
+    },
+    {
+      "at": "2026-09-03T15:15:08+00:00",
+      "equity": 99515.83
     }
   ],
   "frontier": {
@@ -359,8 +363,8 @@
       "refusals_correct": 0,
       "refusals_costly": 4,
       "loss_avoided": "0",
-      "profit_forgone": "72.000",
-      "net_of_refusing": "-72.000",
+      "profit_forgone": "85.000",
+      "net_of_refusing": "-85.000",
       "hit_rate": "0%"
     },
     "refusals": [
@@ -373,7 +377,7 @@
         "width": "5",
         "reason": "credit/width 0.100 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "36.000",
+        "pnl_if_taken": "43.000",
         "verdict": "refusal costly"
       },
       {
@@ -385,7 +389,7 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "6.000",
+        "pnl_if_taken": "8.000",
         "verdict": "refusal costly"
       },
       {
@@ -397,7 +401,7 @@
         "width": "2",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "17.000",
+        "pnl_if_taken": "20.000",
         "verdict": "refusal costly"
       },
       {
@@ -409,27 +413,27 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "13.000",
+        "pnl_if_taken": "14.000",
         "verdict": "refusal costly"
       }
     ]
   },
-  "generated_at": "2026-09-03T15:06:52+00:00",
+  "generated_at": "2026-09-03T15:15:08+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
-    "equity": "99719.83",
+    "equity": "99515.83",
     "cash": "101372.83",
     "starting_equity": "100000",
-    "pnl": "-280.17",
-    "pnl_pct": "-0.280",
+    "pnl": "-484.17",
+    "pnl_pct": "-0.484",
     "options_level": 3,
-    "unrealized": "-378.0028"
+    "unrealized": "-627.0028"
   },
   "counters": {
     "decisions": 18,
     "approved": 14,
     "vetoed": 4,
-    "abstained": 32,
+    "abstained": 33,
     "orders_submitted": 14,
     "orders_filled": 13,
     "open_legs": 5
@@ -439,36 +443,36 @@
       "symbol": "SPY260910C00777000",
       "qty": "-49",
       "entry": "1.061428",
-      "current": "1.53",
-      "unrealized": "-2296.0028"
+      "current": "1.93",
+      "unrealized": "-4256.0028"
     },
     {
       "symbol": "SPY260910C00778000",
       "qty": "45",
       "entry": "0.86",
-      "current": "1.24",
-      "unrealized": "1710"
+      "current": "1.59",
+      "unrealized": "3285"
     },
     {
       "symbol": "SPY260910C00779000",
       "qty": "4",
       "entry": "0.65",
-      "current": "1.01",
-      "unrealized": "144"
+      "current": "1.3",
+      "unrealized": "260"
     },
     {
       "symbol": "SPY260910P00757000",
       "qty": "4",
       "entry": "1.09",
-      "current": "0.87",
-      "unrealized": "-88"
+      "current": "0.79",
+      "unrealized": "-120"
     },
     {
       "symbol": "SPY260910P00760000",
       "qty": "-4",
       "entry": "1.61",
-      "current": "1.23",
-      "unrealized": "152"
+      "current": "1.1",
+      "unrealized": "204"
     }
   ],
   "orders": [
@@ -894,123 +898,6 @@
     }
   ],
   "ledger": [
-    {
-      "id": "e069e0466d5e",
-      "at": "2026-09-03T14:18:43+00:00",
-      "kind": "challenge",
-      "refuted": true,
-      "severity": "serious",
-      "argument": "Short strike 777 sits within 1 standard deviation of spot (7-day expected move ~9.4 vs 8.9 to strike) for just 0.22 credit. Invalidation only triggers at max loss with no early exit. Long-window realized vol at 11% means current calm is likely temporary.",
-      "failed": false,
-      "blocks": false,
-      "size_multiplier": 0.5
-    },
-    {
-      "id": "c23c536a4e0f",
-      "at": "2026-09-03T14:18:43+00:00",
-      "kind": "var_report",
-      "paths": 20000,
-      "probability_of_profit": 0.8374,
-      "expected_pnl": 58.04,
-      "var_95": -702.0,
-      "expected_shortfall": -702.0,
-      "std_error": 2.27,
-      "edge_significant": true,
-      "max_loss": -702.0
-    },
-    {
-      "id": "68f581149953",
-      "at": "2026-09-03T14:18:43+00:00",
-      "kind": "risk_verdict",
-      "approved": true,
-      "reasons": [],
-      "short": "SPY260910C00777000",
-      "long": "SPY260910C00778000",
-      "credit": "0.22",
-      "width": "1",
-      "max_loss": "702.00",
-      "quantity": 9,
-      "short_delta": 0.191,
-      "short_iv": 0.088,
-      "side": "call",
-      "expiry": "2026-09-10"
-    },
-    {
-      "id": "c5ff753dbc61",
-      "at": "2026-09-03T14:18:43+00:00",
-      "kind": "order_submitted",
-      "dry_run": false,
-      "argv": [
-        "order",
-        "submit",
-        "--order-class",
-        "mleg",
-        "--qty",
-        "9",
-        "--type",
-        "limit",
-        "--limit-price",
-        "-0.22",
-        "--time-in-force",
-        "day",
-        "--legs",
-        "[{\"symbol\": \"SPY260910C00777000\", \"side\": \"sell\", \"position_intent\": \"sell_to_open\", \"ratio_qty\": \"1\"}, {\"symbol\": \"SPY260910C00778000\", \"side\": \"buy\", \"position_intent\": \"buy_to_open\", \"ratio_qty\": \"1\"}]"
-      ],
-      "order_id": "b0b0cd41-57e1-4675-b669-9baa4706cbfb",
-      "status": "pending_new",
-      "legs": [
-        {
-          "symbol": "SPY260910C00777000",
-          "side": "sell",
-          "position_intent": "sell_to_open",
-          "ratio_qty": "1"
-        },
-        {
-          "symbol": "SPY260910C00778000",
-          "side": "buy",
-          "position_intent": "buy_to_open",
-          "ratio_qty": "1"
-        }
-      ],
-      "max_loss": "702.00"
-    },
-    {
-      "id": "2a5757c99479",
-      "at": "2026-09-03T14:25:30+00:00",
-      "kind": "position_review",
-      "short": "SPY260910C00777000",
-      "long": "SPY260910C00778000",
-      "quantity": 18,
-      "credit": "0.205",
-      "cost_to_close": "0.22",
-      "captured": "-0.073",
-      "open_pnl": "-27.000",
-      "action": "hold",
-      "reason": "captured -7%, below the 50% target"
-    },
-    {
-      "id": "10fad3198329",
-      "at": "2026-09-03T14:25:30+00:00",
-      "kind": "position_review",
-      "short": "SPY260910P00760000",
-      "long": "SPY260910P00757000",
-      "quantity": 4,
-      "credit": "0.52",
-      "cost_to_close": "0.44",
-      "captured": "0.15",
-      "open_pnl": "32.00",
-      "action": "hold",
-      "reason": "captured 15%, below the 50% target"
-    },
-    {
-      "id": "258001eaafba",
-      "at": "2026-09-03T14:25:33+00:00",
-      "kind": "cycle_start",
-      "market_open": true,
-      "equity": "100078.38",
-      "open_positions": 2,
-      "expiry": "2026-09-10"
-    },
     {
       "id": "b165cc04ab3d",
       "at": "2026-09-03T14:25:34+00:00",
@@ -1760,6 +1647,86 @@
       "reason": "expected value not distinguishable from zero: E[P&L] $3 against a standard error of $2 over 20,000 paths",
       "expected_pnl": 2.92,
       "std_error": 2.33
+    },
+    {
+      "id": "94e8500c9d7d",
+      "at": "2026-09-03T15:13:37+00:00",
+      "kind": "position_review",
+      "short": "SPY260910P00760000",
+      "long": "SPY260910P00757000",
+      "quantity": 4,
+      "credit": "0.52",
+      "cost_to_close": "0.31",
+      "captured": "0.40",
+      "open_pnl": "84.00",
+      "action": "hold",
+      "reason": "captured 40%, below the 50% target"
+    },
+    {
+      "id": "15b764d4a67b",
+      "at": "2026-09-03T15:13:39+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "99572.83",
+      "open_positions": 1,
+      "expiry": "2026-09-10"
+    },
+    {
+      "id": "10d348112729",
+      "at": "2026-09-03T15:13:39+00:00",
+      "kind": "regime",
+      "regime": "neutral",
+      "reason": "spot 771.21 mixed against SMAs (766.82/769.06)",
+      "spot": 771.21,
+      "sma_short": 766.824,
+      "sma_long": 769.06025,
+      "return_20d": -0.002522117026229953,
+      "realised_vol": 0.11136156606341358
+    },
+    {
+      "id": "a09e852b5b94",
+      "at": "2026-09-03T15:13:51+00:00",
+      "kind": "analyst_view",
+      "model": "zai-org/GLM-5.2",
+      "trade": true,
+      "confidence": 0.72,
+      "target_delta": 0.2,
+      "rationale": "IV of 11.34% sits 3.15 vol points above matched realised vol of 8.19%, giving a harvestable variance risk premium. Short delta of 0.20 is in target range and credit-to-width of 0.145 clears the 0.12 minimum, though the premium is modest for a 7-day spread.",
+      "invalidated_if": "SPY closes below 762 at any point before 2026-09-10 expiry",
+      "clamped": [],
+      "failed": false
+    },
+    {
+      "id": "20abc7075f51",
+      "at": "2026-09-03T15:15:06+00:00",
+      "kind": "challenge",
+      "refuted": true,
+      "severity": "serious",
+      "argument": "Short strike 762 sits just 0.76 sigma below spot (9.2 pts vs ~12-pt 7-day expected move), implying ~20% breach probability. Credit of 0.29 risks 1.71 (5.9:1 R:R), needing ~85% win rate \u2014 the thin 3.15-point VRP doesn't justify this asymmetric risk.",
+      "failed": false,
+      "blocks": false,
+      "size_multiplier": 0.5
+    },
+    {
+      "id": "8f4246eebc9c",
+      "at": "2026-09-03T15:15:06+00:00",
+      "kind": "var_report",
+      "paths": 20000,
+      "probability_of_profit": 0.8185,
+      "expected_pnl": -15.05,
+      "var_95": -684.0,
+      "expected_shortfall": -684.0,
+      "std_error": 2.03,
+      "edge_significant": false,
+      "max_loss": -684.0
+    },
+    {
+      "id": "3e9fc3147099",
+      "at": "2026-09-03T15:15:06+00:00",
+      "kind": "abstain",
+      "reason": "expected value not distinguishable from zero: E[P&L] $-15 against a standard error of $2 over 20,000 paths",
+      "expected_pnl": -15.05,
+      "std_error": 2.03
     }
   ]
 }

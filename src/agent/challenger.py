@@ -42,7 +42,9 @@ a hostile reading.
 
 Return exactly this JSON and nothing else:
 {"refuted": true|false, "severity": "fatal"|"serious"|"minor"|"none",
- "argument": "the strongest case against this trade, in one or two sentences"}"""
+ "argument": "the strongest case against this trade, in one or two sentences"}
+
+Keep the argument under 300 characters. A long argument gets truncated before the JSON closes, and a truncated reply is treated as a refusal to answer - which blocks the trade regardless of what you meant."""
 
 
 @dataclass(frozen=True)
@@ -114,7 +116,7 @@ def _challenge_once(view: AnalystView, context: dict[str, Any]) -> Challenge:
                     {"role": "system", "content": SYSTEM},
                     {"role": "user", "content": prompt},
                 ],
-                "max_tokens": 2000,
+                "max_tokens": 3000,
                 # Higher than the analyst: a challenger that always reaches for
                 # the same objection stops being a check.
                 "temperature": 0.6,

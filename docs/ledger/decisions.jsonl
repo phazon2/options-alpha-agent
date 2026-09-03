@@ -112,3 +112,5 @@
 {"id": "7ba692912dea", "at": "2026-09-02T18:30:00+00:00", "kind": "abstain", "reason": "analyst declined: IV of 11.46% barely exceeds realised vol of 11.12% \u2014 a VRP of only 0.34 pts leaves almost nothing to harvest, and 2 DTE gamma risk is high relative to that thin edge."}
 {"id": "752aa82fd3f7", "at": "2026-09-02T22:11:05+00:00", "kind": "cycle_start", "market_open": false, "equity": "100150.54", "open_positions": 1, "expiry": "2026-09-04"}
 {"id": "55d927a70562", "at": "2026-09-02T22:11:05+00:00", "kind": "abstain", "reason": "market closed", "next_open": "2026-09-03T09:30:00-04:00"}
+{"id": "510421ed033b", "at": "2026-09-03T12:31:51+00:00", "kind": "cycle_start", "market_open": false, "equity": "100149.93", "open_positions": 1, "expiry": "2026-09-10"}
+{"id": "0e12c6db13c5", "at": "2026-09-03T12:31:51+00:00", "kind": "abstain", "reason": "market closed", "next_open": "2026-09-03T09:30:00-04:00"}

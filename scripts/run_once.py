@@ -18,6 +18,7 @@ from agent.challenger import challenge  # noqa: E402
 from agent.broker import AlpacaPaper  # noqa: E402
 from agent.positions import assemble  # noqa: E402
 from agent.regime import read_regime  # noqa: E402
+from agent.var import simulate  # noqa: E402
 from agent.execution import AlpacaCLIExecutor, ExecutionError, Leg  # noqa: E402
 from agent.ledger import DecisionLedger  # noqa: E402
 from dataclasses import replace  # noqa: E402
@@ -272,6 +273,41 @@ def main() -> int:
         desired = reduced
     proposal = replace(proposal, quantity=desired)
     print(f"budget        ${budget:,.2f} -> want {desired}x (${per_contract_loss:,.2f}/contract)")
+
+    # --- risk officer: simulate the trade's distribution before allowing it ---
+    # Max loss says what can be lost; it says nothing about how likely that is.
+    # A trade whose expected value is negative is refused however much premium
+    # it appears to pay.
+    var_report = simulate(
+        spot=spot,
+        short_strike=short.strike,
+        long_strike=long_leg.strike,
+        credit=proposal.credit,
+        quantity=desired,
+        days_to_expiry=max((date.fromisoformat(expiry) - date.today()).days, 1),
+        annual_vol=regime.realised_vol,
+        is_put=(side == "put"),
+    )
+    print(f"risk officer  {var_report.summary}")
+    ledger.record(
+        "var_report",
+        paths=var_report.paths,
+        probability_of_profit=round(var_report.probability_of_profit, 4),
+        expected_pnl=round(var_report.expected_pnl, 2),
+        var_95=round(var_report.var_95, 2),
+        expected_shortfall=round(var_report.expected_shortfall, 2),
+        max_loss=round(var_report.max_loss, 2),
+    )
+    if var_report.expected_pnl <= 0:
+        ledger.record(
+            "abstain",
+            reason=(
+                f"negative expected value: E[P&L] ${var_report.expected_pnl:,.0f} "
+                f"at {var_report.probability_of_profit:.0%} probability of profit"
+            ),
+        )
+        print("\nABSTAIN — the risk officer computes negative expected value")
+        return 0
 
     gate = RiskGate(limits)
     verdict = gate.evaluate(

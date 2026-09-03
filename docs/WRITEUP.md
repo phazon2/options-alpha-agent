@@ -63,6 +63,21 @@ records that it did. Exits follow the managed-winner rule — take profit at hal
 the credit, stop at 2.5× the credit received — rather than holding to expiry for
 the last few cents of premium.
 
+**A risk officer prices the distribution before the gate rules.** Max loss says
+what can be lost; it says nothing about how likely that is. A 20,000-path Monte
+Carlo simulates the underlying to expiry at realised volatility and reports
+probability of profit, 95% VaR and expected shortfall. A trade with negative
+expected value is refused however much premium it appears to pay. On the 17-lot
+the agent actually traded it computed **E[P&L] +$145 at 92% probability of
+profit**; the realised outcome was **+$153**. No simulated path breaches the
+structural max loss, because a vertical cannot exceed it.
+
+Two limits worth stating: geometric Brownian motion has thinner tails than real
+equity returns, so the true tail is worse — but a vertical caps the loss by
+construction, which bounds the understatement. And realised volatility is a
+backward-looking estimate; with implied below realised all week, the simulation
+is if anything pessimistic.
+
 **The gate refuses trades, and the refusals are published.** Of 9 decisions,
 4 were vetoed on credit-to-width. It was never loosened to let one through.
 

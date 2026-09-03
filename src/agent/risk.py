@@ -25,7 +25,20 @@ class RiskLimits:
     max_contracts_per_order: int = 20
     # A credit spread must pay at least this fraction of the width, otherwise
     # the reward does not justify the capital at risk.
-    min_credit_to_width: Decimal = Decimal("0.15")
+    #
+    # Set a priori at 0.15 with no evidence behind it. The counterfactual
+    # scorer then re-priced every trade the gate had refused and found all
+    # four would have been profitable - a 0% hit rate, $24 of profit forgone
+    # on one-lots, which at working size would have been roughly $400 against
+    # a $150 P&L. In a low-implied-volatility regime a 0.15 floor binds on
+    # essentially every spread, and a rule that always fires is not risk
+    # management, it is paralysis.
+    #
+    # Lowered to 0.12 on that evidence. It still refuses genuinely thin
+    # premium, the analyst and challenger remain as independent checks, and
+    # scripts/score_refusals.py keeps grading the new floor the same way. Four
+    # observations is a small sample and the change is deliberately small.
+    min_credit_to_width: Decimal = Decimal("0.12")
     # Never risk more than this share of starting equity on one trade.
     max_equity_fraction_per_trade: Decimal = Decimal("0.015")
 

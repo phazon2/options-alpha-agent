@@ -38,7 +38,11 @@ UNDERLYING = "SPY"
 # richest but gamma risk is worst — the challenger's standing objection — so
 # the agent also looks a week or two ahead, where the credit is larger and an
 # adverse day is survivable, and lets the credit-to-width comparison decide.
-CANDIDATE_DTE = (2, 3, 7, 9, 14)
+# 1 DTE included deliberately. Sweeping the chain on 3 September, no width or
+# delta at 7 DTE had positive expected value, while every structure at 1 DTE
+# did: at one day a sigma on SPY is about $4.40, so a strike eight points out
+# sits near two sigma and the premium finally clears the breach probability.
+CANDIDATE_DTE = (1, 2, 3, 7)
 
 
 def candidate_expiries(today: date, broker, underlying: str) -> list[str]:
@@ -133,10 +137,17 @@ def main() -> int:
         return 0
     print(f"side          {side} credit spread (trend argues this way)")
 
-    # --- scan every listed expiry and keep the best credit per unit of width ---
+    # --- scan every expiry and keep the best EXPECTED VALUE, not the best ratio ---
+    # Credit-to-width is a proxy and it lies. On 3 September it picked a 7-day
+    # spread at 0.18 over a 1-day spread at 0.15, and the 7-day structure had
+    # negative expected value at every width and delta while every 1-day one
+    # was positive. Rank by what the risk officer computes, which is the thing
+    # actually being maximised.
     selector = select_put_credit_spread if side == "put" else select_call_credit_spread
     best = None
     for candidate_expiry in expiries:
+        cand_dte = max((date.fromisoformat(candidate_expiry) - date.today()).days, 1)
+        cand_vol = regime.realised_vol_over(cand_dte)
         chain = broker.option_chain(
             UNDERLYING,
             expiration_date=candidate_expiry,
@@ -152,28 +163,43 @@ def main() -> int:
             found = selector(candidates, UNDERLYING)
         except NoTradeFound:
             continue
-        ratio = found[0].credit / found[0].width
-        dte = (date.fromisoformat(candidate_expiry) - date.today()).days
-        print(
-            f"  {candidate_expiry} ({dte}d)  ${found[0].credit} on ${found[0].width} "
-            f"wide = {ratio:.1%}"
+        prop, sh, lg = found
+        probe = simulate(
+            spot=spot,
+            short_strike=sh.strike,
+            long_strike=lg.strike,
+            credit=prop.credit,
+            quantity=20,
+            days_to_expiry=cand_dte,
+            annual_vol=cand_vol,
+            is_put=(side == "put"),
         )
-        if best is None or ratio > best[0]:
-            best = (ratio, candidate_expiry, found)
+        print(
+            f"  {candidate_expiry} ({cand_dte}d)  ${prop.credit} on ${prop.width} wide"
+            f"  PoP {probe.probability_of_profit:.0%}  E[P&L] {probe.expected_pnl:+,.0f}"
+            f"  {'edge' if probe.edge_is_significant else 'noise'}"
+        )
+        if not probe.edge_is_significant:
+            continue
+        if best is None or probe.expected_pnl > best[0]:
+            best = (probe.expected_pnl, candidate_expiry, found)
 
     if best is None:
-        ledger.record("abstain", reason="no expiry offered a workable spread")
-        print("\nABSTAIN — no expiry offered a workable spread")
+        ledger.record(
+            "abstain",
+            reason="no expiry offered a structure with a significant edge",
+            expiries=expiries,
+        )
+        print("\nABSTAIN — no expiry offered a structure with a significant edge")
         return 0
 
     _, expiry, (proposal, short, long_leg) = best
     print(
-        f"best          {expiry}: sell {short.symbol} (delta {short.delta:.3f}) "
+        f"chose         {expiry}: sell {short.symbol} (delta {short.delta:.3f}) "
         f"/ buy {long_leg.symbol}"
         f"\n              width ${proposal.width}  credit ${proposal.credit}"
     )
 
-    # --- analyst: proposes only, and may decline ---
     dte = max((date.fromisoformat(expiry) - date.today()).days, 1)
     matched_vol = regime.realised_vol_over(dte)
     if short.implied_volatility is not None:
@@ -291,10 +317,12 @@ def main() -> int:
     desired = max(1, int(budget / per_contract_loss)) if per_contract_loss > 0 else 1
     if objection.size_multiplier < 1.0:
         reduced = max(1, int(desired * objection.size_multiplier))
-        print(
-            f"              challenger objection ({objection.severity}) cuts size "
-            f"{desired} -> {reduced}"
+        why = (
+            "challenger unreachable, check lost"
+            if objection.failed
+            else f"challenger objection ({objection.severity})"
         )
+        print(f"              {why} cuts size {desired} -> {reduced}")
         desired = reduced
     proposal = replace(proposal, quantity=desired)
     print(f"budget        ${budget:,.2f} -> want {desired}x (${per_contract_loss:,.2f}/contract)")

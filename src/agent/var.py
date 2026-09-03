@@ -187,3 +187,75 @@ def simulate_condor(
         max_loss=-(widest - credit_f) * scale,
         std_error=std_error,
     )
+
+
+@dataclass(frozen=True)
+class EdgeSensitivity:
+    """The same trade priced under two beliefs about future volatility.
+
+    Everything this agent earns depends on realised volatility coming in below
+    implied. That is the variance risk premium and it is a real, documented
+    phenomenon - but it is a bet, not arithmetic, and on any single trade it
+    can lose. Reporting expected value only under realised volatility hides
+    the assumption that carries the whole result.
+
+    So both are computed. Under implied volatility the option is by
+    construction priced at fair value, so expected value there is roughly the
+    negative of transaction costs: if a structure is profitable at implied it
+    is usually mispriced data rather than free money. What matters is the gap
+    between the two, and that the trade is only taken when the realised case
+    is clearly positive AND the implied case is survivable.
+    """
+
+    at_realised: VarReport
+    at_implied: VarReport
+    realised_vol: float
+    implied_vol: float
+
+    @property
+    def premium_vol_points(self) -> float:
+        return (self.implied_vol - self.realised_vol) * 100
+
+    @property
+    def depends_entirely_on_premium(self) -> bool:
+        """True when the trade only works if realised stays below implied."""
+        return self.at_realised.expected_pnl > 0 >= self.at_implied.expected_pnl
+
+    @property
+    def summary(self) -> str:
+        return (
+            f"E[P&L] {self.at_realised.expected_pnl:+,.0f} at realised "
+            f"{self.realised_vol * 100:.1f}% · "
+            f"{self.at_implied.expected_pnl:+,.0f} at implied "
+            f"{self.implied_vol * 100:.1f}% · "
+            f"premium {self.premium_vol_points:+.1f} vol pts"
+        )
+
+
+def sensitivity(
+    spot: float,
+    short_strike: Decimal,
+    long_strike: Decimal,
+    credit: Decimal,
+    quantity: int,
+    days_to_expiry: int,
+    realised_vol: float,
+    implied_vol: float,
+    is_put: bool = True,
+) -> EdgeSensitivity:
+    """Price the trade under both volatility beliefs."""
+    common = dict(
+        spot=spot,
+        short_strike=short_strike,
+        long_strike=long_strike,
+        credit=credit,
+        quantity=quantity,
+        days_to_expiry=days_to_expiry,
+        is_put=is_put,
+    )
+    return EdgeSensitivity(
+        at_realised=simulate(annual_vol=realised_vol, **common),
+        at_implied=simulate(annual_vol=max(implied_vol, 1e-6), **common),
+        realised_vol=realised_vol,
+        implied_vol=implied_vol,
+    )

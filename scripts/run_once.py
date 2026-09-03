@@ -18,7 +18,7 @@ from agent.challenger import challenge  # noqa: E402
 from agent.broker import AlpacaPaper  # noqa: E402
 from agent.positions import assemble  # noqa: E402
 from agent.regime import read_regime  # noqa: E402
-from agent.var import simulate  # noqa: E402
+from agent.var import sensitivity, simulate  # noqa: E402
 from agent.execution import AlpacaCLIExecutor, ExecutionError, Leg  # noqa: E402
 from agent.ledger import DecisionLedger  # noqa: E402
 from dataclasses import replace  # noqa: E402
@@ -342,6 +342,29 @@ def main() -> int:
         is_put=(side == "put"),
     )
     print(f"risk officer  {var_report.summary}")
+    sens = sensitivity(
+        spot=spot,
+        short_strike=short.strike,
+        long_strike=long_leg.strike,
+        credit=proposal.credit,
+        quantity=desired,
+        days_to_expiry=dte,
+        realised_vol=matched_vol,
+        implied_vol=short.implied_volatility or matched_vol,
+        is_put=(side == "put"),
+    )
+    print(f"  sensitivity {sens.summary}")
+    if sens.depends_entirely_on_premium:
+        print("              this trade only works if realised stays under implied")
+    ledger.record(
+        "edge_sensitivity",
+        expected_at_realised=round(sens.at_realised.expected_pnl, 2),
+        expected_at_implied=round(sens.at_implied.expected_pnl, 2),
+        realised_vol=round(sens.realised_vol, 4),
+        implied_vol=round(sens.implied_vol, 4),
+        premium_vol_points=round(sens.premium_vol_points, 2),
+        depends_entirely_on_premium=sens.depends_entirely_on_premium,
+    )
     ledger.record(
         "var_report",
         paths=var_report.paths,

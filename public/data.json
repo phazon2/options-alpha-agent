@@ -177,8 +177,16 @@
       "equity": 99123.83
     },
     {
-      "at": "2026-09-03T15:56:59+00:00",
-      "equity": 99123.63
+      "at": "2026-09-03T15:56:30+00:00",
+      "equity": 99119.63
+    },
+    {
+      "at": "2026-09-03T16:03:46+00:00",
+      "equity": 99168.63
+    },
+    {
+      "at": "2026-09-03T16:04:57+00:00",
+      "equity": 99221.63
     }
   ],
   "frontier": {
@@ -379,8 +387,8 @@
       "refusals_correct": 0,
       "refusals_costly": 4,
       "loss_avoided": "0",
-      "profit_forgone": "92.000",
-      "net_of_refusing": "-92.000",
+      "profit_forgone": "104.000",
+      "net_of_refusing": "-104.000",
       "hit_rate": "0%"
     },
     "refusals": [
@@ -393,7 +401,7 @@
         "width": "5",
         "reason": "credit/width 0.100 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "45.000",
+        "pnl_if_taken": "47.000",
         "verdict": "refusal costly"
       },
       {
@@ -405,7 +413,7 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "9.000",
+        "pnl_if_taken": "12.000",
         "verdict": "refusal costly"
       },
       {
@@ -417,7 +425,7 @@
         "width": "2",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "26.000",
+        "pnl_if_taken": "29.000",
         "verdict": "refusal costly"
       },
       {
@@ -429,27 +437,27 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "12.000",
+        "pnl_if_taken": "16.000",
         "verdict": "refusal costly"
       }
     ]
   },
-  "generated_at": "2026-09-03T15:56:59+00:00",
+  "generated_at": "2026-09-03T16:04:57+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
-    "equity": "99123.63",
+    "equity": "99221.63",
     "cash": "101268.63",
     "starting_equity": "100000",
-    "pnl": "-876.37",
-    "pnl_pct": "-0.876",
+    "pnl": "-778.37",
+    "pnl_pct": "-0.778",
     "options_level": 3,
-    "unrealized": "-1074.0028"
+    "unrealized": "-976.0028"
   },
   "counters": {
     "decisions": 18,
     "approved": 14,
     "vetoed": 4,
-    "abstained": 38,
+    "abstained": 39,
     "orders_submitted": 14,
     "orders_filled": 14,
     "open_legs": 3
@@ -459,22 +467,22 @@
       "symbol": "SPY260910C00777000",
       "qty": "-49",
       "entry": "1.061428",
-      "current": "2.46",
-      "unrealized": "-6853.0028"
+      "current": "2.35",
+      "unrealized": "-6314.0028"
     },
     {
       "symbol": "SPY260910C00778000",
       "qty": "45",
       "entry": "0.86",
-      "current": "2.05",
-      "unrealized": "5355"
+      "current": "1.96",
+      "unrealized": "4950"
     },
     {
       "symbol": "SPY260910C00779000",
       "qty": "4",
       "entry": "0.65",
-      "current": "1.71",
-      "unrealized": "424"
+      "current": "1.62",
+      "unrealized": "388"
     }
   ],
   "orders": [
@@ -920,76 +928,6 @@
     }
   ],
   "ledger": [
-    {
-      "id": "900392c88ce1",
-      "at": "2026-09-03T14:49:46+00:00",
-      "kind": "regime",
-      "regime": "neutral",
-      "reason": "spot 768.73 mixed against SMAs (766.33/768.94)",
-      "spot": 768.73,
-      "sma_short": 766.328,
-      "sma_long": 768.93625,
-      "return_20d": -0.00572973252625586,
-      "realised_vol": 0.1103799414996553
-    },
-    {
-      "id": "704c55f434cb",
-      "at": "2026-09-03T14:50:01+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": true,
-      "confidence": 0.6,
-      "target_delta": 0.2,
-      "rationale": "VRP is positive at 1.33 vol points (IV 8.69% vs matched RV 7.36%), credit-to-width of 0.19 clears the gate, and the 0.20 delta short strike sits ~1.1% OTM with neutral regime. Premium is thin but harvestable.",
-      "invalidated_if": "SPY closes at or above 777 on any trading day before 2026-09-10 expiry",
-      "clamped": [],
-      "failed": false
-    },
-    {
-      "id": "9ba4fb93d769",
-      "at": "2026-09-03T14:50:29+00:00",
-      "kind": "challenge",
-      "refuted": true,
-      "severity": "fatal",
-      "argument": "Short strike is <1 sigma OTM (1.1% vs ~1.2% 7-day move at 8.69% IV), and the invalidation only triggers on a close at 777\u2014by then the spread is already at max loss, so the stop protects nothing.",
-      "failed": false,
-      "blocks": true,
-      "size_multiplier": 1.0
-    },
-    {
-      "id": "d8f7cc23fb74",
-      "at": "2026-09-03T14:50:29+00:00",
-      "kind": "abstain",
-      "reason": "challenger (fatal): Short strike is <1 sigma OTM (1.1% vs ~1.2% 7-day move at 8.69% IV), and the invalidation only triggers on a close at 777\u2014by then the spread is already at max loss, so the stop protects nothing."
-    },
-    {
-      "id": "344484ef6749",
-      "at": "2026-09-03T14:57:16+00:00",
-      "kind": "position_review",
-      "short": "SPY260910C00777000",
-      "long": "SPY260910C00778000",
-      "quantity": 36,
-      "credit": "0.202499",
-      "cost_to_close": "0.21",
-      "captured": "-0.037042",
-      "open_pnl": "-27.003600",
-      "action": "hold",
-      "reason": "captured -4%, below the 50% target"
-    },
-    {
-      "id": "bc47b6f0a721",
-      "at": "2026-09-03T14:57:16+00:00",
-      "kind": "position_review",
-      "short": "SPY260910P00760000",
-      "long": "SPY260910P00757000",
-      "quantity": 4,
-      "credit": "0.52",
-      "cost_to_close": "0.44",
-      "captured": "0.15",
-      "open_pnl": "32.00",
-      "action": "hold",
-      "reason": "captured 15%, below the 50% target"
-    },
     {
       "id": "3817006d7568",
       "at": "2026-09-03T14:57:17+00:00",
@@ -1646,6 +1584,72 @@
       "at": "2026-09-03T15:56:57+00:00",
       "kind": "abstain",
       "reason": "analyst declined: "
+    },
+    {
+      "id": "29b54947c6b6",
+      "at": "2026-09-03T16:03:46+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "99168.63",
+      "open_positions": 0,
+      "expiry": "2026-09-10"
+    },
+    {
+      "id": "a0a5585b571f",
+      "at": "2026-09-03T16:03:47+00:00",
+      "kind": "regime",
+      "regime": "neutral",
+      "reason": "spot 773.13 mixed against SMAs (767.21/769.16)",
+      "spot": 773.13,
+      "sma_short": 767.208,
+      "sma_long": 769.15625,
+      "return_20d": -3.8801800403498454e-05,
+      "realised_vol": 0.11248341129875229
+    },
+    {
+      "id": "f062b855fa34",
+      "at": "2026-09-03T16:04:07+00:00",
+      "kind": "analyst_view",
+      "model": "zai-org/GLM-5.2",
+      "trade": true,
+      "confidence": 0.62,
+      "target_delta": 0.21,
+      "rationale": "Variance risk premium is positive at 2.17 vol points with IV 0.112 vs matched realised 0.0903, credit-to-width of 0.18 is solid, and the short delta of 0.21 sits comfortably in range. Regime is neutral, not bearish, and realised vol is not spiking.",
+      "invalidated_if": "SPY closes at or below 764.00 on any trading day before 2026-09-10 expiry",
+      "clamped": [],
+      "failed": false
+    },
+    {
+      "id": "4cec72935e18",
+      "at": "2026-09-03T16:04:56+00:00",
+      "kind": "challenge",
+      "refuted": true,
+      "severity": "serious",
+      "argument": "Short strike at 764 is only 0.76 SD below spot\u2014roughly 40% touch probability in 7 days\u2014yet the 0.18 credit risks 0.82 (4.6:1). Close-only invalidation won't protect against intraday tests that force a bad exit.",
+      "failed": false,
+      "blocks": false,
+      "size_multiplier": 0.5
+    },
+    {
+      "id": "251821318f61",
+      "at": "2026-09-03T16:04:56+00:00",
+      "kind": "var_report",
+      "paths": 20000,
+      "probability_of_profit": 0.7909,
+      "expected_pnl": -18.82,
+      "var_95": -738.0,
+      "expected_shortfall": -738.0,
+      "std_error": 2.52,
+      "edge_significant": false,
+      "max_loss": -738.0
+    },
+    {
+      "id": "e684b3d0f87e",
+      "at": "2026-09-03T16:04:56+00:00",
+      "kind": "abstain",
+      "reason": "expected value not distinguishable from zero: E[P&L] $-19 against a standard error of $3 over 20,000 paths",
+      "expected_pnl": -18.82,
+      "std_error": 2.52
     }
   ]
 }

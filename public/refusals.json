@@ -5,8 +5,8 @@
     "refusals_correct": 0,
     "refusals_costly": 4,
     "loss_avoided": "0",
-    "profit_forgone": "109.000",
-    "net_of_refusing": "-109.000",
+    "profit_forgone": "101.000",
+    "net_of_refusing": "-101.000",
     "hit_rate": "0%"
   },
   "refusals": [
@@ -19,7 +19,7 @@
       "width": "5",
       "reason": "credit/width 0.100 below minimum 0.15",
       "refused_by": "risk gate",
-      "pnl_if_taken": "52.000",
+      "pnl_if_taken": "50.000",
       "verdict": "refusal costly"
     },
     {
@@ -31,7 +31,7 @@
       "width": "1",
       "reason": "credit/width 0.140 below minimum 0.15",
       "refused_by": "risk gate",
-      "pnl_if_taken": "14.000",
+      "pnl_if_taken": "16.000",
       "verdict": "refusal costly"
     },
     {
@@ -43,7 +43,7 @@
       "width": "2",
       "reason": "credit/width 0.140 below minimum 0.15",
       "refused_by": "risk gate",
-      "pnl_if_taken": "29.000",
+      "pnl_if_taken": "25.000",
       "verdict": "refusal costly"
     },
     {
@@ -55,7 +55,7 @@
       "width": "1",
       "reason": "credit/width 0.140 below minimum 0.15",
       "refused_by": "risk gate",
-      "pnl_if_taken": "14.000",
+      "pnl_if_taken": "10.000",
       "verdict": "refusal costly"
     }
   ]

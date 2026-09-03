@@ -14,7 +14,7 @@ long before max loss.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from decimal import Decimal
 from typing import Any, Literal
 
@@ -43,7 +43,12 @@ class OptionLeg:
 @dataclass(frozen=True)
 class Spread:
     short: OptionLeg
-    long: OptionLeg
+    long: OptionLeg | None
+
+    @property
+    def is_naked(self) -> bool:
+        """A short with no long against it. Not defined risk."""
+        return self.long is None
 
     @property
     def quantity(self) -> int:
@@ -51,11 +56,15 @@ class Spread:
 
     @property
     def width(self) -> Decimal:
+        if self.long is None:
+            return Decimal("0")
         return abs(self.short.strike - self.long.strike)
 
     @property
     def credit_received(self) -> Decimal:
         """Per contract, from the entry prices actually filled."""
+        if self.long is None:
+            return self.short.entry
         return self.short.entry - self.long.entry
 
     @property
@@ -75,6 +84,11 @@ class Spread:
         return (self.credit_received - self.cost_to_close) * 100 * self.quantity
 
     def decide(self) -> tuple[Action, str]:
+        if self.is_naked:
+            return "stop_out", (
+                f"{self.quantity} uncovered short contracts - not defined risk, "
+                f"close immediately"
+            )
         if self.credit_received <= 0:
             return "hold", "entry credit not positive; nothing to manage against"
         captured = self.captured_fraction
@@ -144,7 +158,7 @@ def assemble(positions: list[dict[str, Any]]) -> list[Spread]:
             if leg.root == short.root
             and leg.expiry == short.expiry
             and leg.kind == short.kind
-            and abs(leg.qty) == abs(short.qty)
+            and abs(leg.qty) > 0
             and (
                 leg.strike < short.strike
                 if short.kind == "P"
@@ -153,8 +167,31 @@ def assemble(positions: list[dict[str, Any]]) -> list[Spread]:
         ]
         if not candidates:
             continue
-        # Nearest strike is the one that was bought against this short.
-        partner = min(candidates, key=lambda leg: abs(leg.strike - short.strike))
-        longs.remove(partner)
-        spreads.append(Spread(short=short, long=partner))
+
+        # Quantities need not match. Partial fills and repeated entries leave a
+        # short of 49 against longs of 45 and 4, and requiring equality meant
+        # none of it paired: the book reported zero open spreads while carrying
+        # $5,300 of risk, so the position limit never bound and the exit rules
+        # never saw the position. Consume longs nearest-strike-first until the
+        # short is covered.
+        remaining = abs(short.qty)
+        for partner in sorted(candidates, key=lambda leg: abs(leg.strike - short.strike)):
+            if remaining <= 0:
+                break
+            take = min(remaining, abs(partner.qty))
+            spreads.append(
+                Spread(
+                    short=replace(short, qty=-take),
+                    long=replace(partner, qty=take),
+                )
+            )
+            remaining -= take
+            leftover = abs(partner.qty) - take
+            longs.remove(partner)
+            if leftover > 0:
+                longs.append(replace(partner, qty=leftover))
+        if remaining > 0:
+            # Uncovered short contracts are not defined risk and must never be
+            # silently folded into a spread.
+            spreads.append(Spread(short=replace(short, qty=-remaining), long=None))
     return spreads

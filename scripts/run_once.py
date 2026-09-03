@@ -174,12 +174,28 @@ def main() -> int:
     )
 
     # --- analyst: proposes only, and may decline ---
+    dte = max((date.fromisoformat(expiry) - date.today()).days, 1)
+    matched_vol = regime.realised_vol_over(dte)
+    if short.implied_volatility is not None:
+        vrp = (short.implied_volatility - matched_vol) * 100
+        print(
+            f"vol           IV {short.implied_volatility*100:.2f}% vs {dte}d realised "
+            f"{matched_vol*100:.2f}% -> VRP {vrp:+.2f} vol pts "
+            f"(long window {regime.realised_vol*100:.2f}%)"
+        )
     analyst_context = {
         "underlying": UNDERLYING,
         "spot": regime.spot,
         "regime": regime.regime,
         "regime_reason": regime.reason,
-        "realised_vol_annualised": round(regime.realised_vol, 4),
+        "implied_vol_short_leg": short.implied_volatility,
+        "realised_vol_matched_to_expiry": round(matched_vol, 4),
+        "realised_vol_long_window": round(regime.realised_vol, 4),
+        "variance_risk_premium_vol_points": (
+            round((short.implied_volatility - matched_vol) * 100, 2)
+            if short.implied_volatility is not None
+            else None
+        ),
         "return_20d_pct": round(regime.return_20d * 100, 2),
         "sma_5": round(regime.sma_short, 2),
         "sma_20": round(regime.sma_long, 2),
@@ -206,13 +222,22 @@ def main() -> int:
             f"profits if it stays below."
         ),
         "note": (
+            "Compare implied against realised_vol_matched_to_expiry, NOT the "
+            "long window: a 7-day option's premium is not judged against two "
+            "months of realised volatility. variance_risk_premium_vol_points "
+            "is already the correct difference. "
             "best_available is the actual spread the agent will place, already "
             "chosen as the best credit-per-width across every listed expiry. "
             "These are live quotes, not estimates - judge the spread shown "
             "rather than speculating about what the credit might be. The risk "
             "gate separately enforces a 0.15 credit-to-width minimum."
         ),
-        "risk_caps": {"max_loss_per_trade_usd": 1500, "min_credit_to_width": 0.15},
+        # Read from the live limits. Hardcoding these meant the analyst was
+        # rejecting trades against a floor the gate had already moved off.
+        "risk_caps": {
+            "max_loss_per_trade_usd": float(RiskLimits.from_env().max_loss_per_trade),
+            "min_credit_to_width": float(RiskLimits.from_env().min_credit_to_width),
+        },
     }
     view = consult(analyst_context)
     print(f"analyst       trade={view.trade} conf={view.confidence} delta={view.target_delta}")
@@ -285,7 +310,7 @@ def main() -> int:
         credit=proposal.credit,
         quantity=desired,
         days_to_expiry=max((date.fromisoformat(expiry) - date.today()).days, 1),
-        annual_vol=regime.realised_vol,
+        annual_vol=matched_vol,
         is_put=(side == "put"),
     )
     print(f"risk officer  {var_report.summary}")
@@ -296,17 +321,22 @@ def main() -> int:
         expected_pnl=round(var_report.expected_pnl, 2),
         var_95=round(var_report.var_95, 2),
         expected_shortfall=round(var_report.expected_shortfall, 2),
+        std_error=round(var_report.std_error, 2),
+        edge_significant=var_report.edge_is_significant,
         max_loss=round(var_report.max_loss, 2),
     )
-    if var_report.expected_pnl <= 0:
+    if not var_report.edge_is_significant:
         ledger.record(
             "abstain",
             reason=(
-                f"negative expected value: E[P&L] ${var_report.expected_pnl:,.0f} "
-                f"at {var_report.probability_of_profit:.0%} probability of profit"
+                f"expected value not distinguishable from zero: E[P&L] "
+                f"${var_report.expected_pnl:,.0f} against a standard error of "
+                f"${var_report.std_error:,.0f} over {var_report.paths:,} paths"
             ),
+            expected_pnl=round(var_report.expected_pnl, 2),
+            std_error=round(var_report.std_error, 2),
         )
-        print("\nABSTAIN — the risk officer computes negative expected value")
+        print("\nABSTAIN — the edge is not distinguishable from simulation noise")
         return 0
 
     gate = RiskGate(limits)

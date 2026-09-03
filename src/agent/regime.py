@@ -29,8 +29,30 @@ class RegimeRead:
     sma_short: float
     sma_long: float
     return_20d: float
-    realised_vol: float
+    realised_vol: float          # long window, for regime context
     reason: str
+    closes: tuple[float, ...] = ()
+
+    def realised_vol_over(self, days: int) -> float:
+        """Realised volatility over a window matched to a trade's horizon.
+
+        Comparing a seven-day option's implied volatility against two months
+        of realised volatility is a tenor mismatch, and it is not a harmless
+        one: a volatile stretch six weeks ago inflates the long window and
+        makes present-day premium look worthless. The variance risk premium
+        is only meaningful measured over comparable horizons.
+        """
+        window = self.closes[-(max(days, 2) + 1):]
+        if len(window) < 3:
+            return self.realised_vol
+        rets = [
+            window[i] / window[i - 1] - 1.0
+            for i in range(1, len(window))
+            if window[i - 1]
+        ]
+        if len(rets) < 2:
+            return self.realised_vol
+        return pstdev(rets) * (252 ** 0.5)
 
     @property
     def allows_put_credit_spread(self) -> bool:
@@ -70,6 +92,7 @@ def read_regime(
         return RegimeRead(
             "neutral", 0.0, 0.0, 0.0, 0.0, 0.0,
             f"only {len(closes)} daily closes available; defaulting to neutral",
+            tuple(closes),
         )
 
     spot = closes[-1]
@@ -99,4 +122,4 @@ def read_regime(
         regime = "neutral"
         reason = f"spot {spot:.2f} mixed against SMAs ({sma_s:.2f}/{sma_l:.2f})"
 
-    return RegimeRead(regime, spot, sma_s, sma_l, ret_20, vol, reason)
+    return RegimeRead(regime, spot, sma_s, sma_l, ret_20, vol, reason, tuple(closes))

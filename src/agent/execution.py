@@ -152,6 +152,26 @@ class AlpacaCLIExecutor:
         _, _, payload = self._run_json(["position", "list"])
         return payload if isinstance(payload, list) else []
 
+    def open_orders(self) -> list[dict[str, Any]]:
+        _, _, payload = self._run_json(["order", "list", "--status", "open"])
+        return payload if isinstance(payload, list) else payload.get("orders", [])
+
+    def cancel(self, order_id: str) -> None:
+        """Cancel by id.
+
+        The endpoint answers 204 with no body, so this reads the exit status
+        rather than parsing output. An order that has already filled or been
+        cancelled answers 422, which is not a failure worth raising - the
+        intent (that order should not be working) is already satisfied.
+        """
+        try:
+            self._run(["order", "cancel", "--order-id", order_id])
+        except ExecutionError as exc:
+            text = str(exc).lower()
+            if any(k in text for k in ("404", "422", "not found", "not cancelable")):
+                return
+            raise
+
     # ---- write path ---------------------------------------------------
     def submit_multileg(
         self,

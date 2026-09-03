@@ -43,6 +43,20 @@ class VarReport:
     expected_shortfall: float  # mean of the worst 5%, negative
     worst_case: float
     max_loss: float
+    std_error: float = 0.0
+
+    @property
+    def edge_is_significant(self) -> bool:
+        """Is the expected value distinguishable from zero?
+
+        A simulation returns a number whatever you feed it, and +$4 on $700 of
+        risk is not an edge - it is noise wearing a plus sign. With 20,000
+        paths the standard error of the mean is computable, so the test is
+        whether the expectation clears twice it rather than whether it merely
+        rounds positive. This also absorbs some of the optimism in using GBM,
+        whose tails are thinner than the market's.
+        """
+        return self.expected_pnl > 2.0 * self.std_error
 
     @property
     def summary(self) -> str:
@@ -50,7 +64,8 @@ class VarReport:
             f"PoP {self.probability_of_profit:.0%} · "
             f"E[P&L] ${self.expected_pnl:+,.0f} · "
             f"VaR95 ${self.var_95:,.0f} · "
-            f"ES ${self.expected_shortfall:,.0f}"
+            f"ES ${self.expected_shortfall:,.0f} · "
+            f"SE ±${self.std_error:,.0f}"
         )
 
 
@@ -96,6 +111,10 @@ def simulate(
         cost = _spread_value_at_expiry(terminal, short_f, long_f, is_put)
         outcomes.append((credit_f - cost) * scale)
 
+    mean = sum(outcomes) / len(outcomes)
+    variance = sum((o - mean) ** 2 for o in outcomes) / max(len(outcomes) - 1, 1)
+    std_error = math.sqrt(variance / len(outcomes))
+
     outcomes.sort()
     cut = max(1, int(0.05 * len(outcomes)))
     tail = outcomes[:cut]
@@ -105,9 +124,66 @@ def simulate(
     return VarReport(
         paths=paths,
         probability_of_profit=wins / len(outcomes),
-        expected_pnl=sum(outcomes) / len(outcomes),
+        expected_pnl=mean,
         var_95=outcomes[cut - 1],
         expected_shortfall=sum(tail) / len(tail),
         worst_case=outcomes[0],
         max_loss=-(width - credit_f) * scale,
+        std_error=std_error,
+    )
+
+
+def simulate_condor(
+    spot: float,
+    short_put: Decimal,
+    long_put: Decimal,
+    short_call: Decimal,
+    long_call: Decimal,
+    credit: Decimal,
+    quantity: int,
+    days_to_expiry: int,
+    annual_vol: float,
+    paths: int = DEFAULT_PATHS,
+    seed: int = 7,
+) -> VarReport:
+    """Distribution for a four-legged condor.
+
+    Both wings are priced along the same path, which is the point: only one
+    can finish in the money, so the loss is capped at the wider wing rather
+    than the sum of the two.
+    """
+    rng = random.Random(seed)
+    t = max(days_to_expiry, 1) / TRADING_DAYS
+    sigma = max(annual_vol, 1e-6)
+    drift = -0.5 * sigma * sigma * t
+    diffusion = sigma * math.sqrt(t)
+    scale = CONTRACT_MULTIPLIER * quantity
+    credit_f = float(credit)
+    sp, lp = float(short_put), float(long_put)
+    sc, lc = float(short_call), float(long_call)
+
+    outcomes = []
+    for _ in range(paths):
+        terminal = spot * math.exp(drift + diffusion * rng.gauss(0.0, 1.0))
+        cost = _spread_value_at_expiry(terminal, sp, lp, is_put=True)
+        cost += _spread_value_at_expiry(terminal, sc, lc, is_put=False)
+        outcomes.append((credit_f - cost) * scale)
+
+    mean = sum(outcomes) / len(outcomes)
+    variance = sum((o - mean) ** 2 for o in outcomes) / max(len(outcomes) - 1, 1)
+    std_error = math.sqrt(variance / len(outcomes))
+    outcomes.sort()
+    cut = max(1, int(0.05 * len(outcomes)))
+    tail = outcomes[:cut]
+    widest = max(sp - lp, lc - sc)
+
+    return VarReport(
+        paths=paths,
+        probability_of_profit=sum(1 for o in outcomes if o > 0) / len(outcomes),
+        expected_pnl=mean,
+        var_95=outcomes[cut - 1],
+        expected_shortfall=sum(tail) / len(tail),
+        worst_case=outcomes[0],
+        max_loss=-(widest - credit_f) * scale,
+        std_error=std_error,
     )

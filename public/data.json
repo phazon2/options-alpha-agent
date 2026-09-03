@@ -109,7 +109,19 @@
       "equity": 100156.88
     },
     {
-      "at": "2026-09-03T13:38:49+00:00",
+      "at": "2026-09-03T13:38:54+00:00",
+      "equity": 100156.88
+    },
+    {
+      "at": "2026-09-03T13:40:20+00:00",
+      "equity": 100156.88
+    },
+    {
+      "at": "2026-09-03T13:50:44+00:00",
+      "equity": 100156.88
+    },
+    {
+      "at": "2026-09-03T13:52:49+00:00",
       "equity": 100156.88
     }
   ],
@@ -366,7 +378,7 @@
       }
     ]
   },
-  "generated_at": "2026-09-03T13:38:49+00:00",
+  "generated_at": "2026-09-03T13:52:49+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
     "equity": "100156.88",
@@ -378,23 +390,63 @@
     "unrealized": "0"
   },
   "counters": {
-    "decisions": 10,
-    "approved": 6,
+    "decisions": 11,
+    "approved": 7,
     "vetoed": 4,
-    "abstained": 28,
-    "orders_submitted": 6,
+    "abstained": 30,
+    "orders_submitted": 7,
     "orders_filled": 4,
     "open_legs": 0
   },
   "positions": [],
   "orders": [
     {
+      "id": "14edc196-a387-4196-a7e0-5dc881b67d47",
+      "status": "new",
+      "qty": "4",
+      "limit_price": "-0.24",
+      "filled_avg_price": null,
+      "submitted_at": "2026-09-03T13:50:43.481813757Z",
+      "legs": [
+        {
+          "symbol": "SPY260910P00759000",
+          "side": "sell",
+          "filled_avg_price": null
+        },
+        {
+          "symbol": "SPY260910P00757000",
+          "side": "buy",
+          "filled_avg_price": null
+        }
+      ]
+    },
+    {
+      "id": "1d7dc2ee-1900-45cd-b506-bbac8b69c526",
+      "status": "canceled",
+      "qty": "4",
+      "limit_price": "-0.25",
+      "filled_avg_price": null,
+      "submitted_at": "2026-09-03T13:41:06.200679Z",
+      "legs": [
+        {
+          "symbol": "SPY260910P00759000",
+          "side": "sell",
+          "filled_avg_price": null
+        },
+        {
+          "symbol": "SPY260910P00757000",
+          "side": "buy",
+          "filled_avg_price": null
+        }
+      ]
+    },
+    {
       "id": "aa3d6fa5-02b1-4ae4-b12a-51b5893a9cf5",
       "status": "filled",
       "qty": "1",
       "limit_price": "0.06",
       "filled_avg_price": "0.06",
-      "submitted_at": "2026-09-03T13:30:28.443673875Z",
+      "submitted_at": "2026-09-03T13:30:28.443674Z",
       "legs": [
         {
           "symbol": "SPY260904P00758000",
@@ -470,194 +522,6 @@
     }
   ],
   "ledger": [
-    {
-      "id": "6c1b082dabec",
-      "at": "2026-09-02T18:25:00+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": false,
-      "confidence": 0.78,
-      "target_delta": 0.2,
-      "rationale": "SPY is below both its 5-day and 20-day SMAs with a negative 20-day return, giving a bearish lean inside the neutral label; with realised vol at just 11.1%, the variance risk premium is thin in absolute terms and credit per unit of width is unlikely to clear the 0.15 minimum without taking unacceptable delta risk.",
-      "invalidated_if": "SPY closes above 768.95 (20-day SMA) on a daily close, which would re-establish a more constructive regime for selling put premium.",
-      "clamped": [],
-      "failed": false
-    },
-    {
-      "id": "786a3f680c42",
-      "at": "2026-09-02T18:25:00+00:00",
-      "kind": "abstain",
-      "reason": "analyst declined: SPY is below both its 5-day and 20-day SMAs with a negative 20-day return, giving a bearish lean inside the neutral label; with realised vol at just 11.1%, the variance risk premium is thin in absolute terms and credit per unit of width is unlikely to clear the 0.15 minimum without taking unacceptable delta risk."
-    },
-    {
-      "id": "0efb03cb137e",
-      "at": "2026-09-02T18:25:23+00:00",
-      "kind": "cycle_start",
-      "market_open": true,
-      "equity": "100150.54",
-      "open_positions": 1,
-      "expiry": "2026-09-04"
-    },
-    {
-      "id": "e7b3b5cfc814",
-      "at": "2026-09-02T18:25:23+00:00",
-      "kind": "regime",
-      "regime": "neutral",
-      "reason": "spot 765.48 mixed against SMAs (766.89/768.95)",
-      "spot": 765.48,
-      "sma_short": 766.888,
-      "sma_long": 768.94925,
-      "return_20d": -0.004111157368859253,
-      "realised_vol": 0.1113204614669273
-    },
-    {
-      "id": "37d0bee36a47",
-      "at": "2026-09-02T18:25:46+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": false,
-      "confidence": 0.62,
-      "target_delta": 0.15,
-      "rationale": "SPY is below both SMA5 (766.89) and SMA20 (768.95) showing mild short-term weakness, RV at 11.13% implies a thin variance risk premium, and all available DTEs (2/7/9) carry high gamma risk for likely poor credit-to-width.",
-      "invalidated_if": "SPY closes above 768.95 (SMA20) before a new position is opened, which would signal reclaimed short-term strength.",
-      "clamped": [],
-      "failed": false
-    },
-    {
-      "id": "656f0aed6aaf",
-      "at": "2026-09-02T18:25:46+00:00",
-      "kind": "abstain",
-      "reason": "analyst declined: SPY is below both SMA5 (766.89) and SMA20 (768.95) showing mild short-term weakness, RV at 11.13% implies a thin variance risk premium, and all available DTEs (2/7/9) carry high gamma risk for likely poor credit-to-width."
-    },
-    {
-      "id": "73df1294e43d",
-      "at": "2026-09-02T18:26:32+00:00",
-      "kind": "cycle_start",
-      "market_open": true,
-      "equity": "100150.54",
-      "open_positions": 1,
-      "expiry": "2026-09-04"
-    },
-    {
-      "id": "20a66992da3d",
-      "at": "2026-09-02T18:26:33+00:00",
-      "kind": "regime",
-      "regime": "neutral",
-      "reason": "spot 765.49 mixed against SMAs (766.89/768.95)",
-      "spot": 765.49,
-      "sma_short": 766.89,
-      "sma_long": 768.94975,
-      "return_20d": -0.0040981473771856125,
-      "realised_vol": 0.11132371003950693
-    },
-    {
-      "id": "c8223a75b54c",
-      "at": "2026-09-02T18:26:45+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": false,
-      "confidence": 0.85,
-      "target_delta": 0.2,
-      "rationale": "Variance risk premium is negligible: short IV 11.56% vs realised 11.13% is only 0.4 vol points, well below the 2-4 point edge required. Additionally, the best available spread is a call credit spread, not the put credit spread the agent is mandated to trade.",
-      "invalidated_if": "Not applicable \u2014 no trade taken.",
-      "clamped": [],
-      "failed": false
-    },
-    {
-      "id": "fdc65d5fd327",
-      "at": "2026-09-02T18:26:45+00:00",
-      "kind": "abstain",
-      "reason": "analyst declined: Variance risk premium is negligible: short IV 11.56% vs realised 11.13% is only 0.4 vol points, well below the 2-4 point edge required. Additionally, the best available spread is a call credit spread, not the put credit spread the agent is mandated to trade."
-    },
-    {
-      "id": "243f37936bff",
-      "at": "2026-09-02T18:27:03+00:00",
-      "kind": "cycle_start",
-      "market_open": true,
-      "equity": "100150.54",
-      "open_positions": 1,
-      "expiry": "2026-09-04"
-    },
-    {
-      "id": "6d58315d9d0b",
-      "at": "2026-09-02T18:27:04+00:00",
-      "kind": "regime",
-      "regime": "neutral",
-      "reason": "spot 765.38 mixed against SMAs (766.87/768.94)",
-      "spot": 765.375,
-      "sma_short": 766.867,
-      "sma_long": 768.944,
-      "return_20d": -0.004247762281432088,
-      "realised_vol": 0.11128689351676987
-    },
-    {
-      "id": "d177cf30fd69",
-      "at": "2026-09-02T18:27:08+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": false,
-      "confidence": 0.82,
-      "target_delta": 0.18,
-      "rationale": "The best available spread is a call credit spread, not a put credit spread \u2014 the agent's mandate is to sell put credit spreads. Additionally, spot is below both SMA-5 and SMA-20 with a negative 20-day return, offering no directional edge for a put sale.",
-      "invalidated_if": "N/A \u2014 no trade is being placed.",
-      "clamped": [],
-      "failed": false
-    },
-    {
-      "id": "2c22b35ab1d5",
-      "at": "2026-09-02T18:27:08+00:00",
-      "kind": "abstain",
-      "reason": "analyst declined: The best available spread is a call credit spread, not a put credit spread \u2014 the agent's mandate is to sell put credit spreads. Additionally, spot is below both SMA-5 and SMA-20 with a negative 20-day return, offering no directional edge for a put sale."
-    },
-    {
-      "id": "5fa534ebb19b",
-      "at": "2026-09-02T18:27:10+00:00",
-      "kind": "cycle_start",
-      "market_open": true,
-      "equity": "100150.54",
-      "open_positions": 1,
-      "expiry": "2026-09-04"
-    },
-    {
-      "id": "55c3cc761cf8",
-      "at": "2026-09-02T18:27:11+00:00",
-      "kind": "regime",
-      "regime": "neutral",
-      "reason": "spot 765.38 mixed against SMAs (766.87/768.94)",
-      "spot": 765.375,
-      "sma_short": 766.867,
-      "sma_long": 768.944,
-      "return_20d": -0.004247762281432088,
-      "realised_vol": 0.11128689351676987
-    },
-    {
-      "id": "ab7920d13429",
-      "at": "2026-09-02T18:27:34+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": false,
-      "confidence": 0.85,
-      "target_delta": 0.2,
-      "rationale": "The best available spread is a call credit spread, not a put credit spread, and short IV (8.39%) is below realised vol (11.13%), meaning there is no variance risk premium to capture\u2014premium is too cheap to sell.",
-      "invalidated_if": "SPY closes above 770 and 7-day ATM put IV rises above 11.5% before the next session",
-      "clamped": [],
-      "failed": false
-    },
-    {
-      "id": "e75b2482311e",
-      "at": "2026-09-02T18:27:34+00:00",
-      "kind": "abstain",
-      "reason": "analyst declined: The best available spread is a call credit spread, not a put credit spread, and short IV (8.39%) is below realised vol (11.13%), meaning there is no variance risk premium to capture\u2014premium is too cheap to sell."
-    },
-    {
-      "id": "69bc7b1deca2",
-      "at": "2026-09-02T18:27:59+00:00",
-      "kind": "cycle_start",
-      "market_open": true,
-      "equity": "100149.54",
-      "open_positions": 1,
-      "expiry": "2026-09-04"
-    },
     {
       "id": "b0eae9afd33b",
       "at": "2026-09-02T18:27:59+00:00",
@@ -1115,6 +979,247 @@
       "at": "2026-09-03T13:37:37+00:00",
       "kind": "abstain",
       "reason": "challenger (fatal): challenger unavailable: reply was not valid JSON"
+    },
+    {
+      "id": "9a95b6a19c3b",
+      "at": "2026-09-03T13:38:54+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "100156.88",
+      "open_positions": 0,
+      "expiry": "2026-09-10"
+    },
+    {
+      "id": "d1807476b8dc",
+      "at": "2026-09-03T13:38:54+00:00",
+      "kind": "regime",
+      "regime": "neutral",
+      "reason": "spot 769.37 mixed against SMAs (766.46/768.97)",
+      "spot": 769.37,
+      "sma_short": 766.456,
+      "sma_long": 768.96825,
+      "return_20d": -0.004901960784313708,
+      "realised_vol": 0.11058204745548271
+    },
+    {
+      "id": "92e9aa6932c9",
+      "at": "2026-09-03T13:39:03+00:00",
+      "kind": "analyst_view",
+      "model": "zai-org/GLM-5.2",
+      "trade": true,
+      "confidence": 0.72,
+      "target_delta": 0.19,
+      "rationale": "IV of 12.08% vs 7-day realised of 7.54% gives a 4.54 vol-point variance risk premium worth harvesting; short delta of ~0.19 and credit-to-width of 0.125 both meet thresholds in a neutral regime.",
+      "invalidated_if": "SPY closes below 759 before 2026-09-10 expiry",
+      "clamped": [],
+      "failed": false
+    },
+    {
+      "id": "229ae665b1ad",
+      "at": "2026-09-03T13:39:58+00:00",
+      "kind": "challenge",
+      "refuted": true,
+      "severity": "fatal",
+      "argument": "Short strike 759 sits only ~0.8\u03c3 OTM (10.4 pts vs ~13-pt 1\u03c3 7-day move at 12% IV), yet 0.125 credit-to-width means 7:1 downside. Invalidation at the short strike itself fires at max loss\u2014zero management buffer.",
+      "failed": false,
+      "blocks": true,
+      "size_multiplier": 1.0
+    },
+    {
+      "id": "e5ade38f1c50",
+      "at": "2026-09-03T13:39:58+00:00",
+      "kind": "abstain",
+      "reason": "challenger (fatal): Short strike 759 sits only ~0.8\u03c3 OTM (10.4 pts vs ~13-pt 1\u03c3 7-day move at 12% IV), yet 0.125 credit-to-width means 7:1 downside. Invalidation at the short strike itself fires at max loss\u2014zero management buffer."
+    },
+    {
+      "id": "37ad98583f0f",
+      "at": "2026-09-03T13:40:20+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "100156.88",
+      "open_positions": 0,
+      "expiry": "2026-09-10"
+    },
+    {
+      "id": "781612b58d4b",
+      "at": "2026-09-03T13:40:21+00:00",
+      "kind": "regime",
+      "regime": "neutral",
+      "reason": "spot 769.74 mixed against SMAs (766.53/768.99)",
+      "spot": 769.735,
+      "sma_short": 766.529,
+      "sma_long": 768.9865,
+      "return_20d": -0.004429872212737274,
+      "realised_vol": 0.11071334533674677
+    },
+    {
+      "id": "f01873ac3c9e",
+      "at": "2026-09-03T13:40:24+00:00",
+      "kind": "analyst_view",
+      "model": "zai-org/GLM-5.2",
+      "trade": true,
+      "confidence": 0.6,
+      "target_delta": 0.19,
+      "rationale": "IV of 12.06% vs 7-day realised of 7.66% gives a 4.4 vol-point variance risk premium worth harvesting; credit-to-width of 0.125 clears the 0.12 minimum and short delta of 0.19 is in the target zone.",
+      "invalidated_if": "SPY closes below 759 before 2026-09-10 expiry",
+      "clamped": [],
+      "failed": false
+    },
+    {
+      "id": "18cdb57e5115",
+      "at": "2026-09-03T13:41:05+00:00",
+      "kind": "challenge",
+      "refuted": true,
+      "severity": "serious",
+      "argument": "Credit-to-width of 0.125 barely clears the floor while the 759 short strike sits within one standard deviation of the 7-day expected move (~13 points). The invalidation\u2014closing below 759\u2014fires at the short strike itself, guaranteeing exit near max loss rather than before it.",
+      "failed": false,
+      "blocks": false,
+      "size_multiplier": 0.5
+    },
+    {
+      "id": "36d76d432efe",
+      "at": "2026-09-03T13:41:05+00:00",
+      "kind": "var_report",
+      "paths": 20000,
+      "probability_of_profit": 0.8696,
+      "expected_pnl": 7.97,
+      "var_95": -700.0,
+      "expected_shortfall": -700.0,
+      "std_error": 1.75,
+      "edge_significant": true,
+      "max_loss": -700.0
+    },
+    {
+      "id": "fb31692bc1ee",
+      "at": "2026-09-03T13:41:05+00:00",
+      "kind": "risk_verdict",
+      "approved": true,
+      "reasons": [],
+      "short": "SPY260910P00759000",
+      "long": "SPY260910P00757000",
+      "credit": "0.25",
+      "width": "2",
+      "max_loss": "700.00",
+      "quantity": 4,
+      "short_delta": -0.1911,
+      "short_iv": 0.1206,
+      "side": "put",
+      "expiry": "2026-09-10"
+    },
+    {
+      "id": "c951398f5010",
+      "at": "2026-09-03T13:41:05+00:00",
+      "kind": "order_submitted",
+      "dry_run": false,
+      "argv": [
+        "order",
+        "submit",
+        "--order-class",
+        "mleg",
+        "--qty",
+        "4",
+        "--type",
+        "limit",
+        "--limit-price",
+        "-0.25",
+        "--time-in-force",
+        "day",
+        "--legs",
+        "[{\"symbol\": \"SPY260910P00759000\", \"side\": \"sell\", \"position_intent\": \"sell_to_open\", \"ratio_qty\": \"1\"}, {\"symbol\": \"SPY260910P00757000\", \"side\": \"buy\", \"position_intent\": \"buy_to_open\", \"ratio_qty\": \"1\"}]"
+      ],
+      "order_id": "1d7dc2ee-1900-45cd-b506-bbac8b69c526",
+      "status": "pending_new",
+      "legs": [
+        {
+          "symbol": "SPY260910P00759000",
+          "side": "sell",
+          "position_intent": "sell_to_open",
+          "ratio_qty": "1"
+        },
+        {
+          "symbol": "SPY260910P00757000",
+          "side": "buy",
+          "position_intent": "buy_to_open",
+          "ratio_qty": "1"
+        }
+      ],
+      "max_loss": "700.00"
+    },
+    {
+      "id": "178c46856342",
+      "at": "2026-09-03T13:50:43+00:00",
+      "kind": "order_repriced",
+      "replaced": "1d7dc2ee-1900-45cd-b506-bbac8b69c526",
+      "order_id": "14edc196-a387-4196-a7e0-5dc881b67d47",
+      "was": "-0.25",
+      "now": "-0.24",
+      "age_seconds": 576
+    },
+    {
+      "id": "3ba5668292bc",
+      "at": "2026-09-03T13:50:44+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "100156.88",
+      "open_positions": 0,
+      "expiry": "2026-09-10"
+    },
+    {
+      "id": "e18629f450c6",
+      "at": "2026-09-03T13:50:45+00:00",
+      "kind": "regime",
+      "regime": "neutral",
+      "reason": "spot 769.64 mixed against SMAs (766.51/768.98)",
+      "spot": 769.64,
+      "sma_short": 766.51,
+      "sma_long": 768.98175,
+      "return_20d": -0.004552744580681889,
+      "realised_vol": 0.11067805389358391
+    },
+    {
+      "id": "3b5c8be3fe6c",
+      "at": "2026-09-03T13:51:44+00:00",
+      "kind": "analyst_view",
+      "model": "zai-org/GLM-5.2",
+      "trade": true,
+      "confidence": 0.65,
+      "target_delta": 0.2,
+      "rationale": "VRP of 4.17 vol points is available to harvest (IV 11.8% vs 7.63% realised-to-expiry), delta of 0.20 sits mid-range, and 0.15 credit clears the 0.12 minimum on a 1-wide spread.",
+      "invalidated_if": "SPY closes below 760 before expiry",
+      "clamped": [],
+      "failed": false
+    },
+    {
+      "id": "cf9b5f7dab61",
+      "at": "2026-09-03T13:52:47+00:00",
+      "kind": "challenge",
+      "refuted": true,
+      "severity": "serious",
+      "argument": "Short strike 760 is only ~1.25% OTM, well within the 7-day expected move of ~1.6% (12.6 pts), while spot sits below SMA20 with a negative 20d trend. The 0.15 credit gives 5.67:1 risk/reward and the invalidation condition is just 'short strike hit'\u2014no early warning at all.",
+      "failed": false,
+      "blocks": false,
+      "size_multiplier": 0.5
+    },
+    {
+      "id": "d70cbeccb066",
+      "at": "2026-09-03T13:52:47+00:00",
+      "kind": "var_report",
+      "paths": 20000,
+      "probability_of_profit": 0.8449,
+      "expected_pnl": 1.93,
+      "var_95": -680.0,
+      "expected_shortfall": -680.0,
+      "std_error": 1.98,
+      "edge_significant": false,
+      "max_loss": -680.0
+    },
+    {
+      "id": "700c0445118d",
+      "at": "2026-09-03T13:52:47+00:00",
+      "kind": "abstain",
+      "reason": "expected value not distinguishable from zero: E[P&L] $2 against a standard error of $2 over 20,000 paths",
+      "expected_pnl": 1.93,
+      "std_error": 1.98
     }
   ]
 }

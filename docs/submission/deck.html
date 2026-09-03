@@ -1,0 +1,128 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Options Alpha Agent</title>
+<style>
+:root{--bg:#0A0E14;--panel:#141922;--rule:#232B37;--ink:#F4F7FA;--ink2:#AAB4C2;--faint:#6A7585;
+ --acc:#4d94ff;--good:#31c48d;--bad:#f26a6a;--warn:#e0a33c;
+ --d:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;--m:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--d)}
+.slide{width:1600px;height:900px;padding:80px 96px;position:relative;overflow:hidden;
+ display:flex;flex-direction:column;gap:22px;page-break-after:always;background:var(--bg)}
+.slide:last-child{page-break-after:auto}
+.eyebrow{font-family:var(--m);font-size:17px;letter-spacing:.24em;text-transform:uppercase;color:var(--acc)}
+h1{font-size:82px;font-weight:800;letter-spacing:-.035em;line-height:1.0;max-width:20ch}
+h2{font-size:56px;font-weight:700;letter-spacing:-.03em;line-height:1.06;max-width:24ch}
+.lede{font-size:28px;color:var(--ink2);line-height:1.45;max-width:52ch}
+.num{position:absolute;right:96px;bottom:56px;font-family:var(--m);font-size:16px;color:var(--faint);letter-spacing:.12em}
+.tagline{position:absolute;left:96px;bottom:56px;font-family:var(--m);font-size:16px;color:var(--faint);letter-spacing:.12em}
+.badge{display:inline-flex;align-items:center;gap:12px;background:rgba(77,148,255,.13);
+ border:1px solid rgba(77,148,255,.4);border-radius:99px;padding:12px 24px;font-family:var(--m);
+ font-size:19px;color:var(--acc);letter-spacing:.06em;align-self:flex-start}
+.row{display:flex;gap:20px}
+.stat{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:26px 30px;flex:1}
+.stat .k{font-family:var(--m);font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.stat b{display:block;font-family:var(--m);font-size:52px;font-weight:600;letter-spacing:-.04em;margin-top:8px}
+.stat .s{font-size:17px;color:var(--ink2);margin-top:6px}
+.pos{color:var(--good)}.neg{color:var(--bad)}.acc{color:var(--acc)}
+table{border-collapse:collapse;width:100%;font-size:23px;margin-top:6px}
+th,td{text-align:left;padding:15px 20px;border-bottom:1px solid var(--rule)}
+th{font-family:var(--m);font-size:15px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
+td.m{font-family:var(--m);font-variant-numeric:tabular-nums}
+.flow{display:flex;align-items:stretch;gap:16px;margin-top:10px}
+.step{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:24px;flex:1;
+ display:flex;flex-direction:column;gap:8px}
+.step .n{font-family:var(--m);font-size:15px;color:var(--acc);letter-spacing:.14em}
+.step h3{font-size:26px;font-weight:700;letter-spacing:-.01em}
+.step p{font-size:18px;color:var(--ink2);line-height:1.4}
+.step.hl{border-color:var(--acc);background:rgba(77,148,255,.07)}
+ul{list-style:none;display:flex;flex-direction:column;gap:18px;padding:0}
+li{font-size:25px;color:var(--ink2);line-height:1.4;display:flex;gap:16px}
+li b{color:var(--ink)}
+li::before{content:"";flex:none;width:10px;height:10px;margin-top:11px;border-radius:2px;background:var(--acc)}
+.shot{border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:#fff;
+ box-shadow:0 30px 80px rgba(0,0,0,.55);height:430px}
+.shot img{width:100%;display:block}
+.glow{position:absolute;width:900px;height:900px;right:-260px;top:-320px;border-radius:50%;
+ background:radial-gradient(circle,rgba(77,148,255,.16),transparent 62%);pointer-events:none}
+</style></head><body>
+
+<div class="slide">
+  <div class="glow"></div>
+  <span class="eyebrow">lablab.ai × Alpaca · Options Alpha Agents</span>
+  <h1>The self-auditing risk layer for Alpaca options.</h1>
+  <p class="lede">An autonomous agent that trades defined-risk spreads through Alpaca's CLI — and
+    re-prices the trades it refused, to prove the refusals were right.</p>
+  <span class="badge">20,000-path Monte Carlo VaR · Counterfactual refusal scoring</span>
+  <div class="row" style="margin-top:14px">
+    <div class="stat"><span class="k">Account</span><b style="font-size:34px">PA3BY0HJORNC</b><span class="s">fresh, $100,000, options level 3</span></div>
+    <div class="stat"><span class="k">Equity</span><b class="pos">$100,149.93</b><span class="s">live paper trading</span></div>
+    <div class="stat"><span class="k">Execution</span><b style="font-size:34px">Alpaca CLI</b><span class="s">multi-leg, on a schedule</span></div>
+  </div>
+  <span class="tagline">options-alpha-agent.vercel.app</span><span class="num">01</span>
+</div>
+
+<div class="slide">
+  <span class="eyebrow">The problem</span>
+  <h2>Risk paralysis.</h2>
+  <p class="lede">Give a language model a brokerage API and it finds a reason to trade.
+    Put a filter in front of it and it finds a reason to never trade.</p>
+  <p class="lede"><b style="color:var(--ink)">Both failures look identical from the outside</b> — a
+    flat equity curve and a confident explanation. Nobody can tell an agent with discipline from an
+    agent that is simply broken, because nobody measures the trades that were <em>not</em> taken.</p>
+  <div class="row" style="margin-top:20px">
+    <div class="stat"><span class="k">Uncalibrated filter</span><b class="neg">0 trades</b><span class="s">looks like discipline</span></div>
+    <div class="stat"><span class="k">No filter</span><b class="neg">blown account</b><span class="s">looks like conviction</span></div>
+    <div class="stat"><span class="k">What's missing</span><b class="acc">the counterfactual</b><span class="s">what the refusals would have done</span></div>
+  </div>
+  <span class="num">02</span>
+</div>
+
+<div class="slide">
+  <span class="eyebrow">The core innovation</span>
+  <h2>Every refusal becomes a testable claim.</h2>
+  <div class="flow">
+    <div class="step"><span class="n">01</span><h3>Refuse</h3><p>The gate vetoes a spread and logs its legs, credit and reason to an append-only ledger.</p></div>
+    <div class="step"><span class="n">02</span><h3>Re-price</h3><p>Those exact legs are re-priced later at live marks — what the refused trade would have earned.</p></div>
+    <div class="step hl"><span class="n">03</span><h3>Grade</h3><p>Scored symmetrically. A refusal that avoided a loss counts; so does one that missed a profit.</p></div>
+    <div class="step"><span class="n">04</span><h3>Recalibrate</h3><p>The threshold moves on the evidence, and the scorer keeps grading the new one.</p></div>
+  </div>
+  <p class="lede" style="margin-top:14px">Before execution, a 20,000-path Monte Carlo prices the
+    distribution — probability of profit, 95% VaR, expected shortfall. A trade with negative expected
+    value is refused however much premium it appears to pay.</p>
+  <span class="num">03</span>
+</div>
+
+<div class="slide">
+  <span class="eyebrow">The receipts</span>
+  <h2>Predicted before the trade. Verifiable after it.</h2>
+  <table>
+    <tr><th></th><th>Monte Carlo, before</th><th>Live Alpaca execution</th></tr>
+    <tr><td>P&amp;L on the 17-lot</td><td class="m pos">+$145 expected</td><td class="m pos">+$153 realised</td></tr>
+    <tr><td>Probability of profit</td><td class="m">92%</td><td class="m">won</td></tr>
+    <tr><td>95% VaR</td><td class="m neg">−$1,428</td><td class="m">not breached</td></tr>
+    <tr><td>Structural max loss</td><td class="m neg">−$1,428</td><td class="m">0 of 20,000 paths exceeded</td></tr>
+  </table>
+  <p class="lede" style="font-family:var(--m);font-size:19px;margin-top:14px">
+    open&nbsp;&nbsp;cd44d308-8609-4044-8994-3137d255fc78&nbsp;&nbsp;17 @ −0.16&nbsp;&nbsp;2026-09-01T17:10:59Z<br>
+    close&nbsp;f67cd64a-a82c-4db8-a877-52de37037761&nbsp;&nbsp;17 @ +0.07&nbsp;&nbsp;2026-09-02T14:57:24Z</p>
+  <p class="lede" style="font-size:22px">And the honest half: all four gate vetoes would have been
+    profitable. We published that unchanged and lowered the floor on the evidence.</p>
+  <span class="num">04</span>
+</div>
+
+<div class="slide">
+  <div class="glow"></div>
+  <span class="eyebrow">Ecosystem value</span>
+  <h2>Alpaca options production hardening.</h2>
+  <p class="lede">Three undocumented behaviours, each found by running against the live API, each
+    carrying a workaround any team building options on Alpaca will need.</p>
+  <ul>
+    <li><b>Multi-leg limit sign is inverted.</b> A positive net limit is read as a maximum <em>debit</em> — it silently authorises paying to enter a credit spread.</li>
+    <li><b>Greeks require <span style="font-family:var(--m)">--feed indicative</span>.</b> The default feed 403s without an OPRA agreement; snapshots return nulls and delta targeting dies quietly.</li>
+    <li><b>Intraday portfolio history is wrong in paper.</b> Reports exactly $100,000 too high.</li>
+  </ul>
+  <p class="lede" style="margin-top:8px">MIT licensed. The workaround layer is the contribution:
+    it turns Alpaca's options API from something you discover by trial into something you build on.</p>
+  <span class="tagline">github.com/phazon2/options-alpha-agent</span><span class="num">05</span>
+</div>
+
+</body></html>

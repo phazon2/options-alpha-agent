@@ -1,11 +1,53 @@
-# Options Alpha Agent — Alpaca AI Trading Agents Hackathon
+# Options Alpha Agent
 
-Autonomous options-trading agent built on Alpaca's paper-trading environment for
-the [lablab.ai × Alpaca hackathon](https://lablab.ai/ai-hackathons/alpaca-ai-trading-agents-hackathon)
-(28 Aug – 4 Sep 2026).
+**A self-auditing risk layer for Alpaca options.** An autonomous agent that trades
+defined-risk vertical spreads, re-prices the trades it *refused*, and publishes
+whether refusing was right — including when it wasn't.
 
-**Paper trading only. Nothing here is investment advice, and paper results are
-hypothetical.**
+Live ledger: **<https://options-alpha-agent.vercel.app/>** · Account **PA3BY0HJORNC**
+
+## The receipts
+
+Predicted before the trade, on a fresh $100,000 paper account. Verifiable against
+the account ID above.
+
+| | Monte Carlo, before the trade | Live Alpaca execution |
+| --- | --- | --- |
+| P&L on the 17-lot | **+$145** expected | **+$153** realised |
+| Probability of profit | 92% | won |
+| 95% VaR | −$1,428 | not breached |
+| Structural max loss | −$1,428 | 0 paths exceeded it |
+| Paths simulated | 20,000 | — |
+
+<details>
+<summary>Raw order records — verify the timestamps against account PA3BY0HJORNC</summary>
+
+```json
+{ "id": "cd44d308-8609-4044-8994-3137d255fc78", "status": "filled",
+  "qty": "17", "limit_price": "-0.16", "filled_avg_price": "-0.16",
+  "submitted_at": "2026-09-01T17:10:59.728278Z" }
+
+{ "id": "f67cd64a-a82c-4db8-a877-52de37037761", "status": "filled",
+  "qty": "17", "limit_price": "0.07",  "filled_avg_price": "0.07",
+  "submitted_at": "2026-09-02T14:57:24.664744Z" }
+```
+
+Opened at a $0.16 credit, closed at $0.07 when the exit rule read 56% of the
+credit captured. `(0.16 − 0.07) × 100 × 17 = $153`.
+
+</details>
+
+## Alpaca options production hardening
+
+Three behaviours that are not in the docs, each found by running against the live
+API and each carrying a workaround in this repo. Any team building options on
+Alpaca will hit all three:
+
+| Behaviour | What happens | Handled in |
+| --- | --- | --- |
+| Multi-leg limit sign is inverted | A positive net limit is read as the maximum **debit**. An order sent at `+0.15` filled at `−0.13` — a positive limit silently authorises *paying* to enter a credit spread | `execution.py` refuses a positive limit on open; closes pass `allow_debit` |
+| Greeks need `--feed indicative` | The default `opra` feed returns `403 OPRA agreement is not signed`; the plain snapshots endpoint returns nulls, silently disabling delta targeting | `broker.option_chain()` |
+| Intraday portfolio history is wrong in paper | Reports exactly $100,000 too high — 200,151.93 against a true 100,151.93. The daily series is correct | equity curve is built from the agent's own reads |
 
 ## One-page write-up
 

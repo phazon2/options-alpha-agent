@@ -56,19 +56,30 @@ class Challenge:
 
     @property
     def blocks_trade(self) -> bool:
-        """Only a fatal objection stops the trade outright — along with a
-        failure to obtain one, since silence is not consent.
+        """Only a fatal objection stops the trade outright.
+
+        An unreachable challenger is treated differently from a refuting one,
+        because they are different events. A refutation is a signal; a timeout
+        or a malformed reply is noise, and letting noise veto trades makes the
+        agent's willingness to act hostage to a formatting slip. When the
+        challenger cannot be reached the check is genuinely lost, so the
+        response is to halve the size rather than either trade full or not at
+        all - the same graded answer used for a serious objection.
 
         A challenger told that finding flaws is success will find flaws in
         almost anything, so treating every objection as a veto would mean
         never trading. A serious objection is answered by trading smaller
         instead, which is the honest response to a real but survivable
         criticism."""
-        return self.failed or (self.refuted and self.severity == "fatal")
+        if self.failed:
+            return False
+        return self.refuted and self.severity == "fatal"
 
     @property
     def size_multiplier(self) -> float:
         """How much of the intended size survives the objection."""
+        if self.failed:
+            return 0.5  # the check was lost, so carry half the exposure
         if not self.refuted:
             return 1.0
         return {"serious": 0.5, "minor": 0.75}.get(self.severity, 1.0)
@@ -79,7 +90,7 @@ class Challenge:
 
 
 def challenge(
-    view: AnalystView, context: dict[str, Any], attempts: int = 2
+    view: AnalystView, context: dict[str, Any], attempts: int = 3
 ) -> Challenge:
     """A failure to reach the challenger blocks the trade, so retry once
     before treating the silence as a veto."""

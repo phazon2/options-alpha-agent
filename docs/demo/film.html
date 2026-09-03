@@ -1,0 +1,177 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Options Alpha Agent — demo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#0C1016;--panel:#151A22;--rule:#252D39;--ink:#F2F5F9;--ink2:#AEB8C6;--faint:#6C7787;
+ --blue:#3987e5;--good:#31c48d;--bad:#f26a6a;--warn:#e0a33c;
+ --d:"Archivo","Helvetica Neue",Arial,sans-serif;--m:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--d)}
+.scene{position:absolute;inset:0;padding:88px 112px;display:flex;flex-direction:column;justify-content:center;
+ gap:26px;opacity:0;transition:opacity .5s ease}
+.scene.on{opacity:1}
+.eyebrow{font-family:var(--m);font-size:19px;letter-spacing:.22em;text-transform:uppercase;color:var(--blue)}
+h1{font-size:104px;font-weight:800;letter-spacing:-.035em;line-height:.98;max-width:24ch}
+h2{font-size:64px;font-weight:700;letter-spacing:-.03em;line-height:1.05;max-width:26ch}
+.lede{font-size:34px;color:var(--ink2);line-height:1.42;max-width:44ch}
+.big{font-family:var(--m);font-size:92px;font-weight:600;letter-spacing:-.04em}
+.term{background:#080B10;border:1px solid var(--rule);border-radius:10px;padding:30px 34px;
+ font-family:var(--m);font-size:23px;line-height:1.62;white-space:pre-wrap;color:#D7DEE8;
+ box-shadow:0 24px 70px rgba(0,0,0,.5);max-height:660px;overflow:hidden}
+.term .g{color:var(--good)}.term .r{color:var(--bad)}.term .b{color:var(--blue)}.term .y{color:var(--warn)}
+.term .dim{color:var(--faint)}
+.quote{border-left:5px solid var(--bad);padding:22px 34px;background:rgba(242,106,106,.08);
+ border-radius:0 10px 10px 0;font-size:35px;line-height:1.45;color:var(--ink);max-width:40ch}
+.who{font-family:var(--m);font-size:19px;color:var(--bad);letter-spacing:.13em;text-transform:uppercase}
+.row{display:flex;gap:22px;flex-wrap:wrap}
+.stat{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:24px 30px;min-width:270px;flex:1}
+.stat .k{font-family:var(--m);font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.stat b{display:block;font-family:var(--m);font-size:56px;font-weight:600;letter-spacing:-.035em;margin-top:6px}
+.stat .s{font-size:19px;color:var(--ink2);margin-top:4px}
+.pos{color:var(--good)}.neg{color:var(--bad)}.acc{color:var(--blue)}
+.flow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:8px}
+.node{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:20px 26px;font-size:25px;font-weight:600}
+.node small{display:block;font-family:var(--m);font-size:15px;color:var(--faint);font-weight:400;margin-top:5px;letter-spacing:.05em}
+.node.det{border-color:var(--blue)}.node.ai{border-color:var(--warn)}.node.gate{border-color:var(--good)}
+.arrow{color:var(--faint);font-size:32px}
+ul{list-style:none;display:flex;flex-direction:column;gap:20px;padding:0}
+li{font-size:31px;color:var(--ink2);line-height:1.4;display:flex;gap:18px;max-width:46ch}
+li b{color:var(--ink);font-weight:700}
+li::before{content:"";flex:none;width:12px;height:12px;margin-top:14px;border-radius:3px;background:var(--blue)}
+.shot{border:1px solid var(--rule);border-radius:10px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.5);
+ max-height:700px;display:flex;align-items:flex-start;justify-content:center;background:#fff}
+.shot img{width:100%;display:block}
+.foot{position:absolute;left:112px;bottom:56px;font-family:var(--m);font-size:18px;color:var(--faint);letter-spacing:.09em}
+.badge{position:absolute;right:112px;bottom:56px;font-family:var(--m);font-size:18px;color:var(--faint);letter-spacing:.09em}
+</style></head><body>
+
+<div class="scene" data-t="0" data-d="13">
+  <span class="eyebrow">lablab.ai × Alpaca · Options Alpha Agents</span>
+  <h1>Every trading agent shows you its wins.</h1>
+  <p class="lede">This one publishes the trades it <em>refused</em> — and grades whether refusing was right.</p>
+</div>
+
+<div class="scene" data-t="13" data-d="16">
+  <span class="eyebrow">The problem</span>
+  <h2>An agent that never trades isn't disciplined. It's broken.</h2>
+  <p class="lede">Give a language model a brokerage API and it will find a reason to trade.
+    Put a filter in front of it and it will find a reason to never trade. Both fail —
+    and from the outside, both look identical.</p>
+</div>
+
+<div class="scene" data-t="29" data-d="20">
+  <span class="eyebrow">The architecture</span>
+  <h2>The model is the weakest component, on purpose.</h2>
+  <div class="flow">
+    <div class="node det">Regime<small>DETERMINISTIC</small></div><span class="arrow">→</span>
+    <div class="node ai">Analyst<small>LLM · PROPOSES</small></div><span class="arrow">→</span>
+    <div class="node ai">Challenger<small>LLM · REFUTES</small></div><span class="arrow">→</span>
+    <div class="node gate">Risk officer<small>MONTE CARLO VaR</small></div><span class="arrow">→</span>
+    <div class="node gate">Gate<small>ARITHMETIC · VETOES</small></div>
+  </div>
+  <p class="lede">The model may only narrow a trade — never widen one. Every stage fails closed:
+    a timeout means <em>do not trade</em>, never <em>trade anyway</em>.</p>
+</div>
+
+<div class="scene" data-t="49" data-d="24">
+  <span class="eyebrow">One live cycle</span>
+  <div class="term" id="cycle"></div>
+</div>
+
+<div class="scene" data-t="73" data-d="20">
+  <span class="eyebrow">The challenger, first live run</span>
+  <p class="who">It refuted its own analyst</p>
+  <div class="quote">“The invalidation level is essentially the short strike itself, so by the time it
+    triggers the spread is already at max loss — the stop protects nothing.”</div>
+  <p class="lede">A second opinion averages toward the first. A challenger told that finding a fatal
+    flaw is success catches what agreement waves through.</p>
+</div>
+
+<div class="scene" data-t="93" data-d="24">
+  <span class="eyebrow">The differentiator</span>
+  <h2>We re-price every trade we refused.</h2>
+  <div class="row">
+    <div class="stat"><span class="k">Refusals graded</span><b>4</b><span class="s">re-priced at current marks</span></div>
+    <div class="stat"><span class="k">Refusals correct</span><b>0</b><span class="s">avoided a loss</span></div>
+    <div class="stat"><span class="k">Refusals costly</span><b class="neg">4</b><span class="s">missed a profit</span></div>
+    <div class="stat"><span class="k">Hit rate</span><b class="neg">0%</b><span class="s">our filter was wrong</span></div>
+  </div>
+  <p class="lede">Every refusal our gate made would have been profitable. We published that unchanged,
+    and lowered the floor from 0.15 to 0.12 on the evidence.</p>
+</div>
+
+<div class="scene" data-t="117" data-d="20">
+  <span class="eyebrow">And we refused to over-claim</span>
+  <h2>The sweep says “trade everything.” We didn't listen.</h2>
+  <p class="lede">Every re-priced spread is a winner, because SPY rose all week. With no loser in the
+    sample the curve can only fall, and its maximum is an artefact of one rally — not a property of
+    the filter. A floor exists to cap the loser that hasn't happened yet.</p>
+  <div class="term"><span class="y">*** THE SAMPLE CANNOT DISCRIMINATE ***</span>
+  All 9 re-priced spreads are winners. The shipped floor stays at 0.12;
+  this frontier is <span class="r">not evidence</span> for lowering it further.</div>
+</div>
+
+<div class="scene" data-t="137" data-d="22">
+  <span class="eyebrow">Built against the real API</span>
+  <h2>Three undocumented Alpaca behaviours, found by running it.</h2>
+  <ul>
+    <li><b>Multi-leg limit sign is inverted.</b> Sent +0.15, filled −0.13 — a positive limit authorises
+      paying a <em>debit</em> for a credit spread.</li>
+    <li><b>Greeks need <span style="font-family:var(--m)">--feed indicative</span>.</b> The default feed
+      403s; the snapshots endpoint returns nulls and silently kills delta targeting.</li>
+    <li><b>Intraday portfolio history is wrong in paper.</b> Reports exactly $100,000 too high. It would
+      have put an equity chart showing our account doubling on the submission page.</li>
+  </ul>
+</div>
+
+<div class="scene" data-t="159" data-d="20">
+  <span class="eyebrow">The risk officer</span>
+  <h2>Max loss says what can be lost. Not how likely.</h2>
+  <div class="term" id="var"><span class="g">[PASS]</span> no simulated path breaches the structural max loss
+  <span class="g">[PASS]</span> a further strike has a higher probability of profit
+  <span class="g">[PASS]</span> probability of profit is a probability
+  <span class="g">[PASS]</span> expected shortfall is no better than VaR95
+  the 17-lot actually traded: PoP 92% · E[P&amp;L] $+145 · VaR95 $-1,428 · ES $-1,428
+  realised outcome was +$153 against E[P&amp;L] $+145</div>
+  <p class="lede">20,000 paths to expiry at realised volatility. On the trade we actually took it
+    computed <b class="pos">E[P&amp;L] +$145</b>. The realised outcome was <b class="pos">+$153</b>.</p>
+</div>
+
+<div class="scene" data-t="179" data-d="22">
+  <span class="eyebrow">Live, on a fresh $100,000 paper account</span>
+  <div class="row">
+    <div class="stat"><span class="k">Account</span><b style="font-size:38px">PA3BY0HJORNC</b><span class="s">options level 3</span></div>
+    <div class="stat"><span class="k">Equity</span><b id="eq">$100,149.93</b><span class="s">from $100,000</span></div>
+    <div class="stat"><span class="k">Closed round trip</span><b class="pos">+$153</b><span class="s">opened 0.16, closed 0.07</span></div>
+    <div class="stat"><span class="k">Decisions logged</span><b>60</b><span class="s">every one published</span></div>
+  </div>
+  <p class="lede">Executed through Alpaca's official CLI, on a schedule, with every decision — including
+    the refusals — in an append-only ledger.</p>
+</div>
+
+<div class="scene" data-t="201" data-d="18">
+  <h1>An agent you can audit.</h1>
+  <p class="lede">Not because it was always right — it wasn't — but because when it was wrong,
+    its own instrumentation caught it, and you can read exactly how.</p>
+  <p class="lede" style="font-family:var(--m);font-size:26px;color:var(--blue)">options-alpha-agent.vercel.app</p>
+</div>
+
+<div class="foot" id="foot"></div>
+<div class="badge">Alpaca paper trading · results are hypothetical</div>
+
+<script>
+const scenes=[...document.querySelectorAll('.scene')];
+const foot=document.getElementById('foot');
+function paint(t){
+  let cur=null;
+  scenes.forEach(s=>{
+    const a=+s.dataset.t,b=a+ +s.dataset.d;
+    const on=t>=a&&t<b; s.classList.toggle('on',on); if(on)cur=s;
+  });
+  foot.textContent=`Options Alpha Agent · ${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`;
+}
+window.__paint=paint;
+window.__total=Math.max(...scenes.map(s=>+s.dataset.t + +s.dataset.d));
+paint(0);
+</script>
+</body></html>

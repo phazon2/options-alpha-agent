@@ -3,102 +3,163 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Options Alpha Agent — live decision ledger</title>
+<title>Options Alpha Agent — it grades its own refusals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 :root{
-  --ground:#EDEFF3; --surface:#fff; --surface-2:#F4F6F9;
-  --ink:#111721; --ink-2:#39434F; --muted:#657081; --faint:#8D96A4;
-  --rule:#D2D8E0; --accent:#2A46A0;
-  --ok:#106B52; --ok-soft:#DDEFE8; --crit:#A32222; --crit-soft:#F8E3E1;
-  --warn:#8E5B0C; --warn-soft:#F6ECD9;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   color-scheme:light;
+  --ground:#EFF1F4; --surface:#FCFCFB; --surface-2:#F3F5F8;
+  --ink:#0F141B; --ink-2:#3A4450; --muted:#626C7A; --faint:#8A93A1;
+  --rule:#D6DBE2; --rule-soft:#E6EAEF;
+  --series-1:#2a78d6;
+  --good:#1baf7a; --bad:#e34948; --warn:#b06f00;
+  --good-bg:#E4F5EE; --bad-bg:#FBE7E7; --warn-bg:#F8EFDC;
+  --accent:#2a78d6; --accent-bg:#E7EFFA;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme:dark){:root{
-  --ground:#0D1117; --surface:#151B24; --surface-2:#1B222D;
-  --ink:#E6EBF2; --ink-2:#C2CBD8; --muted:#8B96A6; --faint:#6C7789;
-  --rule:#28323F; --accent:#8AA5F2;
-  --ok:#43C193; --ok-soft:#122A24; --crit:#F2776F; --crit-soft:#2E1917;
-  --warn:#DDA646; --warn-soft:#2B2213;
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   color-scheme:dark;
+  --ground:#0C1016; --surface:#1A1A19; --surface-2:#212630;
+  --ink:#FFFFFF; --ink-2:#D2D8E0; --muted:#9BA5B3; --faint:#727C8A;
+  --rule:#2B323C; --rule-soft:#232A34;
+  --series-1:#3987e5;
+  --good:#199e70; --bad:#e66767; --warn:#c98500;
+  --good-bg:#10241D; --bad-bg:#2C1817; --warn-bg:#2A2113;
+  --accent:#3987e5; --accent-bg:#152238;
 }}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0C1016; --surface:#1A1A19; --surface-2:#212630;
+  --ink:#FFFFFF; --ink-2:#D2D8E0; --muted:#9BA5B3; --faint:#727C8A;
+  --rule:#2B323C; --rule-soft:#232A34;
+  --series-1:#3987e5;
+  --good:#199e70; --bad:#e66767; --warn:#c98500;
+  --good-bg:#10241D; --bad-bg:#2C1817; --warn-bg:#2A2113;
+  --accent:#3987e5; --accent-bg:#152238;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
-  font-size:15px;line-height:1.55}
-.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 64px;display:flex;flex-direction:column;gap:26px}
-h1{font-size:clamp(24px,3.6vw,34px);margin:0;letter-spacing:-.02em;text-wrap:balance}
-h2{font-size:17px;margin:0;letter-spacing:-.01em}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--display);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:30px 20px 70px;display:flex;flex-direction:column;gap:30px}
+h1,h2{margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1{font-size:clamp(27px,4vw,40px);font-weight:800;line-height:1.03}
+h2{font-size:19px;font-weight:700}
 p{margin:0}
 .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-header{border-bottom:2px solid var(--ink);padding-bottom:18px;display:flex;flex-direction:column;gap:8px}
-header .lede{color:var(--ink-2);max-width:64ch}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header{border-bottom:2px solid var(--ink);padding-bottom:20px;display:flex;flex-direction:column;gap:9px}
+header .lede{color:var(--ink-2);max-width:60ch;font-size:15.5px}
 .stamp{font-family:var(--mono);font-size:11px;color:var(--faint)}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.card{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:14px 16px;
-  display:flex;flex-direction:column;gap:3px}
-.card .k{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
-.card b{font-family:var(--mono);font-size:25px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.card .sub{font-size:12px;color:var(--muted)}
-.pos{color:var(--ok)} .neg{color:var(--crit)}
-section{display:flex;flex-direction:column;gap:11px}
-.shead{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
-  border-bottom:1px solid var(--rule);padding-bottom:7px;flex-wrap:wrap}
-.shead p{font-size:13px;color:var(--muted);max-width:62ch}
-.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;min-width:600px;font-size:13px}
-th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--rule);vertical-align:top}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(146px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:2px}
+.tile .k{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
+.tile b{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.15}
+.tile .s{font-size:12px;color:var(--muted)}
+.pos{color:var(--good)} .neg{color:var(--bad)}
+
+section{display:flex;flex-direction:column;gap:12px}
+.shead{display:flex;flex-direction:column;gap:4px;border-bottom:1px solid var(--rule);padding-bottom:8px}
+.shead p{font-size:13.5px;color:var(--muted);max-width:70ch}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:16px}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figcaption{font-size:12.5px;color:var(--muted)}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.grid line{stroke:var(--rule-soft);stroke-width:1}
+.axis text{font-family:var(--mono);font-size:10px;fill:var(--faint)}
+.axis line{stroke:var(--rule);stroke-width:1}
+.tip{position:fixed;pointer-events:none;background:var(--surface);border:1px solid var(--rule);
+  border-radius:4px;padding:7px 10px;font-family:var(--mono);font-size:11.5px;color:var(--ink);
+  box-shadow:0 4px 16px rgba(0,0,0,.16);opacity:0;transition:opacity .1s;z-index:9;white-space:nowrap}
+.tip.on{opacity:1}
+
+.note{border-left:3px solid var(--warn);background:var(--warn-bg);border-radius:4px;padding:12px 14px;
+  font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.note b{color:var(--ink)}
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:5px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:13px}
+th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
 thead th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
   color:var(--muted);background:var(--surface-2);white-space:nowrap}
 tbody tr:last-child td{border-bottom:none}
 td.m{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
-.tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  padding:2px 7px;border-radius:99px;white-space:nowrap;border:1px solid transparent}
-.t-ok{background:var(--ok-soft);color:var(--ok)}
-.t-veto{background:var(--crit-soft);color:var(--crit)}
-.t-warn{background:var(--warn-soft);color:var(--warn)}
+.tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:99px;white-space:nowrap;
+  border:1px solid transparent}
+.tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.t-good{background:var(--good-bg);color:var(--good)}
+.t-bad{background:var(--bad-bg);color:var(--bad)}
+.t-warn{background:var(--warn-bg);color:var(--warn)}
 .t-mute{background:var(--surface-2);color:var(--muted);border-color:var(--rule)}
+.t-acc{background:var(--accent-bg);color:var(--accent)}
+
 .led{display:flex;flex-direction:column;gap:6px}
 .entry{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--rule);
-  border-radius:3px;padding:10px 13px;display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:start}
-.entry.ok{border-left-color:var(--ok)} .entry.veto{border-left-color:var(--crit)}
+  border-radius:4px;padding:10px 13px;display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:start}
+.entry.ok{border-left-color:var(--good)} .entry.no{border-left-color:var(--bad)}
 .entry.info{border-left-color:var(--accent)}
 .entry .at{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap}
-.entry .body{min-width:0}
-.entry .why{font-size:12.5px;color:var(--ink-2)}
+.entry .why{font-size:12.5px;color:var(--ink-2);min-width:0}
 .entry code{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);
-  border:1px solid var(--rule);border-radius:3px;padding:1px 4px;word-break:break-all}
-footer{border-top:1px solid var(--rule);padding-top:16px;font-size:12px;color:var(--muted);
-  display:flex;flex-direction:column;gap:7px}
+  border:1px solid var(--rule-soft);border-radius:3px;padding:1px 4px;word-break:break-all}
+footer{border-top:1px solid var(--rule);padding-top:18px;display:flex;flex-direction:column;gap:8px}
+footer p{font-size:12px;color:var(--muted);line-height:1.55;max-width:82ch}
 footer a{color:var(--accent)}
-.err{background:var(--crit-soft);color:var(--crit);border:1px solid var(--crit);
-  border-radius:4px;padding:14px 16px;font-size:13.5px}
+.err{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad);border-radius:5px;padding:14px 16px;font-size:13.5px}
+@media (max-width:620px){.entry{grid-template-columns:1fr}.entry .at{order:-1}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <span class="eyebrow">lablab.ai × Alpaca · Options Alpha Agents</span>
-    <h1>Options Alpha Agent</h1>
-    <p class="lede">An autonomous options agent on Alpaca paper trading. A model may only propose
-      defined-risk spreads; a deterministic risk gate holds the veto, and every decision — including
-      the refusals — is written to an append-only ledger.</p>
+    <h1>The agent that grades its own refusals</h1>
+    <p class="lede">Every trading bot can show you the trades it took. This one re-prices the trades it
+      <em>refused</em>, and publishes whether refusing was right — including when it wasn't.</p>
     <p class="stamp" id="stamp">loading…</p>
   </header>
 
-  <div class="cards" id="cards"></div>
+  <div class="tiles" id="tiles"></div>
 
   <section>
-    <div class="shead"><h2>Decision ledger</h2>
-      <p>Newest first. Vetoes are shown, not hidden — a refusal to trade is a decision.</p></div>
-    <div class="led" id="ledger"></div>
+    <div class="shead"><h2>Equity</h2>
+      <p>Read live from the Alpaca paper account on every cycle.</p></div>
+    <div class="card"><figure>
+      <div id="equity"></div>
+      <figcaption id="equity-cap"></figcaption>
+    </figure></div>
   </section>
 
   <section>
-    <div class="shead"><h2>Open legs</h2><p>Live from the Alpaca account.</p></div>
-    <div class="scroll"><table id="positions"><thead><tr>
-      <th>Contract</th><th>Qty</th><th>Entry</th><th>Now</th><th>Unrealised</th>
+    <div class="shead"><h2>Did refusing pay?</h2>
+      <p>Each trade the risk gate vetoed, re-priced at current marks. Scored symmetrically: a refusal
+        that avoided a loss counts, and so does one that missed a profit.</p></div>
+    <div class="tiles" id="ref-tiles"></div>
+    <div class="scroll"><table id="ref-table"><thead><tr>
+      <th>Refused</th><th>Spread</th><th>Credit</th><th>Would be</th><th>Verdict</th><th>Because</th>
     </tr></thead><tbody></tbody></table></div>
+    <div class="note" id="ref-note"></div>
+  </section>
+
+  <section>
+    <div class="shead"><h2>Risk frontier</h2>
+      <p>What the portfolio would be worth under each candidate minimum credit-to-width.</p></div>
+    <div class="card"><figure>
+      <div id="frontier"></div>
+      <figcaption id="frontier-cap"></figcaption>
+    </figure></div>
+    <div class="note" id="frontier-note"></div>
+  </section>
+
+  <section>
+    <div class="shead"><h2>Decision ledger</h2>
+      <p>Append-only. Refusals are shown, not hidden. <span id="ledger-count" class="mono"></span></p></div>
+    <div class="led" id="ledger"></div>
   </section>
 
   <section>
@@ -109,88 +170,189 @@ footer a{color:var(--accent)}
   </section>
 
   <footer>
-    <p>Paper trading only. Results are hypothetical and are not investment advice.
-      Figures are read live from the Alpaca paper account and the agent's ledger; none are simulated.</p>
-    <p><a href="https://github.com/phazon2/options-alpha-agent">Source</a></p>
+    <p>Paper trading only. Results are hypothetical and are not investment advice. Every figure is read
+      live from the Alpaca paper account or computed from the agent's own append-only ledger; none are simulated.</p>
+    <p><a href="https://github.com/phazon2/options-alpha-agent">Source</a> ·
+       <a href="https://github.com/phazon2/options-alpha-agent/blob/main/docs/WRITEUP.md">One-page write-up</a></p>
   </footer>
 </div>
+<div class="tip" id="tip"></div>
 
 <script>
-const money = v => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-const esc = s => String(s??"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const when = s => { try { return new Date(s).toISOString().replace("T"," ").slice(5,16)+"Z"; } catch { return s||"—"; } };
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=v=>(v<0?"−":"")+"$"+Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const when=s=>{try{return new Date(s).toISOString().replace("T"," ").slice(5,16)+"Z";}catch{return s||"—";}};
+const tip=$("#tip");
+function showTip(e,html){tip.innerHTML=html;tip.classList.add("on");
+  const r=tip.getBoundingClientRect();
+  tip.style.left=Math.min(e.clientX+14,innerWidth-r.width-8)+"px";
+  tip.style.top=Math.max(e.clientY-r.height-12,8)+"px";}
+function hideTip(){tip.classList.remove("on");}
 
-function cards(d){
-  const a=d.account, c=d.counters, pnl=parseFloat(a.pnl);
-  const cls = pnl>0?"pos":pnl<0?"neg":"";
-  return [
-    `<div class="card"><span class="k">Equity</span><b>${money(parseFloat(a.equity))}</b><span class="sub">from ${money(parseFloat(a.starting_equity))}</span></div>`,
-    `<div class="card"><span class="k">P&amp;L</span><b class="${cls}">${pnl>=0?"+":"\u2212"}${money(Math.abs(pnl))}</b><span class="sub">${a.pnl_pct}% of starting equity</span></div>`,
-    `<div class="card"><span class="k">Decisions</span><b>${c.decisions}</b><span class="sub">${c.approved} approved · ${c.vetoed} vetoed</span></div>`,
-    `<div class="card"><span class="k">Orders filled</span><b>${c.orders_filled}</b><span class="sub">${c.orders_submitted} submitted</span></div>`,
-    `<div class="card"><span class="k">Open legs</span><b>${c.open_legs}</b><span class="sub">unrealised ${money(parseFloat(a.unrealized||0))}</span></div>`,
-    `<div class="card"><span class="k">Account</span><b style="font-size:16px">${esc(a.number)}</b><span class="sub">options level ${a.options_level}</span></div>`,
-  ].join("");
-}
-
-function ledgerRow(e){
-  let cls="info", tag=`<span class="tag t-mute">${esc(e.kind)}</span>`, why="";
-  if(e.kind==="risk_verdict"){
-    cls = e.approved ? "ok" : "veto";
-    tag = e.approved ? `<span class="tag t-ok">approved ${e.quantity}x</span>`
-                     : `<span class="tag t-veto">vetoed</span>`;
-    const reasons = (e.reasons||[]).join("; ");
-    why = `${esc(e.short)} / ${esc(e.long)} · width $${esc(e.width)} · credit $${esc(e.credit)}`
-        + ` · max loss $${esc(e.max_loss)}` + (e.short_delta?` · delta ${e.short_delta}`:"")
-        + (reasons?`<br><strong>${esc(reasons)}</strong>`:"");
-  } else if(e.kind==="order_submitted"){
-    cls="info"; tag=`<span class="tag t-warn">${e.dry_run?"dry run":"submitted"}</span>`;
-    why = `order <code>${esc(e.order_id||"—")}</code> · status ${esc(e.status||"—")} · max loss $${esc(e.max_loss)}`;
-  } else if(e.kind==="abstain"){
-    cls="veto"; tag=`<span class="tag t-veto">abstained</span>`;
-    why = esc(e.reason);
-  } else if(e.kind==="cycle_start"){
-    why = `equity $${esc(e.equity)} · ${e.open_positions} open · expiry ${esc(e.expiry)}`;
-  } else if(e.kind==="execution_error"){
-    cls="veto"; tag=`<span class="tag t-veto">error</span>`; why=esc(e.error);
+function lineChart(host,pts,{xLabel,yLabel,fmtX,fmtY,tipHtml,marker}){
+  const W=760,H=230,P={t:14,r:16,b:30,l:58};
+  const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);
+  let y0=Math.min(...ys),y1=Math.max(...ys);
+  if(y0===y1){y0-=1;y1+=1;}
+  const pad=(y1-y0)*0.12; y0-=pad; y1+=pad;
+  const x0=Math.min(...xs),x1=Math.max(...xs);
+  const sx=v=>P.l+((v-x0)/((x1-x0)||1))*(W-P.l-P.r);
+  const sy=v=>P.t+(1-(v-y0)/((y1-y0)||1))*(H-P.t-P.b);
+  const ticks=4, gy=[...Array(ticks+1)].map((_,i)=>y0+(y1-y0)*i/ticks);
+  const d=pts.map((p,i)=>(i?"L":"M")+sx(p.x).toFixed(1)+" "+sy(p.y).toFixed(1)).join(" ");
+  const area=`M${sx(pts[0].x).toFixed(1)} ${sy(pts[0].y).toFixed(1)} `+
+    pts.slice(1).map(p=>"L"+sx(p.x).toFixed(1)+" "+sy(p.y).toFixed(1)).join(" ")+
+    ` L${sx(pts[pts.length-1].x).toFixed(1)} ${H-P.b} L${sx(pts[0].x).toFixed(1)} ${H-P.b} Z`;
+  const last=pts[pts.length-1];
+  let mk="";
+  if(marker!=null){
+    const mx=sx(marker.x);
+    mk=`<line x1="${mx}" y1="${P.t}" x2="${mx}" y2="${H-P.b}" stroke="var(--warn)" stroke-width="2" stroke-dasharray="4 3"/>
+        <text x="${mx+6}" y="${P.t+11}" font-family="var(--mono)" font-size="10" fill="var(--warn)">${esc(marker.label)}</text>`;
   }
-  return `<div class="entry ${cls}"><span class="at">${when(e.at)}</span>
-    <div class="body"><div class="why">${why}</div></div>${tag}</div>`;
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yLabel)} over ${esc(xLabel)}">
+    <defs><linearGradient id="g-${host.id}" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="var(--series-1)" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="var(--series-1)" stop-opacity="0"/></linearGradient></defs>
+    <g class="grid">${gy.map(v=>`<line x1="${P.l}" x2="${W-P.r}" y1="${sy(v).toFixed(1)}" y2="${sy(v).toFixed(1)}"/>`).join("")}</g>
+    <g class="axis">${gy.map(v=>`<text x="${P.l-8}" y="${(sy(v)+3.5).toFixed(1)}" text-anchor="end">${fmtY(v)}</text>`).join("")}
+      <line x1="${P.l}" x2="${W-P.r}" y1="${H-P.b}" y2="${H-P.b}"/>
+      <text x="${P.l}" y="${H-P.b+18}">${fmtX(x0)}</text>
+      <text x="${W-P.r}" y="${H-P.b+18}" text-anchor="end">${fmtX(x1)}</text></g>
+    <path d="${area}" fill="url(#g-${host.id})"/>
+    <path d="${d}" fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${mk}
+    <circle cx="${sx(last.x).toFixed(1)}" cy="${sy(last.y).toFixed(1)}" r="4.5"
+      fill="var(--series-1)" stroke="var(--surface)" stroke-width="2"/>
+    <g id="hit-${host.id}">${pts.map((p,i)=>`<circle cx="${sx(p.x).toFixed(1)}" cy="${sy(p.y).toFixed(1)}" r="11" fill="transparent" data-i="${i}"/>`).join("")}</g>
+  </svg>`;
+  host.querySelectorAll(`#hit-${host.id} circle`).forEach(c=>{
+    c.addEventListener("mouseenter",e=>showTip(e,tipHtml(pts[+c.dataset.i])));
+    c.addEventListener("mousemove",e=>showTip(e,tipHtml(pts[+c.dataset.i])));
+    c.addEventListener("mouseleave",hideTip);
+  });
 }
 
-fetch("data.json?ts=" + Date.now()).then(r => {
-  if(!r.ok) throw new Error("data.json returned " + r.status);
-  return r.json();
-}).then(d => {
-  document.getElementById("stamp").textContent =
-    "Generated " + when(d.generated_at) + " · account " + d.account.number + " · paper trading";
-  document.getElementById("cards").innerHTML = cards(d);
-  document.getElementById("ledger").innerHTML =
-    (d.ledger||[]).slice().reverse().map(ledgerRow).join("") || "<p>No decisions recorded yet.</p>";
+fetch("data.json?ts="+Date.now()).then(r=>{if(!r.ok)throw new Error("data.json "+r.status);return r.json();}).then(d=>{
+  const a=d.account,c=d.counters,pnl=parseFloat(a.pnl);
+  $("#stamp").textContent="Generated "+when(d.generated_at)+" · Alpaca paper account "+a.number+" · options level "+a.options_level;
 
-  const pt = document.querySelector("#positions tbody");
-  pt.innerHTML = (d.positions||[]).map(p => {
-    const u = parseFloat(p.unrealized||0);
-    return `<tr><td class="m">${esc(p.symbol)}</td><td class="m">${esc(p.qty)}</td>
-      <td class="m">${esc(p.entry)}</td><td class="m">${esc(p.current??"—")}</td>
-      <td class="m ${u>0?"pos":u<0?"neg":""}">${money(u)}</td></tr>`;
-  }).join("") || `<tr><td colspan="5">No open positions.</td></tr>`;
+  const ref=(d.refusals&&d.refusals.summary)||null;
+  $("#tiles").innerHTML=[
+    `<div class="tile"><span class="k">Equity</span><b>${money(parseFloat(a.equity))}</b><span class="s">from ${money(parseFloat(a.starting_equity))}</span></div>`,
+    `<div class="tile"><span class="k">Realised P&amp;L</span><b class="${pnl>0?"pos":pnl<0?"neg":""}">${pnl>=0?"+":"−"}${money(Math.abs(pnl))}</b><span class="s">${a.pnl_pct}% of start</span></div>`,
+    `<div class="tile"><span class="k">Decisions</span><b>${c.decisions}</b><span class="s">${c.vetoed} vetoed by the gate</span></div>`,
+    `<div class="tile"><span class="k">Orders filled</span><b>${c.orders_filled}</b><span class="s">${c.orders_submitted} submitted</span></div>`,
+    ref?`<div class="tile"><span class="k">Refusals graded</span><b>${ref.refusals_priced}</b><span class="s">hit rate ${ref.hit_rate}</span></div>`:"",
+  ].join("");
 
-  const ot = document.querySelector("#orders tbody");
-  ot.innerHTML = (d.orders||[]).map(o => {
-    const legs = (o.legs||[]).map(l => `${esc(l.side)} ${esc(l.symbol)}`).join("<br>") || "—";
-    const t = o.status==="filled" ? "t-ok" : o.status==="new" ? "t-warn" : "t-mute";
-    return `<tr><td class="m">${when(o.submitted_at)}</td>
-      <td><span class="tag ${t}">${esc(o.status)}</span></td>
+  // equity
+  const curve=(d.equity_curve||[]).map(p=>({x:new Date(p.at).getTime(),y:p.equity,at:p.at}));
+  if(curve.length>1){
+    lineChart($("#equity"),curve,{
+      xLabel:"time",yLabel:"account equity",
+      fmtX:v=>new Date(v).toISOString().slice(5,10),
+      fmtY:v=>"$"+Math.round(v).toLocaleString(),
+      tipHtml:p=>`${when(p.at)}<br><b>${money(p.y)}</b>`});
+    const lo=Math.min(...curve.map(p=>p.y)),hi=Math.max(...curve.map(p=>p.y));
+    $("#equity-cap").textContent=`${curve.length} live reads · low ${money(lo)} · high ${money(hi)}`;
+  } else { $("#equity").innerHTML=`<p class="mono" style="color:var(--muted)">not enough reads yet</p>`; }
+
+  // refusals
+  if(ref){
+    $("#ref-tiles").innerHTML=[
+      `<div class="tile"><span class="k">Refusals correct</span><b class="${ref.refusals_correct?"pos":""}">${ref.refusals_correct}</b><span class="s">avoided a loss</span></div>`,
+      `<div class="tile"><span class="k">Refusals costly</span><b class="${ref.refusals_costly?"neg":""}">${ref.refusals_costly}</b><span class="s">missed a profit</span></div>`,
+      `<div class="tile"><span class="k">Profit forgone</span><b class="neg">${money(parseFloat(ref.profit_forgone))}</b><span class="s">by refusing</span></div>`,
+      `<div class="tile"><span class="k">Net of refusing</span><b class="${parseFloat(ref.net_of_refusing)>=0?"pos":"neg"}">${money(parseFloat(ref.net_of_refusing))}</b><span class="s">loss avoided minus profit missed</span></div>`,
+    ].join("");
+    $("#ref-table").querySelector("tbody").innerHTML=(d.refusals.refusals||[]).map(r=>{
+      const p=r.pnl_if_taken==null?null:parseFloat(r.pnl_if_taken);
+      const good=p!=null&&p<0;
+      return `<tr><td class="m">${when(r.at)}</td>
+        <td class="m">${esc(r.short.slice(3))}<br>${esc(r.long.slice(3))}</td>
+        <td class="m">${esc(r.credit)} × ${esc(r.quantity)}</td>
+        <td class="m ${p==null?"":p<0?"pos":"neg"}">${p==null?"—":(p>=0?"+":"−")+money(Math.abs(p))}</td>
+        <td><span class="tag ${good?"t-good":"t-bad"}">${good?"correct":"costly"}</span></td>
+        <td>${esc(r.reason)}</td></tr>`;}).join("")
+      ||`<tr><td colspan="6">No refusals carry enough detail to re-price.</td></tr>`;
+    $("#ref-note").innerHTML=ref.refusals_costly&&!ref.refusals_correct
+      ? `<b>The gate was miscalibrated, and this is how we found out.</b> Every refusal it made would
+         have been profitable. The minimum credit-to-width was set at 0.15 with no evidence behind it;
+         on this measurement it was lowered to 0.12, which still refuses the genuinely thin spread at
+         0.10. The scorer keeps grading the new floor the same way.`
+      : `Scored symmetrically — refusals that avoided a loss and refusals that missed a profit both count.`;
+  }
+
+  // frontier
+  const fr=d.frontier||{};
+  const fp=(fr.points||[]).map(p=>({x:p.threshold,y:p.total_pnl,n:p.trades_admitted}));
+  if(fp.length>1){
+    lineChart($("#frontier"),fp,{
+      xLabel:"minimum credit-to-width",yLabel:"total P&L",
+      fmtX:v=>v.toFixed(2),fmtY:v=>"$"+Math.round(v),
+      marker:{x:fr.shipped_threshold??0.12,label:"shipped "+(fr.shipped_threshold??0.12)},
+      tipHtml:p=>`θ ${p.x.toFixed(2)}<br><b>${money(p.y)}</b><br>${p.n} trades admitted`});
+    $("#frontier-cap").textContent=`${fr.sample_size} evaluated spreads re-priced · dashed line is the shipped floor`;
+    $("#frontier-note").innerHTML=fr.discriminating===false
+      ? `<b>This curve cannot pick a threshold, and saying so is the point.</b> All
+         ${fr.sample_size} re-priced spreads are winners — SPY rose across the whole window — so the
+         curve can only fall as the floor rises and its maximum is <em>“trade everything”</em> by
+         construction. That is a property of one rally, not of the filter. A floor exists to cap the
+         loser that has not happened yet, so the shipped floor stays at ${fr.shipped_threshold}.`
+      : esc(fr.caveat||"");
+  } else { $("#frontier").innerHTML=`<p class="mono" style="color:var(--muted)">not enough evaluated spreads yet</p>`; }
+
+  // ledger
+  // The full ledger is in the repo. The page shows the entries that carry a
+  // decision - a cycle heartbeat is not one, and sixty of them bury the rest.
+  const SHOWN=new Set(["risk_verdict","analyst_view","challenge","order_submitted",
+                       "close_submitted","abstain","position_review"]);
+  const interesting=(d.ledger||[]).filter(e=>SHOWN.has(e.kind));
+  $("#ledger-count").textContent=
+    `showing the last ${Math.min(24,interesting.length)} of ${(d.ledger||[]).length} entries`;
+  $("#ledger").innerHTML=interesting.slice(-24).reverse().map(e=>{
+    let cls="info",tag=`<span class="tag t-mute">${esc(e.kind)}</span>`,why="";
+    if(e.kind==="risk_verdict"){
+      cls=e.approved?"ok":"no";
+      tag=e.approved?`<span class="tag t-good">approved ${e.quantity}×</span>`:`<span class="tag t-bad">vetoed</span>`;
+      const rs=(e.reasons||[]).join("; ");
+      why=`${esc(e.short)} / ${esc(e.long)} · width $${esc(e.width)} · credit $${esc(e.credit)} · max loss $${esc(e.max_loss)}`
+        +(e.short_delta?` · Δ ${e.short_delta}`:"")+(rs?`<br><strong>${esc(rs)}</strong>`:"");
+    } else if(e.kind==="analyst_view"){
+      cls=e.trade?"ok":"no";
+      tag=`<span class="tag t-acc">analyst</span>`;
+      why=esc(e.rationale||"")+(e.invalidated_if?`<br><em>wrong if:</em> ${esc(e.invalidated_if)}`:"");
+    } else if(e.kind==="challenge"){
+      cls=e.refuted?"no":"ok";
+      tag=`<span class="tag ${e.refuted?"t-bad":"t-good"}">challenger ${esc(e.severity)}</span>`;
+      why=esc(e.argument||"");
+    } else if(e.kind==="order_submitted"){
+      tag=`<span class="tag t-warn">${e.dry_run?"dry run":"submitted"}</span>`;
+      why=`order <code>${esc(e.order_id||"—")}</code> · max loss $${esc(e.max_loss)}`;
+    } else if(e.kind==="close_submitted"){
+      cls="ok";tag=`<span class="tag t-good">closed</span>`;
+      why=`${esc(e.action||"")} · order <code>${esc(e.order_id||"—")}</code>`;
+    } else if(e.kind==="abstain"){ cls="no";tag=`<span class="tag t-bad">abstained</span>`;why=esc(e.reason);
+    } else if(e.kind==="regime"){ tag=`<span class="tag t-mute">regime ${esc(e.regime)}</span>`;why=esc(e.reason);
+    } else if(e.kind==="cycle_start"){ why=`equity $${esc(e.equity)} · ${e.open_positions} open · expiry ${esc(e.expiry)}`;
+    } else if(e.kind==="position_review"){ tag=`<span class="tag t-mute">${esc(e.action)}</span>`;why=esc(e.reason);
+    }
+    return `<div class="entry ${cls}"><span class="at">${when(e.at)}</span>
+      <div class="why">${why}</div>${tag}</div>`;
+  }).join("")||"<p>No decisions recorded yet.</p>";
+
+  $("#orders").querySelector("tbody").innerHTML=(d.orders||[]).map(o=>{
+    const legs=(o.legs||[]).map(l=>`${esc(l.side)} ${esc(l.symbol.slice(3))}`).join("<br>")||"—";
+    const t=o.status==="filled"?"t-good":o.status==="new"?"t-warn":"t-mute";
+    return `<tr><td class="m">${when(o.submitted_at)}</td><td><span class="tag ${t}">${esc(o.status)}</span></td>
       <td class="m">${esc(o.qty)}</td><td class="m">${esc(o.limit_price??"—")}</td>
-      <td class="m">${esc(o.filled_avg_price??"—")}</td>
-      <td class="m" style="font-size:11px">${legs}</td></tr>`;
-  }).join("") || `<tr><td colspan="6">No orders yet.</td></tr>`;
-}).catch(e => {
-  document.getElementById("cards").innerHTML =
-    `<div class="err">Could not load <code>data.json</code>: ${esc(e.message)}.
-     The agent writes it on each cycle.</div>`;
-  document.getElementById("stamp").textContent = "data unavailable";
+      <td class="m">${esc(o.filled_avg_price??"—")}</td><td class="m" style="font-size:11px">${legs}</td></tr>`;
+  }).join("")||`<tr><td colspan="6">No orders yet.</td></tr>`;
+}).catch(e=>{
+  $("#tiles").innerHTML=`<div class="err">Could not load <code>data.json</code>: ${esc(e.message)}</div>`;
+  $("#stamp").textContent="data unavailable";
 });
 </script>
 </body>

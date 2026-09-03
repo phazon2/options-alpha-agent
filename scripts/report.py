@@ -52,7 +52,46 @@ def main() -> int:
     ]
     unrealized = sum(Decimal(str(p.get("unrealized_pl") or 0)) for p in positions)
 
+    # Equity over time, taken from the agent's own live reads in the ledger.
+    # Alpaca's intraday portfolio-history series is unusable in paper: it
+    # reports exactly $100,000 too high (200,151.93 against a true 100,151.93),
+    # while the daily series is correct. Our own cycle reads avoid the bug and
+    # are higher resolution than daily.
+    curve = []
+    for e in entries:
+        if e.get("kind") == "cycle_start" and e.get("equity"):
+            try:
+                curve.append({"at": e["at"], "equity": float(e["equity"])})
+            except (TypeError, ValueError):
+                continue
+    curve.append({"at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                  "equity": float(equity)})
+    # Collapse repeated reads at the same minute.
+    deduped = []
+    for point in curve:
+        if deduped and deduped[-1]["at"][:16] == point["at"][:16]:
+            deduped[-1] = point
+        else:
+            deduped.append(point)
+
+    frontier = {}
+    refusals = {}
+    for name, target in (("frontier.json", "frontier"), ("refusals.json", "refusals")):
+        path = Path("public") / name
+        if path.exists():
+            try:
+                payload = json.loads(path.read_text())
+            except json.JSONDecodeError:
+                continue
+            if target == "frontier":
+                frontier = payload
+            else:
+                refusals = payload
+
     data = {
+        "equity_curve": deduped,
+        "frontier": frontier,
+        "refusals": refusals,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "account": {
             "number": account["account_number"],

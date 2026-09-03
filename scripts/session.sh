@@ -31,9 +31,30 @@ for i in $(seq 1 70); do
     commit_ledger
     break
   fi
+  # Hard brake. The pairing bug let six entries compound into $4,229 of risk
+  # while every cycle reported a flat book. The per-trade cap cannot catch
+  # that on its own, so the aggregate is checked from outside the agent.
+  RISK=$(python3 -c "
+import sys; sys.path.insert(0,'src')
+from agent.positions import assemble
+from agent.execution import AlpacaCLIExecutor
+try:
+    sp=assemble(AlpacaCLIExecutor().positions())
+    print(int(sum(float((s.width-s.credit_received)*100*s.quantity) for s in sp if not s.is_naked)))
+except Exception:
+    print(999999)
+" 2>/dev/null)
+  if [ "${RISK:-999999}" -gt 3000 ]; then
+    echo "=== [$i] HALT: aggregate open risk \$$RISK exceeds \$3,000 - not opening more ===" | tee -a "$LOG"
+    python3 scripts/manage.py 2>&1 | tail -10 | tee -a "$LOG"
+    commit_ledger
+    sleep 300
+    continue
+  fi
   {
     echo ""
     echo "=========== cycle $i · $NOW ==========="
+    echo "aggregate open risk: \$$RISK"
     echo "--- exits ---";    python3 scripts/manage.py  2>&1 | grep -vE '^$' | tail -14
     echo "--- reprice ---";  python3 scripts/reprice.py 2>&1 | tail -6
     echo "--- entry ---";    python3 scripts/run_once.py 2>&1 | grep -E 'vol |analyst|challenger|risk officer|risk gate|budget|SUBMITTED|ABSTAIN|best ' | tail -9

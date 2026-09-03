@@ -245,8 +245,16 @@
       "equity": 99209.53
     },
     {
-      "at": "2026-09-03T18:58:27+00:00",
+      "at": "2026-09-03T18:58:06+00:00",
+      "equity": 99231.53
+    },
+    {
+      "at": "2026-09-03T19:05:14+00:00",
       "equity": 99239.53
+    },
+    {
+      "at": "2026-09-03T19:06:11+00:00",
+      "equity": 99231.53
     }
   ],
   "frontier": {
@@ -473,7 +481,7 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "12.000",
+        "pnl_if_taken": "14.000",
         "verdict": "refusal costly"
       },
       {
@@ -485,7 +493,7 @@
         "width": "2",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "27.000",
+        "pnl_if_taken": "25.000",
         "verdict": "refusal costly"
       },
       {
@@ -668,22 +676,22 @@
       }
     ]
   },
-  "generated_at": "2026-09-03T18:58:27+00:00",
+  "generated_at": "2026-09-03T19:06:11+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
-    "equity": "99239.53",
+    "equity": "99231.53",
     "cash": "99934.53",
     "starting_equity": "100000",
-    "pnl": "-760.47",
-    "pnl_pct": "-0.760",
+    "pnl": "-768.47",
+    "pnl_pct": "-0.768",
     "options_level": 3,
-    "unrealized": "-296.858"
+    "unrealized": "-304.858"
   },
   "counters": {
     "decisions": 22,
     "approved": 18,
     "vetoed": 4,
-    "abstained": 51,
+    "abstained": 52,
     "orders_submitted": 16,
     "orders_filled": 17,
     "open_legs": 4
@@ -693,15 +701,15 @@
       "symbol": "SPY260904P00767000",
       "qty": "8",
       "entry": "0.41",
-      "current": "0.35",
-      "unrealized": "-48"
+      "current": "0.33",
+      "unrealized": "-64"
     },
     {
       "symbol": "SPY260904P00768000",
       "qty": "-8",
       "entry": "0.53",
-      "current": "0.45",
-      "unrealized": "64"
+      "current": "0.44",
+      "unrealized": "72"
     },
     {
       "symbol": "SPY260910C00777000",
@@ -1221,87 +1229,6 @@
     }
   ],
   "ledger": [
-    {
-      "id": "16d918538f21",
-      "at": "2026-09-03T18:03:31+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": false,
-      "confidence": 0.85,
-      "target_delta": 0.19,
-      "rationale": "Credit-to-width of 0.13 is thin for a 1-DTE spread and the short delta of 0.19 is at the high end of the target range, offering minimal margin of safety on a 1-point width with only $13 of premium against $87 of risk.",
-      "invalidated_if": "SPY closes below 769 at expiry",
-      "clamped": [],
-      "failed": false
-    },
-    {
-      "id": "1112d6764b8e",
-      "at": "2026-09-03T18:03:31+00:00",
-      "kind": "abstain",
-      "reason": "analyst declined: Credit-to-width of 0.13 is thin for a 1-DTE spread and the short delta of 0.19 is at the high end of the target range, offering minimal margin of safety on a 1-point width with only $13 of premium against $87 of risk."
-    },
-    {
-      "id": "fb71c80cdac7",
-      "at": "2026-09-03T18:10:18+00:00",
-      "kind": "position_review",
-      "short": "SPY260904P00768000",
-      "long": "SPY260904P00767000",
-      "quantity": 8,
-      "credit": "0.12",
-      "cost_to_close": "0.11",
-      "captured": "0.08",
-      "open_pnl": "8.00",
-      "action": "hold",
-      "reason": "captured 8%, below the 50% target"
-    },
-    {
-      "id": "de2f8b0fd3a3",
-      "at": "2026-09-03T18:10:18+00:00",
-      "kind": "position_review",
-      "short": "SPY260910C00777000",
-      "long": "SPY260910C00778000",
-      "quantity": 15,
-      "credit": "0.201428",
-      "cost_to_close": "0.44",
-      "captured": "-1.184403",
-      "open_pnl": "-357.858000",
-      "action": "hold",
-      "reason": "captured -118%, below the 50% target"
-    },
-    {
-      "id": "2c9688a3b81e",
-      "at": "2026-09-03T18:10:20+00:00",
-      "kind": "cycle_start",
-      "market_open": true,
-      "equity": "99201.53",
-      "open_positions": 2,
-      "expiry": "2026-09-04"
-    },
-    {
-      "id": "1300fd947025",
-      "at": "2026-09-03T18:10:21+00:00",
-      "kind": "regime",
-      "regime": "neutral",
-      "reason": "spot 773.79 mixed against SMAs (767.34/769.19)",
-      "spot": 773.795,
-      "sma_short": 767.341,
-      "sma_long": 769.1895,
-      "return_20d": 0.0008213047752081426,
-      "realised_vol": 0.1129438019929294
-    },
-    {
-      "id": "248859efde14",
-      "at": "2026-09-03T18:11:34+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": false,
-      "confidence": 0.85,
-      "target_delta": 0.18,
-      "rationale": "Credit-to-width of 0.11 is below the 0.12 minimum risk cap, and the 0.22 credit on a 2-wide spread is poor compensation for 1.78 of risk with only 4.8 points of cushion and a neutral regime.",
-      "invalidated_if": "SPY closes below 769 on 2026-09-04",
-      "clamped": [],
-      "failed": false
-    },
     {
       "id": "9bff7a20cd6f",
       "at": "2026-09-03T18:11:34+00:00",
@@ -1903,6 +1830,85 @@
       "at": "2026-09-03T18:58:26+00:00",
       "kind": "abstain",
       "reason": "challenger (fatal): 1-DTE spread with short strike 769 sits just 4.45 pts below spot and below both SMAs; a single session drift to 769 triggers max loss on a 0.14 credit. The invalidation level IS the short strike, so protection starts only after you're already fully assigned."
+    },
+    {
+      "id": "b14460ac5147",
+      "at": "2026-09-03T19:05:12+00:00",
+      "kind": "position_review",
+      "short": "SPY260904P00768000",
+      "long": "SPY260904P00767000",
+      "quantity": 8,
+      "credit": "0.12",
+      "cost_to_close": "0.10",
+      "captured": "0.17",
+      "open_pnl": "16.00",
+      "action": "hold",
+      "reason": "captured 17%, below the 50% target"
+    },
+    {
+      "id": "66411a81e9c9",
+      "at": "2026-09-03T19:05:12+00:00",
+      "kind": "position_review",
+      "short": "SPY260910C00777000",
+      "long": "SPY260910C00778000",
+      "quantity": 15,
+      "credit": "0.201428",
+      "cost_to_close": "0.41",
+      "captured": "-1.035467",
+      "open_pnl": "-312.858000",
+      "action": "hold",
+      "reason": "captured -104%, below the 50% target"
+    },
+    {
+      "id": "baf23bcfa433",
+      "at": "2026-09-03T19:05:14+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "equity": "99239.53",
+      "open_positions": 2,
+      "expiry": "2026-09-04"
+    },
+    {
+      "id": "1d635cede2aa",
+      "at": "2026-09-03T19:05:15+00:00",
+      "kind": "regime",
+      "regime": "neutral",
+      "reason": "spot 773.59 mixed against SMAs (767.30/769.18)",
+      "spot": 773.59,
+      "sma_short": 767.3,
+      "sma_long": 769.17925,
+      "return_20d": 0.0005561591391174403,
+      "realised_vol": 0.11279799028854616
+    },
+    {
+      "id": "50757334686a",
+      "at": "2026-09-03T19:05:35+00:00",
+      "kind": "analyst_view",
+      "model": "zai-org/GLM-5.2",
+      "trade": true,
+      "confidence": 0.68,
+      "target_delta": 0.19,
+      "rationale": "VRP of 8.11 vol points is substantial with implied vol 13.24% vs matched realised 5.13%; credit-to-width of 0.15 clears the minimum and short delta 0.19 is in range; neutral regime and low realised vol support selling premium.",
+      "invalidated_if": "SPY closes below 769 on 2026-09-04",
+      "clamped": [],
+      "failed": false
+    },
+    {
+      "id": "27bda78f9e33",
+      "at": "2026-09-03T19:06:09+00:00",
+      "kind": "challenge",
+      "refuted": true,
+      "severity": "fatal",
+      "argument": "Short strike 769 sits exactly at SMA 20 (769.18) with SMA 5 (767.30) already below it\u2014price is magnetized to this level. Only 4.59pts (0.59%) cushion is less than one daily std dev (~6.45pts), and the invalidation is just the short strike itself\u2014no real stop.",
+      "failed": false,
+      "blocks": true,
+      "size_multiplier": 1.0
+    },
+    {
+      "id": "8c93dccf6445",
+      "at": "2026-09-03T19:06:09+00:00",
+      "kind": "abstain",
+      "reason": "challenger (fatal): Short strike 769 sits exactly at SMA 20 (769.18) with SMA 5 (767.30) already below it\u2014price is magnetized to this level. Only 4.59pts (0.59%) cushion is less than one daily std dev (~6.45pts), and the invalidation is just the short strike itself\u2014no real stop."
     }
   ]
 }

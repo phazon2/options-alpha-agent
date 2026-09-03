@@ -1,12 +1,355 @@
 {
-  "generated_at": "2026-09-02T22:11:23+00:00",
+  "equity_curve": [
+    {
+      "at": "2026-08-31T19:31:18+00:00",
+      "equity": 100000.0
+    },
+    {
+      "at": "2026-08-31T19:32:23+00:00",
+      "equity": 100000.0
+    },
+    {
+      "at": "2026-08-31T19:33:28+00:00",
+      "equity": 100000.0
+    },
+    {
+      "at": "2026-09-01T17:09:47+00:00",
+      "equity": 99983.88
+    },
+    {
+      "at": "2026-09-01T17:10:58+00:00",
+      "equity": 99982.88
+    },
+    {
+      "at": "2026-09-01T20:16:10+00:00",
+      "equity": 99983.03
+    },
+    {
+      "at": "2026-09-02T18:14:39+00:00",
+      "equity": 100149.54
+    },
+    {
+      "at": "2026-09-02T18:15:21+00:00",
+      "equity": 100149.54
+    },
+    {
+      "at": "2026-09-02T18:16:58+00:00",
+      "equity": 100149.54
+    },
+    {
+      "at": "2026-09-02T18:17:42+00:00",
+      "equity": 100149.54
+    },
+    {
+      "at": "2026-09-02T18:18:58+00:00",
+      "equity": 100150.54
+    },
+    {
+      "at": "2026-09-02T18:20:07+00:00",
+      "equity": 100151.54
+    },
+    {
+      "at": "2026-09-02T18:21:37+00:00",
+      "equity": 100151.54
+    },
+    {
+      "at": "2026-09-02T18:22:57+00:00",
+      "equity": 100150.54
+    },
+    {
+      "at": "2026-09-02T18:24:44+00:00",
+      "equity": 100150.54
+    },
+    {
+      "at": "2026-09-02T18:25:23+00:00",
+      "equity": 100150.54
+    },
+    {
+      "at": "2026-09-02T18:26:32+00:00",
+      "equity": 100150.54
+    },
+    {
+      "at": "2026-09-02T18:27:59+00:00",
+      "equity": 100149.54
+    },
+    {
+      "at": "2026-09-02T18:28:17+00:00",
+      "equity": 100150.54
+    },
+    {
+      "at": "2026-09-02T18:29:04+00:00",
+      "equity": 100150.54
+    },
+    {
+      "at": "2026-09-02T22:11:05+00:00",
+      "equity": 100150.54
+    },
+    {
+      "at": "2026-09-03T12:21:20+00:00",
+      "equity": 100149.93
+    }
+  ],
+  "frontier": {
+    "generated_at": "2026-09-02T22:11:05+00:00",
+    "sample_size": 9,
+    "shipped_threshold": 0.12,
+    "empirical_max": 0.04,
+    "tie_range": [
+      0.04,
+      0.1
+    ],
+    "losers_in_sample": 0,
+    "discriminating": false,
+    "caveat": "All 9 re-priced spreads are winners. With no loser in the sample the curve falls monotonically and its maximum is 'trade everything' by construction - an artefact of a rising market, not a property of the filter. Not evidence for lowering the floor.",
+    "points": [
+      {
+        "threshold": 0.04,
+        "trades_admitted": 9,
+        "total_pnl": 341.0,
+        "winners": 9
+      },
+      {
+        "threshold": 0.05,
+        "trades_admitted": 9,
+        "total_pnl": 341.0,
+        "winners": 9
+      },
+      {
+        "threshold": 0.06,
+        "trades_admitted": 9,
+        "total_pnl": 341.0,
+        "winners": 9
+      },
+      {
+        "threshold": 0.07,
+        "trades_admitted": 9,
+        "total_pnl": 341.0,
+        "winners": 9
+      },
+      {
+        "threshold": 0.08,
+        "trades_admitted": 9,
+        "total_pnl": 341.0,
+        "winners": 9
+      },
+      {
+        "threshold": 0.09,
+        "trades_admitted": 9,
+        "total_pnl": 341.0,
+        "winners": 9
+      },
+      {
+        "threshold": 0.1,
+        "trades_admitted": 9,
+        "total_pnl": 341.0,
+        "winners": 9
+      },
+      {
+        "threshold": 0.11,
+        "trades_admitted": 8,
+        "total_pnl": 333.0,
+        "winners": 8
+      },
+      {
+        "threshold": 0.12,
+        "trades_admitted": 8,
+        "total_pnl": 333.0,
+        "winners": 8
+      },
+      {
+        "threshold": 0.13,
+        "trades_admitted": 8,
+        "total_pnl": 333.0,
+        "winners": 8
+      },
+      {
+        "threshold": 0.14,
+        "trades_admitted": 8,
+        "total_pnl": 333.0,
+        "winners": 8
+      },
+      {
+        "threshold": 0.15,
+        "trades_admitted": 5,
+        "total_pnl": 317.0,
+        "winners": 5
+      },
+      {
+        "threshold": 0.16,
+        "trades_admitted": 4,
+        "total_pnl": 314.0,
+        "winners": 4
+      },
+      {
+        "threshold": 0.17,
+        "trades_admitted": 3,
+        "total_pnl": 178.0,
+        "winners": 3
+      },
+      {
+        "threshold": 0.18,
+        "trades_admitted": 1,
+        "total_pnl": 7.0,
+        "winners": 1
+      },
+      {
+        "threshold": 0.19,
+        "trades_admitted": 1,
+        "total_pnl": 7.0,
+        "winners": 1
+      },
+      {
+        "threshold": 0.2,
+        "trades_admitted": 0,
+        "total_pnl": 0,
+        "winners": 0
+      }
+    ],
+    "trades": [
+      {
+        "at": "2026-08-31T19:31:19+00:00",
+        "ratio": 0.1,
+        "pnl": 8.0,
+        "was_approved": false,
+        "short": "SPY260904P00758000",
+        "long": "SPY260904P00753000"
+      },
+      {
+        "at": "2026-08-31T19:32:01+00:00",
+        "ratio": 0.19,
+        "pnl": 7.0,
+        "was_approved": true,
+        "short": "SPY260904P00758000",
+        "long": "SPY260904P00757000"
+      },
+      {
+        "at": "2026-08-31T19:32:23+00:00",
+        "ratio": 0.14,
+        "pnl": 2.0,
+        "was_approved": false,
+        "short": "SPY260904P00758000",
+        "long": "SPY260904P00757000"
+      },
+      {
+        "at": "2026-08-31T19:33:06+00:00",
+        "ratio": 0.14,
+        "pnl": 8.0,
+        "was_approved": false,
+        "short": "SPY260904P00758000",
+        "long": "SPY260904P00756000"
+      },
+      {
+        "at": "2026-08-31T19:33:28+00:00",
+        "ratio": 0.15,
+        "pnl": 3.0,
+        "was_approved": true,
+        "short": "SPY260904P00758000",
+        "long": "SPY260904P00757000"
+      },
+      {
+        "at": "2026-09-01T17:09:48+00:00",
+        "ratio": 0.17,
+        "pnl": 9.0,
+        "was_approved": true,
+        "short": "SPY260904P00753000",
+        "long": "SPY260904P00752000"
+      },
+      {
+        "at": "2026-09-01T17:10:08+00:00",
+        "ratio": 0.17,
+        "pnl": 162.0,
+        "was_approved": true,
+        "short": "SPY260904P00753000",
+        "long": "SPY260904P00752000"
+      },
+      {
+        "at": "2026-09-01T17:10:36+00:00",
+        "ratio": 0.14,
+        "pnl": 6.0,
+        "was_approved": false,
+        "short": "SPY260904P00753000",
+        "long": "SPY260904P00752000"
+      },
+      {
+        "at": "2026-09-01T17:10:59+00:00",
+        "ratio": 0.16,
+        "pnl": 136.0,
+        "was_approved": true,
+        "short": "SPY260904P00753000",
+        "long": "SPY260904P00752000"
+      }
+    ]
+  },
+  "refusals": {
+    "summary": {
+      "refusals_examined": 4,
+      "refusals_priced": 4,
+      "refusals_correct": 0,
+      "refusals_costly": 4,
+      "loss_avoided": "0",
+      "profit_forgone": "24.000",
+      "net_of_refusing": "-24.000",
+      "hit_rate": "0%"
+    },
+    "refusals": [
+      {
+        "at": "2026-08-31T19:31:19+00:00",
+        "short": "SPY260904P00758000",
+        "long": "SPY260904P00753000",
+        "quantity": 1,
+        "credit": "0.50",
+        "width": "5",
+        "reason": "credit/width 0.100 below minimum 0.15",
+        "refused_by": "risk gate",
+        "pnl_if_taken": "8.000",
+        "verdict": "refusal costly"
+      },
+      {
+        "at": "2026-08-31T19:32:23+00:00",
+        "short": "SPY260904P00758000",
+        "long": "SPY260904P00757000",
+        "quantity": 1,
+        "credit": "0.14",
+        "width": "1",
+        "reason": "credit/width 0.140 below minimum 0.15",
+        "refused_by": "risk gate",
+        "pnl_if_taken": "2.000",
+        "verdict": "refusal costly"
+      },
+      {
+        "at": "2026-08-31T19:33:06+00:00",
+        "short": "SPY260904P00758000",
+        "long": "SPY260904P00756000",
+        "quantity": 1,
+        "credit": "0.28",
+        "width": "2",
+        "reason": "credit/width 0.140 below minimum 0.15",
+        "refused_by": "risk gate",
+        "pnl_if_taken": "8.000",
+        "verdict": "refusal costly"
+      },
+      {
+        "at": "2026-09-01T17:10:36+00:00",
+        "short": "SPY260904P00753000",
+        "long": "SPY260904P00752000",
+        "quantity": 1,
+        "credit": "0.14",
+        "width": "1",
+        "reason": "credit/width 0.140 below minimum 0.15",
+        "refused_by": "risk gate",
+        "pnl_if_taken": "6.000",
+        "verdict": "refusal costly"
+      }
+    ]
+  },
+  "generated_at": "2026-09-03T12:21:20+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
-    "equity": "100150.54",
-    "cash": "100163.54",
+    "equity": "100149.93",
+    "cash": "100162.93",
     "starting_equity": "100000",
-    "pnl": "150.54",
-    "pnl_pct": "0.151",
+    "pnl": "149.93",
+    "pnl_pct": "0.150",
     "options_level": 3,
     "unrealized": "0"
   },
@@ -42,7 +385,7 @@
       "qty": "17",
       "limit_price": "0.07",
       "filled_avg_price": "0.07",
-      "submitted_at": "2026-09-02T14:57:24.66474389Z",
+      "submitted_at": "2026-09-02T14:57:24.664744Z",
       "legs": [
         {
           "symbol": "SPY260904P00753000",

@@ -7,6 +7,10 @@ the [lablab.ai × Alpaca hackathon](https://lablab.ai/ai-hackathons/alpaca-ai-tr
 **Paper trading only. Nothing here is investment advice, and paper results are
 hypothetical.**
 
+## One-page write-up
+
+AI logic, risk gates and Alpaca infrastructure: **[docs/WRITEUP.md](docs/WRITEUP.md)**
+
 ## Status
 
 Setup verified against the live Alpaca paper API — see `docs/receipts/`, which

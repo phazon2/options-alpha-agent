@@ -131,3 +131,59 @@ def simulate(
         max_loss=-(width - credit_f) * scale,
         std_error=std_error,
     )
+
+
+def simulate_condor(
+    spot: float,
+    short_put: Decimal,
+    long_put: Decimal,
+    short_call: Decimal,
+    long_call: Decimal,
+    credit: Decimal,
+    quantity: int,
+    days_to_expiry: int,
+    annual_vol: float,
+    paths: int = DEFAULT_PATHS,
+    seed: int = 7,
+) -> VarReport:
+    """Distribution for a four-legged condor.
+
+    Both wings are priced along the same path, which is the point: only one
+    can finish in the money, so the loss is capped at the wider wing rather
+    than the sum of the two.
+    """
+    rng = random.Random(seed)
+    t = max(days_to_expiry, 1) / TRADING_DAYS
+    sigma = max(annual_vol, 1e-6)
+    drift = -0.5 * sigma * sigma * t
+    diffusion = sigma * math.sqrt(t)
+    scale = CONTRACT_MULTIPLIER * quantity
+    credit_f = float(credit)
+    sp, lp = float(short_put), float(long_put)
+    sc, lc = float(short_call), float(long_call)
+
+    outcomes = []
+    for _ in range(paths):
+        terminal = spot * math.exp(drift + diffusion * rng.gauss(0.0, 1.0))
+        cost = _spread_value_at_expiry(terminal, sp, lp, is_put=True)
+        cost += _spread_value_at_expiry(terminal, sc, lc, is_put=False)
+        outcomes.append((credit_f - cost) * scale)
+
+    mean = sum(outcomes) / len(outcomes)
+    variance = sum((o - mean) ** 2 for o in outcomes) / max(len(outcomes) - 1, 1)
+    std_error = math.sqrt(variance / len(outcomes))
+    outcomes.sort()
+    cut = max(1, int(0.05 * len(outcomes)))
+    tail = outcomes[:cut]
+    widest = max(sp - lp, lc - sc)
+
+    return VarReport(
+        paths=paths,
+        probability_of_profit=sum(1 for o in outcomes if o > 0) / len(outcomes),
+        expected_pnl=mean,
+        var_95=outcomes[cut - 1],
+        expected_shortfall=sum(tail) / len(tail),
+        worst_case=outcomes[0],
+        max_loss=-(widest - credit_f) * scale,
+        std_error=std_error,
+    )

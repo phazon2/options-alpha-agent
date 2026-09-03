@@ -189,8 +189,8 @@
       "equity": 99282.63
     },
     {
-      "at": "2026-09-03T16:21:58+00:00",
-      "equity": 99253.93
+      "at": "2026-09-03T16:30:06+00:00",
+      "equity": 99283.93
     }
   ],
   "frontier": {
@@ -446,16 +446,16 @@
       }
     ]
   },
-  "generated_at": "2026-09-03T16:21:58+00:00",
+  "generated_at": "2026-09-03T16:30:06+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
-    "equity": "99253.93",
+    "equity": "99283.93",
     "cash": "99838.93",
     "starting_equity": "100000",
-    "pnl": "-746.07",
-    "pnl_pct": "-0.746",
+    "pnl": "-716.07",
+    "pnl_pct": "-0.716",
     "options_level": 3,
-    "unrealized": "-282.858"
+    "unrealized": "-252.858"
   },
   "counters": {
     "decisions": 18,
@@ -471,15 +471,15 @@
       "symbol": "SPY260910C00777000",
       "qty": "-15",
       "entry": "1.061428",
-      "current": "2.25",
-      "unrealized": "-1782.858"
+      "current": "2.11",
+      "unrealized": "-1572.858"
     },
     {
       "symbol": "SPY260910C00778000",
       "qty": "15",
       "entry": "0.86",
-      "current": "1.86",
-      "unrealized": "1500"
+      "current": "1.74",
+      "unrealized": "1320"
     }
   ],
   "orders": [

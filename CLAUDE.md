@@ -31,3 +31,19 @@ Never conclude a public URL is impossible.
 If you hit a blocker, state the exact error and whether it is:
 config-fixable / do-it-myself / genuinely human-only.
 Do not collapse those three into "blocked."
+
+## Trading agent — hard-won rules
+
+- Cash and equity must agree when the book reports flat. A divergence means
+  positions exist that the code cannot see. Check it every cycle.
+- Never key position logic on leg quantities being equal. Partial fills are
+  normal; 49 short against 45+4 long paired to zero spreads and let the agent
+  breach its own risk cap.
+- Choose strikes by expected value, not credit-to-width. The ratio is a proxy
+  and it picks spreads too narrow to capture any volatility premium.
+- The variance risk premium is direction-neutral. A trend filter on top of it
+  is an unpaid directional bet — it cost every call spread we opened on 3 Sep.
+- A gate that refuses trades is not broken. Loosening it because it refuses
+  too often is how we lost $731.
+
+See docs/POSTMORTEM.md for the full account.

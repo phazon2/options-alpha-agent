@@ -207,3 +207,124 @@ def select_put_credit_spread(
         underlying=underlying,
     )
     return proposal, short, long_leg
+
+
+@dataclass(frozen=True)
+class IronCondor:
+    """Both sides at once: a put spread below and a call spread above.
+
+    The agent's stated edge is the variance risk premium, which is a claim
+    about the *size* of future moves, not their direction. Picking a side
+    imports a directional bet the edge does not support - and on 3 September
+    that bet cost real money: every put spread the agent opened was
+    profitable and every call spread lost, because a rule that read "spot is
+    marginally below its 20-day average, sell calls" put it on the wrong side
+    of a 1.5% rally.
+
+    A condor harvests the premium on both wings and profits when the
+    underlying stays between the short strikes. Risk stays defined on each
+    side, and because only one wing can finish in the money, the loss is
+    capped at the wider wing rather than the sum of both.
+    """
+
+    short_put: Candidate
+    long_put: Candidate
+    short_call: Candidate
+    long_call: Candidate
+    credit: Decimal
+    quantity: int
+    underlying: str
+
+    @property
+    def put_width(self) -> Decimal:
+        return self.short_put.strike - self.long_put.strike
+
+    @property
+    def call_width(self) -> Decimal:
+        return self.long_call.strike - self.short_call.strike
+
+    @property
+    def width(self) -> Decimal:
+        """Only one wing can expire in the money, so risk is the wider one."""
+        return max(self.put_width, self.call_width)
+
+    @property
+    def max_loss(self) -> Decimal:
+        return (self.width - self.credit) * 100 * self.quantity
+
+    @property
+    def credit_to_width(self) -> Decimal:
+        return self.credit / self.width if self.width > 0 else Decimal("0")
+
+    def as_proposal(self) -> SpreadProposal:
+        """The risk gate reasons about width and credit; a condor fits that."""
+        return SpreadProposal(
+            short_symbol=self.short_put.symbol,
+            long_symbol=self.long_put.symbol,
+            width=self.width,
+            credit=self.credit,
+            quantity=self.quantity,
+            underlying=self.underlying,
+        )
+
+
+def select_iron_condor(
+    candidates: list[Candidate],
+    underlying: str = "SPY",
+    widths: list[Decimal] | None = None,
+    quantity: int = 1,
+    target_delta: float | None = None,
+) -> IronCondor:
+    """Build a condor from one chain containing both puts and calls."""
+    put_side, short_put = None, None
+    call_side, short_call = None, None
+
+    short_put, puts = _pick_short(candidates, target_delta, calls=False)
+    short_call, calls = _pick_short(candidates, target_delta, calls=True)
+
+    widths = widths or CANDIDATE_WIDTHS
+    puts_by_strike = {c.strike: c for c in puts}
+    calls_by_strike = {c.strike: c for c in calls}
+
+    def best_wing(short_leg, by_strike, downward):
+        best = None
+        for w in widths:
+            partner = by_strike.get(
+                short_leg.strike - w if downward else short_leg.strike + w
+            )
+            if partner is None:
+                continue
+            credit = (short_leg.mid - partner.mid).quantize(Decimal("0.01"))
+            if credit <= 0:
+                continue
+            ratio = credit / w
+            if best is None or ratio > best[0]:
+                best = (ratio, credit, partner)
+        return best
+
+    put_wing = best_wing(short_put, puts_by_strike, downward=True)
+    call_wing = best_wing(short_call, calls_by_strike, downward=False)
+    if put_wing is None or call_wing is None:
+        raise NoTradeFound(
+            "could not build both wings: "
+            f"put wing {'ok' if put_wing else 'missing'}, "
+            f"call wing {'ok' if call_wing else 'missing'}"
+        )
+
+    _, put_credit, long_put = put_wing
+    _, call_credit, long_call = call_wing
+    if short_call.strike <= short_put.strike:
+        raise NoTradeFound(
+            f"short call {short_call.strike} is not above short put "
+            f"{short_put.strike}; the wings would overlap"
+        )
+
+    return IronCondor(
+        short_put=short_put,
+        long_put=long_put,
+        short_call=short_call,
+        long_call=long_call,
+        credit=(put_credit + call_credit).quantize(Decimal("0.01")),
+        quantity=quantity,
+        underlying=underlying,
+    )

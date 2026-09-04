@@ -1,13 +1,13 @@
 {
-  "reconciled_at": "2026-09-04T13:49:52+00:00",
+  "reconciled_at": "2026-09-04T13:56:58+00:00",
   "summary": {
-    "broker_orders": 25,
-    "traced": 25,
+    "broker_orders": 26,
+    "traced": 26,
     "untraced": 0,
     "traced_via_client_order_id": 0,
-    "ledger_submissions": 25,
+    "ledger_submissions": 26,
     "ledger_orders_missing_at_broker": 0,
-    "filled": 17,
+    "filled": 18,
     "canceled": 8,
     "clean": true
   },
@@ -560,6 +560,28 @@
       ],
       "ledger_kind": "order_submitted",
       "decision_id": "6425c1606924",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "6c8e48b1-b7b0-45ab-a72b-133820f0953a",
+      "client_order_id": "oaa-close-b86dfcb9fc26",
+      "submitted_at": "2026-09-04T13:56:40.185870349Z",
+      "status": "filled",
+      "qty": "8",
+      "limit_price": "0.06",
+      "filled_avg_price": "0.06",
+      "legs": [
+        {
+          "symbol": "SPY260904P00768000",
+          "side": "buy"
+        },
+        {
+          "symbol": "SPY260904P00767000",
+          "side": "sell"
+        }
+      ],
+      "ledger_kind": "close_submitted",
+      "decision_id": "8e4e8ce3f705",
       "traced_via": "order_id"
     }
   ],

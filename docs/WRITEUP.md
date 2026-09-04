@@ -103,18 +103,28 @@ to mean. Orders are multi-leg: `--order-class mleg` with `--legs`, correct
 - **Trading API** — account, clock, positions, orders, option contracts
 - **Market data** — option chain snapshots on `--feed indicative`, which supplies
   delta, gamma, theta, vega and implied volatility used for strike selection
-- **Scheduling** — GitHub Actions every 30 minutes through the US session,
-  managing open positions before looking for new entries
+- **Scheduling** — one locked runner, `scripts/session.sh`, cycling every seven
+  minutes through the session: exits, then stale-order repricing, then one entry
+  attempt, then every receipt rebuilt and pushed. The GitHub Actions workflow is
+  dispatch-only, because a cron would be a second runner the moment the secrets
+  exist, and two runners would each see a flat book and each open a position.
 
 Two findings worth recording, both discovered by running against the live API
 rather than reading the docs:
 
-- **The multi-leg limit-price sign is undocumented and inverted from intuition.**
-  Alpaca reads a positive net limit as the maximum *debit* it will pay. An order
-  sent at `+0.15` filled at `−0.13` — a fill that only satisfies "pay at most
-  0.15". A credit spread sent with a positive limit therefore authorises paying
-  to enter a position meant to pay you. Opening now requires a negative limit and
-  the executor refuses a positive one; closing passes `allow_debit` explicitly.
+- **The multi-leg limit-price sign is documented and still bites.** The REST
+  reference says a positive value is a debit and a negative one a credit; the
+  CLI's `--limit-price` help does not. The first live order went in at `+0.15`
+  and filled as a `0.13` credit, because a credit satisfies a max-debit limit —
+  the wrong sign is invisible in the fill and dry run cannot catch it.
+  `execution.py` now refuses a positive net limit on any opening order.
+- **Position intent is inferred from the book, and a mismatch is a `422`.** Holding
+  −8 SPY 768P, the agent proposed a 769/768 spread whose long leg was the same
+  contract and lost four approved entries to `position intent mismatch
+  (inferred: buy_to_close, specified: buy_to_open)` between 18:36 and 19:58 UTC
+  on 3 September. Dry run passes it. `preflight.py` now removes any held contract
+  before a candidate is scored and takes a last look at the live book before
+  submitting.
 - **Greeks require `--feed indicative`.** The default `opra` feed returns
   `403 OPRA agreement is not signed`, and the plain snapshots endpoint returns
   nulls, which silently disables delta targeting.
@@ -126,3 +136,26 @@ is never rewritten, and published live.
 ---
 
 *Paper trading only. Results are hypothetical and are not investment advice.*
+
+## Graded overnight
+
+Three claims this write-up makes were turned into receipts before the final
+session, each rebuilt every cycle and published under `public/`.
+
+- **Every gate is graded, not just the arithmetic one.** Each gate that fires after
+  a spread is chosen now writes the legs, credit, width and budget-implied size
+  into its refusal, so the counterfactual scorer re-prices the analyst's, the
+  challenger's and the Monte Carlo's refusals on the same terms as the risk
+  gate's, and reports a row per gate. A gate that only ever refuses winners is a
+  gate that should be loosened; the aggregate hid that.
+- **The falsification conditions were checked.** The analyst must pre-register one
+  concrete `wrong if` before every trade. All 63 were parsed and graded against
+  daily closes: 42 on trades taken, none fired, and 17 of 32 were set at or beyond
+  the short strike — a level the spread cannot reach without having already lost
+  its maximum. That is a description, not a warning. Each condition is now judged
+  for this at decision time, and the next change is to require the level to sit
+  between spot and the short strike.
+- **Every order traces to a decision.** All 25 orders the broker holds for
+  PA3BY0HJORNC match a ledger record that submitted them, and every live
+  submission in the ledger exists at the broker. From the final session on, the
+  cycle's ledger id is the order's `client_order_id`, so the two name each other.

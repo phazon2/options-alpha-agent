@@ -281,8 +281,12 @@
       "equity": 99260.53
     },
     {
-      "at": "2026-09-03T20:05:29+00:00",
-      "equity": 99230.53
+      "at": "2026-09-04T11:34:07+00:00",
+      "equity": 99226.52
+    },
+    {
+      "at": "2026-09-04T11:39:57+00:00",
+      "equity": 99226.52
     }
   ],
   "frontier": {
@@ -483,9 +487,19 @@
       "refusals_correct": 0,
       "refusals_costly": 4,
       "loss_avoided": "0",
-      "profit_forgone": "98.000",
-      "net_of_refusing": "-98.000",
-      "hit_rate": "0%"
+      "profit_forgone": "112.500",
+      "net_of_refusing": "-112.500",
+      "hit_rate": "0%",
+      "by_gate": {
+        "risk gate": {
+          "examined": 4,
+          "priced": 4,
+          "correct": 0,
+          "costly": 4,
+          "net": "-112.500",
+          "hit_rate": "0%"
+        }
+      }
     },
     "refusals": [
       {
@@ -497,7 +511,7 @@
         "width": "5",
         "reason": "credit/width 0.100 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "48.000",
+        "pnl_if_taken": "52.000",
         "verdict": "refusal costly"
       },
       {
@@ -509,7 +523,7 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "9.000",
+        "pnl_if_taken": "17.000",
         "verdict": "refusal costly"
       },
       {
@@ -521,7 +535,7 @@
         "width": "2",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "27.000",
+        "pnl_if_taken": "31.000",
         "verdict": "refusal costly"
       },
       {
@@ -533,7 +547,7 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "14.000",
+        "pnl_if_taken": "12.500",
         "verdict": "refusal costly"
       }
     ]
@@ -575,152 +589,589 @@
     "note": "Same model, same live chain, same spreads. The naive agent has no regime filter, no challenger, no Monte Carlo, no floor and no position limit. It never submits; its would-be trades are re-priced at current marks by the same scorer that grades the real agent's refusals."
   },
   "scan": {
-    "generated_for": "2026-09-03",
-    "universe": [
-      "SPY",
-      "QQQ",
-      "IWM",
-      "DIA"
-    ],
-    "rows": [
+    "reconciled_at": "2026-09-04T11:35:32+00:00",
+    "summary": {
+      "broker_orders": 25,
+      "traced": 25,
+      "untraced": 0,
+      "traced_via_client_order_id": 0,
+      "ledger_submissions": 25,
+      "ledger_orders_missing_at_broker": 0,
+      "filled": 17,
+      "canceled": 8,
+      "clean": true
+    },
+    "orders": [
       {
-        "symbol": "SPY",
-        "dte": 1,
-        "expiry": "2026-09-04",
-        "spot": 773.81,
-        "regime": "neutral",
-        "short": "SPY260904P00769000",
-        "long": "SPY260904P00768000",
-        "short_delta": -0.1866,
-        "credit": "0.12",
-        "width": "1",
-        "pop": 0.9712,
-        "expected_at_realised": 98.69,
-        "expected_at_implied": -84.21,
-        "realised_vol": 0.0536,
-        "implied_vol": 0.1336,
-        "premium_vol_points": 8.0,
-        "result": "edge (conditional on realised<implied)"
+        "order_id": "e0743fe5-87cf-4ad9-a1e8-c4eff1e9a5c5",
+        "client_order_id": "3a916436-e3f7-4493-9dfb-3f2051fbbd25",
+        "submitted_at": "2026-08-31T19:33:28.902486Z",
+        "status": "filled",
+        "qty": "1",
+        "limit_price": "0.15",
+        "filled_avg_price": "-0.13",
+        "legs": [
+          {
+            "symbol": "SPY260904P00758000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260904P00757000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "44810e49803d",
+        "traced_via": "order_id"
       },
       {
-        "symbol": "SPY",
-        "dte": 7,
-        "expiry": "2026-09-10",
-        "spot": 773.81,
-        "regime": "neutral",
-        "short": "SPY260910P00765000",
-        "long": "SPY260910P00764000",
-        "short_delta": -0.2039,
-        "credit": "0.14",
-        "width": "1",
-        "pop": 0.7747,
-        "expected_at_realised": -76.94,
-        "expected_at_implied": -104.14,
-        "realised_vol": 0.0936,
-        "implied_vol": 0.1057,
-        "premium_vol_points": 1.21,
-        "result": "no edge"
+        "order_id": "cd44d308-8609-4044-8994-3137d255fc78",
+        "client_order_id": "4b06787c-6711-4cc0-8a73-9ce906e33b35",
+        "submitted_at": "2026-09-01T17:10:59.728278Z",
+        "status": "filled",
+        "qty": "17",
+        "limit_price": "-0.16",
+        "filled_avg_price": "-0.16",
+        "legs": [
+          {
+            "symbol": "SPY260904P00753000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260904P00752000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "29f9802faf03",
+        "traced_via": "order_id"
       },
       {
-        "symbol": "QQQ",
-        "dte": 1,
-        "expiry": "2026-09-04",
-        "spot": 718.735,
-        "regime": "neutral",
-        "result": "no spread: short strike 712.5 has no long leg at any width ['1', '2', '3', '5'] with a positive credit"
+        "order_id": "f67cd64a-a82c-4db8-a877-52de37037761",
+        "client_order_id": "cb6dcc55-5efa-4323-819e-9baaa9ba857e",
+        "submitted_at": "2026-09-02T14:57:24.664744Z",
+        "status": "filled",
+        "qty": "17",
+        "limit_price": "0.07",
+        "filled_avg_price": "0.07",
+        "legs": [
+          {
+            "symbol": "SPY260904P00753000",
+            "side": "buy"
+          },
+          {
+            "symbol": "SPY260904P00752000",
+            "side": "sell"
+          }
+        ],
+        "ledger_kind": "close_submitted",
+        "decision_id": "d64f67561ceb",
+        "traced_via": "order_id"
       },
       {
-        "symbol": "QQQ",
-        "dte": 7,
-        "expiry": "2026-09-10",
-        "spot": 718.735,
-        "regime": "neutral",
-        "short": "QQQ260910P00706000",
-        "long": "QQQ260910P00705000",
-        "short_delta": -0.1948,
-        "credit": "0.12",
-        "width": "1",
-        "pop": 0.7781,
-        "expected_at_realised": -95.56,
-        "expected_at_implied": -116.75,
-        "realised_vol": 0.1421,
-        "implied_vol": 0.1562,
-        "premium_vol_points": 1.41,
-        "result": "no edge"
+        "order_id": "aa3d6fa5-02b1-4ae4-b12a-51b5893a9cf5",
+        "client_order_id": "d2ea38c9-1e7b-4e6a-a7ac-5f34a9c2cdfd",
+        "submitted_at": "2026-09-03T13:30:28.443674Z",
+        "status": "filled",
+        "qty": "1",
+        "limit_price": "0.06",
+        "filled_avg_price": "0.06",
+        "legs": [
+          {
+            "symbol": "SPY260904P00758000",
+            "side": "buy"
+          },
+          {
+            "symbol": "SPY260904P00757000",
+            "side": "sell"
+          }
+        ],
+        "ledger_kind": "close_submitted",
+        "decision_id": "1f3f4246ae44",
+        "traced_via": "order_id"
       },
       {
-        "symbol": "IWM",
-        "dte": 1,
-        "expiry": "2026-09-04",
-        "spot": 294.97,
-        "regime": "bearish",
-        "result": "no spread: short strike 292.5 has no long leg at any width ['1', '2', '3', '5'] with a positive credit"
+        "order_id": "1d7dc2ee-1900-45cd-b506-bbac8b69c526",
+        "client_order_id": "85b726e0-6e59-46f8-88bd-ebc6aabd9f39",
+        "submitted_at": "2026-09-03T13:41:06.200679Z",
+        "status": "canceled",
+        "qty": "4",
+        "limit_price": "-0.25",
+        "filled_avg_price": null,
+        "legs": [
+          {
+            "symbol": "SPY260910P00759000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910P00757000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "c951398f5010",
+        "traced_via": "order_id"
       },
       {
-        "symbol": "IWM",
-        "dte": 7,
-        "expiry": "2026-09-10",
-        "spot": 294.97,
-        "regime": "bearish",
-        "short": "IWM260910P00290000",
-        "long": "IWM260910P00289000",
-        "short_delta": -0.1894,
-        "credit": "0.12",
-        "width": "1",
-        "pop": 0.7873,
-        "expected_at_realised": -76.16,
-        "expected_at_implied": -101.27,
-        "realised_vol": 0.1314,
-        "implied_vol": 0.1467,
-        "premium_vol_points": 1.53,
-        "result": "no edge"
+        "order_id": "14edc196-a387-4196-a7e0-5dc881b67d47",
+        "client_order_id": "5cef3d99-6a4b-4368-8d7e-29f1ce4ade66",
+        "submitted_at": "2026-09-03T13:50:43.481814Z",
+        "status": "filled",
+        "qty": "4",
+        "limit_price": "-0.24",
+        "filled_avg_price": "-0.24",
+        "legs": [
+          {
+            "symbol": "SPY260910P00759000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910P00757000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_repriced",
+        "decision_id": "178c46856342",
+        "traced_via": "order_id"
       },
       {
-        "symbol": "DIA",
-        "dte": 1,
-        "expiry": "2026-09-04",
-        "spot": 536.95,
-        "regime": "neutral",
-        "short": "DIA260904P00534000",
-        "long": "DIA260904P00533000",
-        "short_delta": -0.2133,
-        "credit": "0.17",
-        "width": "1",
-        "pop": 0.9678,
-        "expected_at_realised": 148.06,
-        "expected_at_implied": -43.51,
-        "realised_vol": 0.05,
-        "implied_vol": 0.1302,
-        "premium_vol_points": 8.02,
-        "result": "edge (conditional on realised<implied)"
+        "order_id": "c0fe0aad-6314-4768-b228-946e604fe5af",
+        "client_order_id": "a4990669-b53e-4b65-ac3f-409aa73e09b4",
+        "submitted_at": "2026-09-03T14:00:17.260884Z",
+        "status": "filled",
+        "qty": "4",
+        "limit_price": "-0.3",
+        "filled_avg_price": "-0.3",
+        "legs": [
+          {
+            "symbol": "SPY260910P00760000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910P00758000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "3314ba9827cd",
+        "traced_via": "order_id"
       },
       {
-        "symbol": "DIA",
-        "dte": 7,
-        "expiry": "2026-09-10",
-        "spot": 536.95,
-        "regime": "neutral",
-        "result": "no listed expiry"
+        "order_id": "70686941-fe1e-4b04-b172-c0966432a71a",
+        "client_order_id": "b91a6347-f468-4234-a7b5-976ddc4ef0f7",
+        "submitted_at": "2026-09-03T14:07:05.00258Z",
+        "status": "filled",
+        "qty": "4",
+        "limit_price": "0.17",
+        "filled_avg_price": "0.17",
+        "legs": [
+          {
+            "symbol": "SPY260910P00759000",
+            "side": "buy"
+          },
+          {
+            "symbol": "SPY260910P00758000",
+            "side": "sell"
+          }
+        ],
+        "ledger_kind": "close_submitted",
+        "decision_id": "fb530c01e8ea",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "638e5ade-4bd6-4ff9-8f36-9b801f3170c0",
+        "client_order_id": "834c3bb1-c448-4d48-b345-8b6a60343670",
+        "submitted_at": "2026-09-03T14:07:35.287506Z",
+        "status": "canceled",
+        "qty": "9",
+        "limit_price": "-0.2",
+        "filled_avg_price": null,
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "c1a1bbf7095f",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "54d396da-33f3-4542-8f54-ad45952ccb98",
+        "client_order_id": "9d29a854-9f7d-440a-909c-1663a1a1cb9b",
+        "submitted_at": "2026-09-03T14:14:23.85131Z",
+        "status": "filled",
+        "qty": "9",
+        "limit_price": "-0.19",
+        "filled_avg_price": "-0.19",
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_repriced",
+        "decision_id": "13cb95226495",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "b0b0cd41-57e1-4675-b669-9baa4706cbfb",
+        "client_order_id": "e6d3fdc8-a90d-4915-81b7-6c91a8a05390",
+        "submitted_at": "2026-09-03T14:18:43.973646Z",
+        "status": "filled",
+        "qty": "9",
+        "limit_price": "-0.22",
+        "filled_avg_price": "-0.22",
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "c5ff753dbc61",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "6e6184a0-ad7d-4e97-b83b-cd041467e9d0",
+        "client_order_id": "492072e4-60a9-43f9-bd2e-0f7498143a91",
+        "submitted_at": "2026-09-03T14:26:05.27923Z",
+        "status": "canceled",
+        "qty": "9",
+        "limit_price": "-0.22",
+        "filled_avg_price": null,
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "b9f29c5a9325",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "c67e9473-ff87-4b0d-b83a-3549980ae214",
+        "client_order_id": "fb1eb796-555e-41fa-8eda-7702475ccc12",
+        "submitted_at": "2026-09-03T14:32:53.228538Z",
+        "status": "canceled",
+        "qty": "9",
+        "limit_price": "-0.21",
+        "filled_avg_price": null,
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_repriced",
+        "decision_id": "13b8e3f0fc40",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "6593a9d6-21e1-44ac-9c01-d52f00b463a1",
+        "client_order_id": "2991f88c-dc5b-472a-9e59-984dde53934b",
+        "submitted_at": "2026-09-03T14:34:48.820614Z",
+        "status": "canceled",
+        "qty": "9",
+        "limit_price": "-0.22",
+        "filled_avg_price": null,
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "870d63810806",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "749c12ee-3496-4d14-9712-bab24cfa9bd2",
+        "client_order_id": "23057ae5-bef5-459f-8898-59eb48c05bd1",
+        "submitted_at": "2026-09-03T14:41:37.132297Z",
+        "status": "canceled",
+        "qty": "9",
+        "limit_price": "-0.21",
+        "filled_avg_price": null,
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_repriced",
+        "decision_id": "867bdaeec181",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "5d9f9ecd-b94a-4f57-9dae-3616d2a32c6f",
+        "client_order_id": "ab83a5da-8ac7-4285-abec-3eabf8389aef",
+        "submitted_at": "2026-09-03T14:41:37.964823Z",
+        "status": "filled",
+        "qty": "9",
+        "limit_price": "-0.2",
+        "filled_avg_price": "-0.2",
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_repriced",
+        "decision_id": "5e575c98c60a",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "5bf149c5-e553-4112-9912-b3178fc0141f",
+        "client_order_id": "50873533-50d8-4073-a41a-0554b3719e75",
+        "submitted_at": "2026-09-03T14:42:55.862082Z",
+        "status": "canceled",
+        "qty": "9",
+        "limit_price": "-0.24",
+        "filled_avg_price": null,
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "68b61fe6f0a6",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "77f69357-f9c2-4305-b70c-cd11923b1274",
+        "client_order_id": "07844895-0945-4e8b-b31d-0e3eb62d971f",
+        "submitted_at": "2026-09-03T14:49:43.732175Z",
+        "status": "canceled",
+        "qty": "9",
+        "limit_price": "-0.23",
+        "filled_avg_price": null,
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_repriced",
+        "decision_id": "a8facb86a52c",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "103ceebe-1c5c-4206-a95d-e161c6216217",
+        "client_order_id": "00fcca15-e18f-4146-a189-dee79b148c03",
+        "submitted_at": "2026-09-03T14:49:44.622812Z",
+        "status": "filled",
+        "qty": "9",
+        "limit_price": "-0.2",
+        "filled_avg_price": "-0.2",
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_repriced",
+        "decision_id": "7afeca35f86f",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "36f57a4f-7382-425d-9456-66d91f4029be",
+        "client_order_id": "39286452-1deb-4ac0-8748-92fd86910685",
+        "submitted_at": "2026-09-03T14:57:18.347349Z",
+        "status": "filled",
+        "qty": "9",
+        "limit_price": "-0.22",
+        "filled_avg_price": "-0.22",
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_repriced",
+        "decision_id": "3817006d7568",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "50252cb2-caa2-4fe2-bf1e-79d5422672e4",
+        "client_order_id": "074eb310-7c2e-4b79-a3c1-11c7d867320b",
+        "submitted_at": "2026-09-03T14:57:56.49729Z",
+        "status": "filled",
+        "qty": "4",
+        "limit_price": "-0.35",
+        "filled_avg_price": "-0.36",
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260910C00779000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "e96949a0da66",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "f4192e58-5aec-49a7-b751-c43dd37e91eb",
+        "client_order_id": "2a6a5a13-1468-4565-a27b-ee891542013e",
+        "submitted_at": "2026-09-03T15:56:28.6478Z",
+        "status": "filled",
+        "qty": "4",
+        "limit_price": "0.26",
+        "filled_avg_price": "0.26",
+        "legs": [
+          {
+            "symbol": "SPY260910P00760000",
+            "side": "buy"
+          },
+          {
+            "symbol": "SPY260910P00757000",
+            "side": "sell"
+          }
+        ],
+        "ledger_kind": "close_submitted",
+        "decision_id": "908e41e162e7",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "65dd7c9f-b378-4a4c-95d2-92693bca1ed2",
+        "client_order_id": "b8013955-786f-446b-a96e-cdfd82c80964",
+        "submitted_at": "2026-09-03T16:21:15.535838Z",
+        "status": "filled",
+        "qty": "4",
+        "limit_price": "0.74",
+        "filled_avg_price": "0.72",
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "buy"
+          },
+          {
+            "symbol": "SPY260910C00779000",
+            "side": "sell"
+          }
+        ],
+        "ledger_kind": "risk_reduction",
+        "decision_id": "fb4d963fe733",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "d74f265a-fa6c-4bf1-9eff-7b5ff635cf7c",
+        "client_order_id": "368b5bb5-d8da-4615-bc05-87cd6ef84f7e",
+        "submitted_at": "2026-09-03T16:21:16.01338Z",
+        "status": "filled",
+        "qty": "30",
+        "limit_price": "0.42",
+        "filled_avg_price": "0.38",
+        "legs": [
+          {
+            "symbol": "SPY260910C00777000",
+            "side": "buy"
+          },
+          {
+            "symbol": "SPY260910C00778000",
+            "side": "sell"
+          }
+        ],
+        "ledger_kind": "risk_reduction",
+        "decision_id": "edae8ee092af",
+        "traced_via": "order_id"
+      },
+      {
+        "order_id": "0e6524e6-e7a8-4095-a845-c04f24f89e35",
+        "client_order_id": "a91f7012-c6c7-441c-8026-4c87cc1a53f9",
+        "submitted_at": "2026-09-03T17:46:03.018539Z",
+        "status": "filled",
+        "qty": "8",
+        "limit_price": "-0.12",
+        "filled_avg_price": "-0.12",
+        "legs": [
+          {
+            "symbol": "SPY260904P00768000",
+            "side": "sell"
+          },
+          {
+            "symbol": "SPY260904P00767000",
+            "side": "buy"
+          }
+        ],
+        "ledger_kind": "order_submitted",
+        "decision_id": "6425c1606924",
+        "traced_via": "order_id"
       }
-    ]
+    ],
+    "ledger_orders_missing_at_broker": []
   },
-  "generated_at": "2026-09-03T20:05:29+00:00",
+  "generated_at": "2026-09-04T11:39:57+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
-    "equity": "99230.53",
-    "cash": "99934.53",
+    "equity": "99226.52",
+    "cash": "99930.52",
     "starting_equity": "100000",
-    "pnl": "-769.47",
-    "pnl_pct": "-0.769",
+    "pnl": "-773.48",
+    "pnl_pct": "-0.773",
     "options_level": 3,
-    "unrealized": "-305.858"
+    "unrealized": "-306.0005"
   },
   "counters": {
-    "decisions": 24,
-    "approved": 20,
+    "decisions": 25,
+    "approved": 21,
     "vetoed": 4,
     "abstained": 57,
-    "orders_submitted": 16,
+    "orders_submitted": 17,
     "orders_filled": 17,
     "open_legs": 4
   },
@@ -742,16 +1193,16 @@
     {
       "symbol": "SPY260910C00777000",
       "qty": "-15",
-      "entry": "1.061428",
+      "entry": "1.099333",
       "current": "2.23",
-      "unrealized": "-1752.858"
+      "unrealized": "-1696.0005"
     },
     {
       "symbol": "SPY260910C00778000",
       "qty": "15",
-      "entry": "0.86",
+      "entry": "0.898",
       "current": "1.83",
-      "unrealized": "1455"
+      "unrealized": "1398"
     }
   ],
   "orders": [
@@ -1257,105 +1708,6 @@
     }
   ],
   "ledger": [
-    {
-      "id": "c85297cd7891",
-      "at": "2026-09-03T18:58:26+00:00",
-      "kind": "abstain",
-      "reason": "challenger (fatal): 1-DTE spread with short strike 769 sits just 4.45 pts below spot and below both SMAs; a single session drift to 769 triggers max loss on a 0.14 credit. The invalidation level IS the short strike, so protection starts only after you're already fully assigned."
-    },
-    {
-      "id": "b14460ac5147",
-      "at": "2026-09-03T19:05:12+00:00",
-      "kind": "position_review",
-      "short": "SPY260904P00768000",
-      "long": "SPY260904P00767000",
-      "quantity": 8,
-      "credit": "0.12",
-      "cost_to_close": "0.10",
-      "captured": "0.17",
-      "open_pnl": "16.00",
-      "action": "hold",
-      "reason": "captured 17%, below the 50% target"
-    },
-    {
-      "id": "66411a81e9c9",
-      "at": "2026-09-03T19:05:12+00:00",
-      "kind": "position_review",
-      "short": "SPY260910C00777000",
-      "long": "SPY260910C00778000",
-      "quantity": 15,
-      "credit": "0.201428",
-      "cost_to_close": "0.41",
-      "captured": "-1.035467",
-      "open_pnl": "-312.858000",
-      "action": "hold",
-      "reason": "captured -104%, below the 50% target"
-    },
-    {
-      "id": "baf23bcfa433",
-      "at": "2026-09-03T19:05:14+00:00",
-      "kind": "cycle_start",
-      "market_open": true,
-      "equity": "99239.53",
-      "open_positions": 2,
-      "expiry": "2026-09-04"
-    },
-    {
-      "id": "1d635cede2aa",
-      "at": "2026-09-03T19:05:15+00:00",
-      "kind": "regime",
-      "regime": "neutral",
-      "reason": "spot 773.59 mixed against SMAs (767.30/769.18)",
-      "spot": 773.59,
-      "sma_short": 767.3,
-      "sma_long": 769.17925,
-      "return_20d": 0.0005561591391174403,
-      "realised_vol": 0.11279799028854616
-    },
-    {
-      "id": "50757334686a",
-      "at": "2026-09-03T19:05:35+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": true,
-      "confidence": 0.68,
-      "target_delta": 0.19,
-      "rationale": "VRP of 8.11 vol points is substantial with implied vol 13.24% vs matched realised 5.13%; credit-to-width of 0.15 clears the minimum and short delta 0.19 is in range; neutral regime and low realised vol support selling premium.",
-      "invalidated_if": "SPY closes below 769 on 2026-09-04",
-      "clamped": [],
-      "failed": false
-    },
-    {
-      "id": "27bda78f9e33",
-      "at": "2026-09-03T19:06:09+00:00",
-      "kind": "challenge",
-      "refuted": true,
-      "severity": "fatal",
-      "argument": "Short strike 769 sits exactly at SMA 20 (769.18) with SMA 5 (767.30) already below it\u2014price is magnetized to this level. Only 4.59pts (0.59%) cushion is less than one daily std dev (~6.45pts), and the invalidation is just the short strike itself\u2014no real stop.",
-      "failed": false,
-      "blocks": true,
-      "size_multiplier": 1.0
-    },
-    {
-      "id": "8c93dccf6445",
-      "at": "2026-09-03T19:06:09+00:00",
-      "kind": "abstain",
-      "reason": "challenger (fatal): Short strike 769 sits exactly at SMA 20 (769.18) with SMA 5 (767.30) already below it\u2014price is magnetized to this level. Only 4.59pts (0.59%) cushion is less than one daily std dev (~6.45pts), and the invalidation is just the short strike itself\u2014no real stop."
-    },
-    {
-      "id": "1a1aa482c64c",
-      "at": "2026-09-03T19:12:55+00:00",
-      "kind": "position_review",
-      "short": "SPY260904P00768000",
-      "long": "SPY260904P00767000",
-      "quantity": 8,
-      "credit": "0.12",
-      "cost_to_close": "0.11",
-      "captured": "0.08",
-      "open_pnl": "8.00",
-      "action": "hold",
-      "reason": "captured 8%, below the 50% target"
-    },
     {
       "id": "33106425177e",
       "at": "2026-09-03T19:12:55+00:00",
@@ -1943,6 +2295,145 @@
       "at": "2026-09-03T19:58:42+00:00",
       "kind": "execution_error",
       "error": "`order submit --order-class mleg --qty 9 --type limit --limit-price -0.19 --time-in-force day --legs [{\"symbol\": \"SPY260904P00769000\", \"side\": \"sell\", \"position_intent\": \"sell_to_open\", \"ratio_qty\": \"1\"}, {\"symbol\": \"SPY260904P00768000\", \"side\": \"buy\", \"position_intent\": \"buy_to_open\", \"ratio_qty\": \"1\"}]` exited 1: {\n  \"code\": 42210000,\n  \"error\": \"position intent mismatch, inferred: buy_to_close, specified: buy_to_open\",\n  \"hint\": \"Validation error. Check parameter values \u2014 common issues: invalid qty, bad price, unknown symbol, or missing required fields.\",\n  \"method\": \"POST\",\n  \"path\": \"https://paper-api.alpaca.markets/v2/orders\",\n  \"request_id\": \"9b9af47aaab5ce938c58bad4a8dc375b\",\n  \"status\": 422\n}"
+    },
+    {
+      "id": "42aa51c376e9",
+      "at": "2026-09-04T11:34:07+00:00",
+      "kind": "cycle_start",
+      "market_open": false,
+      "equity": "99226.52",
+      "open_positions": 2,
+      "expiry": "2026-09-11"
+    },
+    {
+      "id": "8ac7f6a8317c",
+      "at": "2026-09-04T11:34:07+00:00",
+      "kind": "regime",
+      "regime": "neutral",
+      "reason": "spot 773.12 mixed against SMAs (767.21/769.16)",
+      "spot": 773.115,
+      "sma_short": 767.205,
+      "sma_long": 769.1555,
+      "return_20d": -5.820270060530319e-05,
+      "realised_vol": 0.11247344817977302
+    },
+    {
+      "id": "587ddcb4bee9",
+      "at": "2026-09-04T11:34:11+00:00",
+      "kind": "analyst_view",
+      "model": "zai-org/GLM-5.2",
+      "trade": true,
+      "confidence": 0.72,
+      "target_delta": 0.2,
+      "rationale": "IV of 12.64% sits 3.62 vol points above matched realised of 9.02%, giving a meaningful variance risk premium to harvest. Short delta of 0.197 is in the target zone and credit-to-width of 0.20 is solid for a 7-DTE spread.",
+      "invalidated_if": "SPY closes below 763 before expiry on 2026-09-11",
+      "invalidation_level": 763.0,
+      "invalidation_direction": "below",
+      "invalidation_warns_before_max_loss": false,
+      "clamped": [],
+      "failed": false
+    },
+    {
+      "id": "cc6cd5ec7a0a",
+      "at": "2026-09-04T11:35:28+00:00",
+      "kind": "challenge",
+      "refuted": true,
+      "severity": "serious",
+      "argument": "SPY at 773 is barely 1.3% above the 763 short strike; a normal 7-day move (~1.5% at 9% RV) reaches it easily. The 0.20 credit risks 0.80 loss, and the 20-day return is already negative with price below SMA20\u2014momentum is against this position.",
+      "failed": false,
+      "blocks": false,
+      "size_multiplier": 0.5
+    },
+    {
+      "id": "20388172c22c",
+      "at": "2026-09-04T11:35:28+00:00",
+      "kind": "edge_sensitivity",
+      "expected_at_realised": 5.05,
+      "expected_at_implied": -62.73,
+      "realised_vol": 0.0902,
+      "implied_vol": 0.1264,
+      "premium_vol_points": 3.62,
+      "depends_entirely_on_premium": true
+    },
+    {
+      "id": "3cac6d161925",
+      "at": "2026-09-04T11:35:28+00:00",
+      "kind": "var_report",
+      "paths": 20000,
+      "probability_of_profit": 0.7992,
+      "expected_pnl": 5.05,
+      "var_95": -720.0,
+      "expected_shortfall": -720.0,
+      "std_error": 2.49,
+      "edge_significant": true,
+      "max_loss": -720.0
+    },
+    {
+      "id": "370a7e0bb769",
+      "at": "2026-09-04T11:35:28+00:00",
+      "kind": "risk_verdict",
+      "approved": true,
+      "reasons": [],
+      "short": "SPY260911P00763000",
+      "long": "SPY260911P00762000",
+      "credit": "0.20",
+      "width": "1",
+      "max_loss": "720.00",
+      "quantity": 9,
+      "short_delta": -0.1974,
+      "short_iv": 0.1264,
+      "side": "put",
+      "expiry": "2026-09-11"
+    },
+    {
+      "id": "1e415cd04345",
+      "at": "2026-09-04T11:35:29+00:00",
+      "kind": "order_submitted",
+      "dry_run": true,
+      "argv": [
+        "order",
+        "submit",
+        "--order-class",
+        "mleg",
+        "--qty",
+        "9",
+        "--type",
+        "limit",
+        "--limit-price",
+        "-0.20",
+        "--time-in-force",
+        "day",
+        "--legs",
+        "[{\"symbol\": \"SPY260911P00763000\", \"side\": \"sell\", \"position_intent\": \"sell_to_open\", \"ratio_qty\": \"1\"}, {\"symbol\": \"SPY260911P00762000\", \"side\": \"buy\", \"position_intent\": \"buy_to_open\", \"ratio_qty\": \"1\"}]",
+        "--client-order-id",
+        "oaa-42aa51c376e9",
+        "--dry-run"
+      ],
+      "order_id": null,
+      "client_order_id": "oaa-42aa51c376e9",
+      "decision": "42aa51c376e9",
+      "status": null,
+      "legs": [
+        {
+          "symbol": "SPY260911P00763000",
+          "side": "sell",
+          "position_intent": "sell_to_open",
+          "ratio_qty": "1"
+        },
+        {
+          "symbol": "SPY260911P00762000",
+          "side": "buy",
+          "position_intent": "buy_to_open",
+          "ratio_qty": "1"
+        }
+      ],
+      "max_loss": "720.00"
+    },
+    {
+      "id": "fc2c378a83c3",
+      "at": "2026-09-04T11:36:12+00:00",
+      "kind": "note",
+      "text": "cycle 42aa51c376e9 above was a --dry-run rehearsal after hours (OAA_DRY_RUN_AFTER_HOURS=1) to exercise the book pre-flight and gate attribution on stale quotes; no order was sent"
     }
   ]
 }

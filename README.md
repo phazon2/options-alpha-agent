@@ -49,20 +49,24 @@ public ledger:
 | A position-pairing bug let the book breach its own cap | Cash and equity diverged $2,000 while the agent reported a flat book | Pairing rewritten, 6 regression tests, aggregate-risk brake outside the agent |
 | No edge existed at 7 DTE at any width or delta | Monte Carlo sweep of the live chain | Selection re-ranked by expected value; 1 DTE added to the ladder |
 | The edge is conditional on realised < implied | Priced every strike under both volatilities | Both reported on every decision |
+| Its own falsification conditions could not warn in time | Graded all 63 pre-registered `wrong if` conditions against daily closes: 42 on trades taken, 0 fired, 17 of 32 set at or beyond the short strike, where firing means the loss is already locked in | Each condition is now parsed at decision time and flagged when it cannot warn before max loss; `public/falsification.json` |
+| Every approved entry after 18:36 UTC on 3 Sep died at the broker | Four `422 position intent mismatch` refusals in the ledger, with request ids | Book-aware pre-flight; the refusal is now made in-house, in the broker's words, and recorded with its legs |
 
 The second one cost $731. It is not hidden; it is in `docs/POSTMORTEM.md`.
 
-## Alpaca options production hardening
+## Alpaca options field notes
 
-Three behaviours that are not in the docs, each found by running against the live
-API and each carrying a workaround in this repo. Any team building options on
-Alpaca will hit all three:
+Four behaviours met on the live API, each with its receipt and the code that
+handles it. Two are documented and still cost a day; one is not documented
+anywhere I could find; one earlier claim did not survive re-testing and is
+withdrawn here rather than quietly deleted.
 
-| Behaviour | What happens | Handled in |
-| --- | --- | --- |
-| Multi-leg limit sign is inverted | A positive net limit is read as the maximum **debit**. An order sent at `+0.15` filled at `−0.13` — a positive limit silently authorises *paying* to enter a credit spread | `execution.py` refuses a positive limit on open; closes pass `allow_debit` |
-| Greeks need `--feed indicative` | The default `opra` feed returns `403 OPRA agreement is not signed`; the plain snapshots endpoint returns nulls, silently disabling delta targeting | `broker.option_chain()` |
-| Intraday portfolio history is wrong in paper | Reports exactly $100,000 too high — 200,151.93 against a true 100,151.93. The daily series is correct | equity curve is built from the agent's own reads |
+| Behaviour | Documented? | What happened | Handled in |
+| --- | --- | --- | --- |
+| Position intent is inferred from the book; a mismatch is a `422` | Not that I could find | Holding −8 SPY 768P, the agent proposed a 769/768 put spread whose long leg was that same contract. `position intent mismatch (inferred: buy_to_close, specified: buy_to_open)` four times between 18:36 and 19:58 UTC on 3 Sep, request ids in `docs/POSTMORTEM.md`. `--dry-run` passes it: the check runs against the live book at submission. Four approved entries lost | `preflight.py` removes held contracts before a candidate is scored and takes a last look before submit; 10 tests reproduce the failed order |
+| Multi-leg limit sign | Yes, in the `POST /v2/orders` reference: positive is a debit, negative a credit | The CLI's `--limit-price` help does not say so. The first live order went in at `+0.15` and filled as a `0.13` credit: a credit satisfies a max-debit limit, so the wrong sign is invisible in the fill. Dry run cannot catch it | `execution.py` refuses a positive net limit on an opening order; closes must pass `allow_debit` |
+| Greeks on a paper key | Yes: `feed` defaults to `opra`; `indicative` is the free feed | The default is the feed a paper key cannot read. The CLI default 403s (`OPRA agreement is not signed`); a REST snapshot with no `feed` returns `200` with null greeks (reproduced 4 Sep 2026, 11:25 UTC). No error: delta targeting just dies | `broker.option_chain()` always sends `feed=indicative` |
+| Intraday portfolio history | — | An earlier version of this table claimed the series read exactly $100,000 too high. That did not reproduce on re-query and no ledger record supports it, so the claim is withdrawn. One 5-minute bar at 101,893.87 on 3 Sep does not reconcile with any ledger state. The equity curve is built from the agent's own account reads instead | `report.py` |
 
 ## One-page write-up
 

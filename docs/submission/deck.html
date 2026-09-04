@@ -113,12 +113,13 @@ li::before{content:"";flex:none;width:10px;height:10px;margin-top:11px;border-ra
   <div class="glow"></div>
   <span class="eyebrow">Ecosystem value</span>
   <h2>Alpaca options production hardening.</h2>
-  <p class="lede">Three undocumented behaviours, each found by running against the live API, each
-    carrying a workaround any team building options on Alpaca will need.</p>
+  <p class="lede">Four behaviours met on the live API, each with its receipt and the code that handles it.
+    Two are documented and still cost a day. One is not. One earlier claim is withdrawn.</p>
   <ul>
-    <li><b>Multi-leg limit sign is inverted.</b> A positive net limit is read as a maximum <em>debit</em> — it silently authorises paying to enter a credit spread.</li>
-    <li><b>Greeks require <span style="font-family:var(--m)">--feed indicative</span>.</b> The default feed 403s without an OPRA agreement; snapshots return nulls and delta targeting dies quietly.</li>
-    <li><b>Intraday portfolio history is wrong in paper.</b> Reports exactly $100,000 too high.</li>
+    <li><b>Position intent is inferred from the book; a mismatch is a 422.</b> Four approved entries refused on 3 Sep, request ids in the post-mortem. Dry run cannot see it. Fixed with a book pre-flight and ten tests.</li>
+    <li><b>Multi-leg limit sign is documented and still bites.</b> The CLI help doesn't say; the first order went in with the wrong sign and filled anyway. Now refused in code.</li>
+    <li><b>Greeks on a paper key return null, not an error.</b> The default feed is the one a paper key can't read. Reproduced 4 Sep. Always <span style="font-family:var(--m)">feed=indicative</span>.</li>
+    <li><b>Withdrawn:</b> the "$100,000 intraday offset" did not reproduce and has no ledger record.</li>
   </ul>
   <p class="lede" style="margin-top:8px">MIT licensed. The workaround layer is the contribution:
     it turns Alpaca's options API from something you discover by trial into something you build on.</p>

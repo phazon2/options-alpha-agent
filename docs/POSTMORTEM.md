@@ -97,3 +97,32 @@ is in the public ledger, including the ones that are unflattering.
 
 The agent lost money because it was allowed to trade a structure with no edge —
 not because it hid anything.
+
+## 3 September, afternoon: four approved entries refused at the broker
+
+Every entry attempt after 18:36 UTC passed the analyst, the challenger, the
+Monte Carlo and the risk gate, and died at Alpaca with the same error:
+
+```
+422 position intent mismatch (inferred: buy_to_close, specified: buy_to_open)
+```
+
+| UTC | Order | Request id |
+| --- | --- | --- |
+| 18:36:15 | 8× sell 769P / buy 768P at −0.12 | `7ed18078340b56dd1ce99f6e30f01bef` |
+| 18:51:18 | 8× sell 769P / buy 768P at −0.16 | `d940380c4ad99be98f999d106d61ab11` |
+| 19:15:26 | 17× sell 769P / buy 768P at −0.13 | `39e8a6ebb2e3ef0e2164cb6e4f11f002` |
+| 19:58:42 | 9× sell 769P / buy 768P at −0.19 | `9b9af47aaab5ce938c58bad4a8dc375b` |
+
+The account held −8 SPY 768P from the 17:46 fill. The broker infers a leg's
+intent from the live book: a buy of a contract that is held short is a close,
+whatever the order says, and the stated `buy_to_open` contradicts that. The
+selector had no idea the book existed; it kept choosing the same best strike,
+and the same contract was the long leg every time. `--dry-run` cannot see any
+of this, because the check happens against the live book at submission.
+
+**Fix.** `src/agent/preflight.py`. Any contract already held, long or short,
+leaves the candidate set before a spread is scored, and a last look at the
+book before submission refuses a conflict in the broker's own words, writing
+the legs into the ledger so the refusal is graded like any other. Ten tests
+reproduce the exact order that failed.

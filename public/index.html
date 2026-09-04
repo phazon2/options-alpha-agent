@@ -144,6 +144,10 @@ footer a{color:var(--accent)}
       <th>Refused</th><th>Spread</th><th>Credit</th><th>Would be</th><th>Verdict</th><th>Because</th>
     </tr></thead><tbody></tbody></table></div>
     <div class="note" id="ref-note"></div>
+    <div class="scroll" style="margin-top:12px"><table id="gate-table"><thead><tr>
+      <th>Gate</th><th>Refusals</th><th>Priced</th><th>Correct</th><th>Costly</th><th>Net of refusing</th><th>Hit rate</th>
+    </tr></thead><tbody></tbody></table></div>
+    <div class="note" id="gate-note"></div>
   </section>
 
 
@@ -165,6 +169,26 @@ footer a{color:var(--accent)}
     <div class="scroll"><table id="scan-table"><thead><tr>
       <th>Symbol</th><th>DTE</th><th>Regime</th><th>Short</th><th>δ</th><th>Credit</th><th>PoP</th><th>E @ realised</th><th>E @ implied</th><th>Verdict</th>
     </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section>
+    <div class="shead"><h2>Wrong if — graded</h2>
+      <p>Before every trade the analyst pre-registers one concrete condition under which it is wrong.
+        Each is parsed into a level and checked against every daily close since. A level at or beyond the
+        short strike can only fire after the loss is locked in — that is a description, not a warning.</p></div>
+    <div class="tiles" id="fals-tiles"></div>
+    <div class="scroll"><table id="fals-table"><thead><tr>
+      <th>When</th><th>Decision</th><th>Condition</th><th>Level vs short strike</th><th>Status</th>
+    </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section>
+    <div class="shead"><h2>Every order traces to a decision</h2>
+      <p>Both directions: each order the broker holds must match the ledger record that submitted it, and each
+        live submission in the ledger must exist at the broker. From the final session the cycle's ledger id is
+        the order's client id.</p></div>
+    <div class="tiles" id="rec-tiles"></div>
+    <div class="note" id="rec-note"></div>
   </section>
 
   <section>
@@ -356,11 +380,57 @@ fetch("data.json?ts="+Date.now()).then(r=>{if(!r.ok)throw new Error("data.json "
       : esc(fr.caveat||"");
   } else { $("#frontier").innerHTML=`<p class="mono" style="color:var(--muted)">not enough evaluated spreads yet</p>`; }
 
+  // per gate
+  const bg=(ref&&ref.by_gate)||{};
+  const gateRows=Object.entries(bg);
+  if(gateRows.length){
+    $("#gate-table").querySelector("tbody").innerHTML=gateRows.map(([g,v])=>{
+      const net=Number(v.net||0);
+      return `<tr><td><strong>${esc(g)}</strong></td><td class="mono">${v.examined}</td><td class="mono">${v.priced}</td>
+        <td class="mono pos">${v.correct}</td><td class="mono neg">${v.costly}</td>
+        <td class="mono ${net>0?"pos":net<0?"neg":""}">${money(net)}</td><td class="mono">${esc(v.hit_rate)}</td></tr>`;}).join("");
+    $("#gate-note").textContent="One row per gate. A gate that only ever refuses winners is a gate that should be loosened; the aggregate hides that. Refusals before a spread is chosen (regime, no significant expiry) have no legs to price and are not rows here.";
+  } else {
+    $("#gate-table").querySelector("tbody").innerHTML=`<tr><td colspan="7">No gated refusals carry legs yet.</td></tr>`;
+  }
+
+  // falsification
+  const fs=d.falsification&&d.falsification.summary;
+  if(fs){
+    $("#fals-tiles").innerHTML=[
+      `<div class="tile"><span class="k">Conditions</span><b>${fs.conditions}</b><span class="s">${fs.parsed} parsed · ${fs.unparsed} unparsed · ${fs.not_applicable} n/a</span></div>`,
+      `<div class="tile"><span class="k">Fired</span><b class="${fs.fired?"neg":""}">${fs.fired}</b><span class="s">${fs.holding} holding · ${fs.expired_unfired} expired unfired</span></div>`,
+      `<div class="tile"><span class="k">On trades taken</span><b>${fs.on_trades_taken}</b><span class="s">${fs.on_trades_fired} fired</span></div>`,
+      `<div class="tile"><span class="k">Could not warn</span><b class="${fs.could_not_warn?"neg":""}">${fs.could_not_warn}<span style="font-size:14px;color:var(--muted)"> / ${fs.placed_against_short_strike}</span></b><span class="s">set at or beyond the short strike</span></div>`,
+    ].join("");
+    const conds=(d.falsification.conditions||[]).filter(c=>c.kind==="spot_close").slice(-16).reverse();
+    $("#fals-table").querySelector("tbody").innerHTML=conds.map(c=>{
+      const dist=c.distance_from_short_strike;
+      const warn=c.warns_before_max_loss===null?"—":c.warns_before_max_loss?`<span class="tag t-good">can warn</span>`:`<span class="tag t-bad">fires after max loss</span>`;
+      const st=c.status==="fired"?`<span class="tag t-bad">fired ${esc(c.fired_on||"")}</span>`:c.status==="holding"?`<span class="tag t-mute">holding</span>`:`<span class="tag t-mute">${esc(c.status)}</span>`;
+      return `<tr><td class="mono">${when(c.at)}</td><td>${c.trade?`<span class="tag t-good">trade</span>`:`<span class="tag t-mute">pass</span>`}</td>
+        <td>${esc(c.text)}</td><td class="mono">${c.level}${c.short_strike!=null?` vs ${c.short_strike} (${dist>0?"+":""}${dist})`:""} ${warn}</td><td>${st}</td></tr>`;}).join("")
+      ||`<tr><td colspan="5">No graded conditions yet.</td></tr>`;
+  }
+
+  // reconcile
+  const rc=d.reconcile&&d.reconcile.summary;
+  if(rc){
+    $("#rec-tiles").innerHTML=[
+      `<div class="tile"><span class="k">Orders at broker</span><b>${rc.broker_orders}</b><span class="s">${rc.filled} filled · ${rc.canceled} canceled</span></div>`,
+      `<div class="tile"><span class="k">Traced to a decision</span><b class="${rc.traced===rc.broker_orders?"pos":""}">${rc.traced}</b><span class="s">${rc.traced_via_client_order_id} via client order id</span></div>`,
+      `<div class="tile"><span class="k">Untraced</span><b class="${rc.untraced?"neg":"pos"}">${rc.untraced}</b><span class="s">orders the ledger cannot explain</span></div>`,
+      `<div class="tile"><span class="k">Ledger-only</span><b class="${rc.ledger_orders_missing_at_broker?"neg":"pos"}">${rc.ledger_orders_missing_at_broker}</b><span class="s">submissions the broker never saw</span></div>`,
+    ].join("");
+    $("#rec-note").textContent=rc.clean?`Clean at ${when(d.reconcile.reconciled_at)}: every order has a decision and every decision has an order.`:`Discrepancies found — see public/reconcile.json.`;
+  }
+
   // ledger
   // The full ledger is in the repo. The page shows the entries that carry a
   // decision - a cycle heartbeat is not one, and sixty of them bury the rest.
   const SHOWN=new Set(["risk_verdict","analyst_view","challenge","order_submitted",
-                       "close_submitted","abstain","position_review"]);
+                       "close_submitted","abstain","position_review","var_report",
+                       "edge_sensitivity","book_preflight","execution_error"]);
   const interesting=(d.ledger||[]).filter(e=>SHOWN.has(e.kind));
   $("#ledger-count").textContent=
     `showing the last ${Math.min(24,interesting.length)} of ${(d.ledger||[]).length} entries`;
@@ -386,7 +456,16 @@ fetch("data.json?ts="+Date.now()).then(r=>{if(!r.ok)throw new Error("data.json "
     } else if(e.kind==="close_submitted"){
       cls="ok";tag=`<span class="tag t-good">closed</span>`;
       why=`${esc(e.action||"")} · order <code>${esc(e.order_id||"—")}</code>`;
-    } else if(e.kind==="abstain"){ cls="no";tag=`<span class="tag t-bad">abstained</span>`;why=esc(e.reason);
+    } else if(e.kind==="abstain"){ cls="no";tag=`<span class="tag t-bad">abstained${e.gate?" · "+esc(e.gate.replace("_"," ")):""}</span>`;
+      why=esc(e.reason)+(e.short?`<br><span class="mono">${esc(e.short)} / ${esc(e.long)} · credit $${esc(e.credit)} on $${esc(e.width)} · ${e.quantity}×</span>`:"");
+    } else if(e.kind==="var_report"){ cls=e.edge_significant?"ok":"no";tag=`<span class="tag t-acc">risk officer</span>`;
+      why=`PoP ${(e.probability_of_profit*100).toFixed(0)}% · E[P&amp;L] ${money(e.expected_pnl)} ± $${e.std_error} · VaR95 ${money(e.var_95)} · ES ${money(e.expected_shortfall)} · ${e.paths.toLocaleString()} paths · <strong>${e.edge_significant?"edge is significant":"not distinguishable from noise"}</strong>`;
+    } else if(e.kind==="edge_sensitivity"){ cls=e.depends_entirely_on_premium?"no":"ok";tag=`<span class="tag t-acc">sensitivity</span>`;
+      why=`E[P&amp;L] ${money(e.expected_at_realised)} at realised ${(e.realised_vol*100).toFixed(1)}% · ${money(e.expected_at_implied)} at implied ${(e.implied_vol*100).toFixed(1)}% · premium ${e.premium_vol_points>0?"+":""}${e.premium_vol_points} vol pts${e.depends_entirely_on_premium?" · <strong>only works if realised stays under implied</strong>":""}`;
+    } else if(e.kind==="book_preflight"){ tag=`<span class="tag t-warn">pre-flight</span>`;
+      why=`${esc(e.expiry)}: left out, already on the book — ${esc((e.excluded||[]).join(", "))}`;
+    } else if(e.kind==="execution_error"){ cls="no";tag=`<span class="tag t-bad">broker refused</span>`;
+      why=esc(String(e.error||"").replace(/^.*?\b(\d{3}\b.*)$/s,"$1").slice(0,220));
     } else if(e.kind==="regime"){ tag=`<span class="tag t-mute">regime ${esc(e.regime)}</span>`;why=esc(e.reason);
     } else if(e.kind==="cycle_start"){ why=`equity $${esc(e.equity)} · ${e.open_positions} open · expiry ${esc(e.expiry)}`;
     } else if(e.kind==="position_review"){ tag=`<span class="tag t-mute">${esc(e.action)}</span>`;why=esc(e.reason);

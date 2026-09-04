@@ -44,7 +44,7 @@ def main() -> int:
             f"{spread.cost_to_close} to close  open P&L ${spread.open_pnl:+,.2f}"
             f"\n             {why}"
         )
-        ledger.record(
+        review_id = ledger.record(
             "position_review",
             short=spread.short.symbol,
             long=spread.long.symbol,
@@ -78,6 +78,7 @@ def main() -> int:
                 qty=spread.quantity,
                 net_limit=limit,
                 allow_debit=True,
+                client_order_id=f"oaa-close-{review_id}",
                 dry_run=args.dry_run,
             )
         except ExecutionError as exc:
@@ -88,6 +89,8 @@ def main() -> int:
             "close_submitted",
             dry_run=args.dry_run,
             order_id=result.order_id,
+            client_order_id=f"oaa-close-{review_id}",
+            decision=review_id,
             status=result.status,
             argv=result.argv[1:],
             action=action,

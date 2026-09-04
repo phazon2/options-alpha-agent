@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from datetime import date, timedelta
 from decimal import Decimal
@@ -24,6 +25,8 @@ from agent.ledger import DecisionLedger  # noqa: E402
 from dataclasses import replace  # noqa: E402
 
 from agent.risk import AccountState, RiskGate, RiskLimits, SpreadProposal  # noqa: E402
+from agent.falsification import parse as parse_invalidation  # noqa: E402
+from agent.preflight import conflicts, exclude_held, held  # noqa: E402
 from agent.strategy import (  # noqa: E402
     NoTradeFound,
     parse_chain,
@@ -78,6 +81,7 @@ def main() -> int:
     account_raw = executor.account()
     equity = Decimal(account_raw["equity"])
     positions = executor.positions()
+    book = held(positions)
     # Count spreads the same way the exit manager does. Halving the leg count
     # is not the same thing: it counts stock positions and orphaned legs as
     # half a spread each, so the risk gate and the manager could disagree
@@ -90,9 +94,10 @@ def main() -> int:
         else candidate_expiries(date.today(), broker, UNDERLYING)
     )
     expiry = expiries[0] if expiries else pick_expiry(date.today())
-    ledger.record(
+    cycle_id = ledger.record(
         "cycle_start",
         market_open=clock.is_open,
+        rehearsal=bool(args.dry_run and os.environ.get("OAA_DRY_RUN_AFTER_HOURS")),
         equity=str(equity),
         open_positions=open_spreads,
         expiry=expiry,
@@ -102,7 +107,10 @@ def main() -> int:
     print(f"open spreads  {open_spreads} ({len(positions)} legs)")
     print(f"expiry        {expiry}")
 
-    if not clock.is_open:
+    # OAA_DRY_RUN_AFTER_HOURS lets a --dry-run exercise the whole path on
+    # stale after-hours quotes. It has no effect without --dry-run.
+    rehearsal = args.dry_run and bool(os.environ.get("OAA_DRY_RUN_AFTER_HOURS"))
+    if not clock.is_open and not rehearsal:
         ledger.record("abstain", reason="market closed", next_open=clock.next_open)
         print(f"\nABSTAIN — market closed, next open {clock.next_open}")
         return 0
@@ -157,6 +165,13 @@ def main() -> int:
             strike_lte=spot * 1.12,
         )
         candidates = parse_chain(chain)
+        candidates, off_book = exclude_held(candidates, book)
+        if off_book:
+            print(
+                f"  {candidate_expiry}: left out, already on the book: "
+                + ", ".join(off_book)
+            )
+            ledger.record("book_preflight", expiry=candidate_expiry, excluded=off_book)
         if not candidates:
             continue
         try:
@@ -209,6 +224,25 @@ def main() -> int:
             f"{matched_vol*100:.2f}% -> VRP {vrp:+.2f} vol pts "
             f"(long window {regime.realised_vol*100:.2f}%)"
         )
+    # Size from the risk budget now, so a refusal at any later gate records
+    # the order that would actually have gone out - not "1 contract".
+    limits = RiskLimits.from_env()
+    per_contract_loss = (proposal.width - proposal.credit) * 100
+    budget = min(limits.max_loss_per_trade, equity * limits.max_equity_fraction_per_trade)
+    desired = max(1, int(budget / per_contract_loss)) if per_contract_loss > 0 else 1
+    # Every gate that fires from here on names these legs, so its refusal
+    # can be re-priced later on the same terms as an arithmetic veto.
+    chosen = {
+        "short": short.symbol,
+        "long": long_leg.symbol,
+        "credit": str(proposal.credit),
+        "width": str(proposal.width),
+        "expiry": expiry,
+        "side": side,
+        "spot": spot,
+        "short_delta": round(short.delta, 4),
+        "short_iv": short.implied_volatility,
+    }
     analyst_context = {
         "underlying": UNDERLYING,
         "spot": regime.spot,
@@ -268,8 +302,11 @@ def main() -> int:
     view = consult(analyst_context)
     print(f"analyst       trade={view.trade} conf={view.confidence} delta={view.target_delta}")
     print(f"              {view.rationale}")
+    condition = parse_invalidation("", view.invalidated_if, view.trade, short_symbol=short.symbol)
     if view.invalidated_if:
         print(f"  wrong if    {view.invalidated_if}")
+    if condition.kind == "spot_close" and condition.warns_before_max_loss is False:
+        print("              that level sits at or beyond the short strike: it can only fire after the max loss")
     ledger.record(
         "analyst_view",
         model=view.model,
@@ -278,11 +315,20 @@ def main() -> int:
         target_delta=view.target_delta,
         rationale=view.rationale,
         invalidated_if=view.invalidated_if,
+        invalidation_level=condition.level,
+        invalidation_direction=condition.direction,
+        invalidation_warns_before_max_loss=condition.warns_before_max_loss,
         clamped=view.clamped,
         failed=view.failed,
     )
     if not view.trade:
-        ledger.record("abstain", reason=f"analyst declined: {view.rationale}")
+        ledger.record(
+            "abstain",
+            reason=f"analyst declined: {view.rationale}",
+            gate="analyst",
+            quantity=desired,
+            **chosen,
+        )
         print("\nABSTAIN — the analyst declined")
         return 0
 
@@ -303,7 +349,11 @@ def main() -> int:
     )
     if objection.blocks_trade:
         ledger.record(
-            "abstain", reason=f"challenger ({objection.severity}): {objection.argument}"
+            "abstain",
+            reason=f"challenger ({objection.severity}): {objection.argument}",
+            gate="challenger",
+            quantity=desired,
+            **chosen,
         )
         print("\nABSTAIN — the thesis did not survive the challenger")
         return 0
@@ -311,10 +361,6 @@ def main() -> int:
     # Ask for the size the risk budget actually supports. The gate can only
     # cap a proposal, never enlarge it, so proposing 1 contract would leave
     # the budget unused and make P&L structurally negligible.
-    limits = RiskLimits.from_env()
-    per_contract_loss = (proposal.width - proposal.credit) * 100
-    budget = min(limits.max_loss_per_trade, equity * limits.max_equity_fraction_per_trade)
-    desired = max(1, int(budget / per_contract_loss)) if per_contract_loss > 0 else 1
     if objection.size_multiplier < 1.0:
         reduced = max(1, int(desired * objection.size_multiplier))
         why = (
@@ -386,6 +432,9 @@ def main() -> int:
             ),
             expected_pnl=round(var_report.expected_pnl, 2),
             std_error=round(var_report.std_error, 2),
+            gate="significance",
+            quantity=desired,
+            **chosen,
         )
         print("\nABSTAIN — the edge is not distinguishable from simulation noise")
         return 0
@@ -411,6 +460,13 @@ def main() -> int:
         expiry=expiry,
     )
     if not verdict.approved:
+        ledger.record(
+            "abstain",
+            reason="; ".join(verdict.reasons) or "vetoed",
+            gate="risk_gate",
+            quantity=desired,
+            **chosen,
+        )
         print("\nABSTAIN — the gate vetoed this trade")
         return 0
 
@@ -418,11 +474,28 @@ def main() -> int:
         Leg(proposal.short_symbol, "sell", "sell_to_open"),
         Leg(proposal.long_symbol, "buy", "buy_to_open"),
     ]
+    # Last look at the live book. The scan already left held contracts out;
+    # this catches a fill that landed between the scan and now.
+    problems = conflicts(legs, held(executor.positions()))
+    if problems:
+        ledger.record(
+            "abstain",
+            reason="a leg is already on the book: " + "; ".join(problems),
+            gate="book_preflight",
+            quantity=verdict.approved_quantity,
+            **chosen,
+        )
+        print("\nABSTAIN — a leg is already on the book: " + "; ".join(problems))
+        return 0
+    # The cycle's ledger id is the client order id, so the broker's record
+    # and the decision that produced it name each other.
+    client_order_id = f"oaa-{cycle_id}"
     try:
         result = executor.submit_multileg(
             legs,
             qty=verdict.approved_quantity,
             net_limit=-float(proposal.credit),
+            client_order_id=client_order_id,
             dry_run=args.dry_run,
         )
     except ExecutionError as exc:
@@ -435,6 +508,8 @@ def main() -> int:
         dry_run=args.dry_run,
         argv=result.argv[1:],
         order_id=result.order_id,
+        client_order_id=client_order_id,
+        decision=cycle_id,
         status=result.status,
         legs=result.legs,
         max_loss=str(verdict.max_loss),

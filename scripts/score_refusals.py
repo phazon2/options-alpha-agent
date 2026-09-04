@@ -86,6 +86,12 @@ def main() -> int:
     print(f"profit forgone                 ${Decimal(summary['profit_forgone']):+,.2f}")
     print(f"net effect of refusing         ${Decimal(summary['net_of_refusing']):+,.2f}")
     print(f"hit rate                       {summary['hit_rate']}")
+    print()
+    print("by gate:")
+    for gate, g in summary["by_gate"].items():
+        print(f"  {gate:14s} examined {g['examined']:3d}  priced {g['priced']:3d}"
+              f"  correct {g['correct']:3d}  costly {g['costly']:3d}"
+              f"  net ${Decimal(g['net']):+,.2f}  hit {g['hit_rate']}")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(

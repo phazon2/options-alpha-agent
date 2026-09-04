@@ -97,6 +97,7 @@ def main() -> int:
                 ],
                 qty=qty,
                 net_limit=float(new_limit),
+                client_order_id=f"oaa-re-{order['id'][:12]}",
             )
         except ExecutionError as exc:
             ledger.record("execution_error", error=str(exc), context="reprice")
@@ -106,6 +107,7 @@ def main() -> int:
             "order_repriced",
             replaced=order["id"],
             order_id=result.order_id,
+            client_order_id=f"oaa-re-{order['id'][:12]}",
             was=str(limit),
             now=str(new_limit),
             age_seconds=round(age),

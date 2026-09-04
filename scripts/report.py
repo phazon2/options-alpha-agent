@@ -79,7 +79,9 @@ def main() -> int:
     shadow = {}
     scan = {}
     for name, target in (("frontier.json", "frontier"), ("refusals.json", "refusals"),
-                         ("shadow.json", "shadow"), ("scan.json", "scan")):
+                         ("shadow.json", "shadow"), ("scan.json", "scan"),
+                         ("falsification.json", "falsification"),
+                         ("reconcile.json", "reconcile")):
         path = Path("public") / name
         if path.exists():
             try:

@@ -1,0 +1,567 @@
+{
+  "reconciled_at": "2026-09-04T11:35:32+00:00",
+  "summary": {
+    "broker_orders": 25,
+    "traced": 25,
+    "untraced": 0,
+    "traced_via_client_order_id": 0,
+    "ledger_submissions": 25,
+    "ledger_orders_missing_at_broker": 0,
+    "filled": 17,
+    "canceled": 8,
+    "clean": true
+  },
+  "orders": [
+    {
+      "order_id": "e0743fe5-87cf-4ad9-a1e8-c4eff1e9a5c5",
+      "client_order_id": "3a916436-e3f7-4493-9dfb-3f2051fbbd25",
+      "submitted_at": "2026-08-31T19:33:28.902486Z",
+      "status": "filled",
+      "qty": "1",
+      "limit_price": "0.15",
+      "filled_avg_price": "-0.13",
+      "legs": [
+        {
+          "symbol": "SPY260904P00758000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260904P00757000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "44810e49803d",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "cd44d308-8609-4044-8994-3137d255fc78",
+      "client_order_id": "4b06787c-6711-4cc0-8a73-9ce906e33b35",
+      "submitted_at": "2026-09-01T17:10:59.728278Z",
+      "status": "filled",
+      "qty": "17",
+      "limit_price": "-0.16",
+      "filled_avg_price": "-0.16",
+      "legs": [
+        {
+          "symbol": "SPY260904P00753000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260904P00752000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "29f9802faf03",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "f67cd64a-a82c-4db8-a877-52de37037761",
+      "client_order_id": "cb6dcc55-5efa-4323-819e-9baaa9ba857e",
+      "submitted_at": "2026-09-02T14:57:24.664744Z",
+      "status": "filled",
+      "qty": "17",
+      "limit_price": "0.07",
+      "filled_avg_price": "0.07",
+      "legs": [
+        {
+          "symbol": "SPY260904P00753000",
+          "side": "buy"
+        },
+        {
+          "symbol": "SPY260904P00752000",
+          "side": "sell"
+        }
+      ],
+      "ledger_kind": "close_submitted",
+      "decision_id": "d64f67561ceb",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "aa3d6fa5-02b1-4ae4-b12a-51b5893a9cf5",
+      "client_order_id": "d2ea38c9-1e7b-4e6a-a7ac-5f34a9c2cdfd",
+      "submitted_at": "2026-09-03T13:30:28.443674Z",
+      "status": "filled",
+      "qty": "1",
+      "limit_price": "0.06",
+      "filled_avg_price": "0.06",
+      "legs": [
+        {
+          "symbol": "SPY260904P00758000",
+          "side": "buy"
+        },
+        {
+          "symbol": "SPY260904P00757000",
+          "side": "sell"
+        }
+      ],
+      "ledger_kind": "close_submitted",
+      "decision_id": "1f3f4246ae44",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "1d7dc2ee-1900-45cd-b506-bbac8b69c526",
+      "client_order_id": "85b726e0-6e59-46f8-88bd-ebc6aabd9f39",
+      "submitted_at": "2026-09-03T13:41:06.200679Z",
+      "status": "canceled",
+      "qty": "4",
+      "limit_price": "-0.25",
+      "filled_avg_price": null,
+      "legs": [
+        {
+          "symbol": "SPY260910P00759000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910P00757000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "c951398f5010",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "14edc196-a387-4196-a7e0-5dc881b67d47",
+      "client_order_id": "5cef3d99-6a4b-4368-8d7e-29f1ce4ade66",
+      "submitted_at": "2026-09-03T13:50:43.481814Z",
+      "status": "filled",
+      "qty": "4",
+      "limit_price": "-0.24",
+      "filled_avg_price": "-0.24",
+      "legs": [
+        {
+          "symbol": "SPY260910P00759000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910P00757000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_repriced",
+      "decision_id": "178c46856342",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "c0fe0aad-6314-4768-b228-946e604fe5af",
+      "client_order_id": "a4990669-b53e-4b65-ac3f-409aa73e09b4",
+      "submitted_at": "2026-09-03T14:00:17.260884Z",
+      "status": "filled",
+      "qty": "4",
+      "limit_price": "-0.3",
+      "filled_avg_price": "-0.3",
+      "legs": [
+        {
+          "symbol": "SPY260910P00760000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910P00758000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "3314ba9827cd",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "70686941-fe1e-4b04-b172-c0966432a71a",
+      "client_order_id": "b91a6347-f468-4234-a7b5-976ddc4ef0f7",
+      "submitted_at": "2026-09-03T14:07:05.00258Z",
+      "status": "filled",
+      "qty": "4",
+      "limit_price": "0.17",
+      "filled_avg_price": "0.17",
+      "legs": [
+        {
+          "symbol": "SPY260910P00759000",
+          "side": "buy"
+        },
+        {
+          "symbol": "SPY260910P00758000",
+          "side": "sell"
+        }
+      ],
+      "ledger_kind": "close_submitted",
+      "decision_id": "fb530c01e8ea",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "638e5ade-4bd6-4ff9-8f36-9b801f3170c0",
+      "client_order_id": "834c3bb1-c448-4d48-b345-8b6a60343670",
+      "submitted_at": "2026-09-03T14:07:35.287506Z",
+      "status": "canceled",
+      "qty": "9",
+      "limit_price": "-0.2",
+      "filled_avg_price": null,
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "c1a1bbf7095f",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "54d396da-33f3-4542-8f54-ad45952ccb98",
+      "client_order_id": "9d29a854-9f7d-440a-909c-1663a1a1cb9b",
+      "submitted_at": "2026-09-03T14:14:23.85131Z",
+      "status": "filled",
+      "qty": "9",
+      "limit_price": "-0.19",
+      "filled_avg_price": "-0.19",
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_repriced",
+      "decision_id": "13cb95226495",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "b0b0cd41-57e1-4675-b669-9baa4706cbfb",
+      "client_order_id": "e6d3fdc8-a90d-4915-81b7-6c91a8a05390",
+      "submitted_at": "2026-09-03T14:18:43.973646Z",
+      "status": "filled",
+      "qty": "9",
+      "limit_price": "-0.22",
+      "filled_avg_price": "-0.22",
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "c5ff753dbc61",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "6e6184a0-ad7d-4e97-b83b-cd041467e9d0",
+      "client_order_id": "492072e4-60a9-43f9-bd2e-0f7498143a91",
+      "submitted_at": "2026-09-03T14:26:05.27923Z",
+      "status": "canceled",
+      "qty": "9",
+      "limit_price": "-0.22",
+      "filled_avg_price": null,
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "b9f29c5a9325",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "c67e9473-ff87-4b0d-b83a-3549980ae214",
+      "client_order_id": "fb1eb796-555e-41fa-8eda-7702475ccc12",
+      "submitted_at": "2026-09-03T14:32:53.228538Z",
+      "status": "canceled",
+      "qty": "9",
+      "limit_price": "-0.21",
+      "filled_avg_price": null,
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_repriced",
+      "decision_id": "13b8e3f0fc40",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "6593a9d6-21e1-44ac-9c01-d52f00b463a1",
+      "client_order_id": "2991f88c-dc5b-472a-9e59-984dde53934b",
+      "submitted_at": "2026-09-03T14:34:48.820614Z",
+      "status": "canceled",
+      "qty": "9",
+      "limit_price": "-0.22",
+      "filled_avg_price": null,
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "870d63810806",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "749c12ee-3496-4d14-9712-bab24cfa9bd2",
+      "client_order_id": "23057ae5-bef5-459f-8898-59eb48c05bd1",
+      "submitted_at": "2026-09-03T14:41:37.132297Z",
+      "status": "canceled",
+      "qty": "9",
+      "limit_price": "-0.21",
+      "filled_avg_price": null,
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_repriced",
+      "decision_id": "867bdaeec181",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "5d9f9ecd-b94a-4f57-9dae-3616d2a32c6f",
+      "client_order_id": "ab83a5da-8ac7-4285-abec-3eabf8389aef",
+      "submitted_at": "2026-09-03T14:41:37.964823Z",
+      "status": "filled",
+      "qty": "9",
+      "limit_price": "-0.2",
+      "filled_avg_price": "-0.2",
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_repriced",
+      "decision_id": "5e575c98c60a",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "5bf149c5-e553-4112-9912-b3178fc0141f",
+      "client_order_id": "50873533-50d8-4073-a41a-0554b3719e75",
+      "submitted_at": "2026-09-03T14:42:55.862082Z",
+      "status": "canceled",
+      "qty": "9",
+      "limit_price": "-0.24",
+      "filled_avg_price": null,
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "68b61fe6f0a6",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "77f69357-f9c2-4305-b70c-cd11923b1274",
+      "client_order_id": "07844895-0945-4e8b-b31d-0e3eb62d971f",
+      "submitted_at": "2026-09-03T14:49:43.732175Z",
+      "status": "canceled",
+      "qty": "9",
+      "limit_price": "-0.23",
+      "filled_avg_price": null,
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_repriced",
+      "decision_id": "a8facb86a52c",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "103ceebe-1c5c-4206-a95d-e161c6216217",
+      "client_order_id": "00fcca15-e18f-4146-a189-dee79b148c03",
+      "submitted_at": "2026-09-03T14:49:44.622812Z",
+      "status": "filled",
+      "qty": "9",
+      "limit_price": "-0.2",
+      "filled_avg_price": "-0.2",
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_repriced",
+      "decision_id": "7afeca35f86f",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "36f57a4f-7382-425d-9456-66d91f4029be",
+      "client_order_id": "39286452-1deb-4ac0-8748-92fd86910685",
+      "submitted_at": "2026-09-03T14:57:18.347349Z",
+      "status": "filled",
+      "qty": "9",
+      "limit_price": "-0.22",
+      "filled_avg_price": "-0.22",
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_repriced",
+      "decision_id": "3817006d7568",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "50252cb2-caa2-4fe2-bf1e-79d5422672e4",
+      "client_order_id": "074eb310-7c2e-4b79-a3c1-11c7d867320b",
+      "submitted_at": "2026-09-03T14:57:56.49729Z",
+      "status": "filled",
+      "qty": "4",
+      "limit_price": "-0.35",
+      "filled_avg_price": "-0.36",
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260910C00779000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "e96949a0da66",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "f4192e58-5aec-49a7-b751-c43dd37e91eb",
+      "client_order_id": "2a6a5a13-1468-4565-a27b-ee891542013e",
+      "submitted_at": "2026-09-03T15:56:28.6478Z",
+      "status": "filled",
+      "qty": "4",
+      "limit_price": "0.26",
+      "filled_avg_price": "0.26",
+      "legs": [
+        {
+          "symbol": "SPY260910P00760000",
+          "side": "buy"
+        },
+        {
+          "symbol": "SPY260910P00757000",
+          "side": "sell"
+        }
+      ],
+      "ledger_kind": "close_submitted",
+      "decision_id": "908e41e162e7",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "65dd7c9f-b378-4a4c-95d2-92693bca1ed2",
+      "client_order_id": "b8013955-786f-446b-a96e-cdfd82c80964",
+      "submitted_at": "2026-09-03T16:21:15.535838Z",
+      "status": "filled",
+      "qty": "4",
+      "limit_price": "0.74",
+      "filled_avg_price": "0.72",
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "buy"
+        },
+        {
+          "symbol": "SPY260910C00779000",
+          "side": "sell"
+        }
+      ],
+      "ledger_kind": "risk_reduction",
+      "decision_id": "fb4d963fe733",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "d74f265a-fa6c-4bf1-9eff-7b5ff635cf7c",
+      "client_order_id": "368b5bb5-d8da-4615-bc05-87cd6ef84f7e",
+      "submitted_at": "2026-09-03T16:21:16.01338Z",
+      "status": "filled",
+      "qty": "30",
+      "limit_price": "0.42",
+      "filled_avg_price": "0.38",
+      "legs": [
+        {
+          "symbol": "SPY260910C00777000",
+          "side": "buy"
+        },
+        {
+          "symbol": "SPY260910C00778000",
+          "side": "sell"
+        }
+      ],
+      "ledger_kind": "risk_reduction",
+      "decision_id": "edae8ee092af",
+      "traced_via": "order_id"
+    },
+    {
+      "order_id": "0e6524e6-e7a8-4095-a845-c04f24f89e35",
+      "client_order_id": "a91f7012-c6c7-441c-8026-4c87cc1a53f9",
+      "submitted_at": "2026-09-03T17:46:03.018539Z",
+      "status": "filled",
+      "qty": "8",
+      "limit_price": "-0.12",
+      "filled_avg_price": "-0.12",
+      "legs": [
+        {
+          "symbol": "SPY260904P00768000",
+          "side": "sell"
+        },
+        {
+          "symbol": "SPY260904P00767000",
+          "side": "buy"
+        }
+      ],
+      "ledger_kind": "order_submitted",
+      "decision_id": "6425c1606924",
+      "traced_via": "order_id"
+    }
+  ],
+  "ledger_orders_missing_at_broker": []
+}

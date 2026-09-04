@@ -1,13 +1,14 @@
 name: Trade
 
-# US options trade 09:30-16:00 ET, which is 13:30-20:00 UTC. Running every
-# half hour across that window gives the agent room to manage exits and look
-# for entries without hammering the API. Cron in Actions is best-effort and
-# can run late; every step is written to tolerate that, and the agent re-reads
-# live state at the start of each cycle rather than trusting anything cached.
+# Dispatch-only, on purpose. During the judged session the runner is
+# scripts/session.sh in a single container, and exactly one runner may be
+# live: two would each see a flat book and each open a position. A cron here
+# would be a second runner the moment the repository secrets exist. To run a
+# cycle from Actions instead, stop the container runner first, then dispatch.
+#
+# Every step is written to tolerate a late start, and the agent re-reads live
+# state at the beginning of each cycle rather than trusting anything cached.
 on:
-  schedule:
-    - cron: "0,30 13-20 * * 1-5"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -63,16 +64,21 @@ jobs:
       - name: Look for an entry
         run: python scripts/run_once.py $DRY_RUN
 
-      - name: Refresh the dashboard
+      - name: Rebuild every receipt
         if: always()
-        run: python scripts/report.py
+        run: |
+          python scripts/score_refusals.py
+          python scripts/score_shadow.py
+          python scripts/grade_invalidations.py
+          python scripts/reconcile.py
+          python scripts/report.py
 
       - name: Publish the ledger
         if: always()
         run: |
           git config user.name "options-alpha-agent"
           git config user.email "noreply@github.com"
-          git add docs/ledger public/data.json
+          git add docs/ledger public/*.json
           if git diff --cached --quiet; then
             echo "nothing changed this cycle"
           else

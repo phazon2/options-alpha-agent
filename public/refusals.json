@@ -5,8 +5,8 @@
     "refusals_correct": 0,
     "refusals_costly": 4,
     "loss_avoided": "0",
-    "profit_forgone": "105.000",
-    "net_of_refusing": "-105.000",
+    "profit_forgone": "106.000",
+    "net_of_refusing": "-106.000",
     "hit_rate": "0%",
     "by_gate": {
       "risk gate": {
@@ -14,7 +14,7 @@
         "priced": 4,
         "correct": 0,
         "costly": 4,
-        "net": "-105.000",
+        "net": "-106.000",
         "hit_rate": "0%"
       }
     }
@@ -53,7 +53,7 @@
       "width": "2",
       "reason": "credit/width 0.140 below minimum 0.15",
       "refused_by": "risk gate",
-      "pnl_if_taken": "28.000",
+      "pnl_if_taken": "29.000",
       "verdict": "refusal costly"
     },
     {

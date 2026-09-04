@@ -313,7 +313,15 @@
       "equity": 99507.12
     },
     {
-      "at": "2026-09-04T14:25:53+00:00",
+      "at": "2026-09-04T14:25:45+00:00",
+      "equity": 99522.12
+    },
+    {
+      "at": "2026-09-04T14:32:40+00:00",
+      "equity": 99522.12
+    },
+    {
+      "at": "2026-09-04T14:33:04+00:00",
       "equity": 99522.12
     }
   ],
@@ -515,8 +523,8 @@
       "refusals_correct": 0,
       "refusals_costly": 4,
       "loss_avoided": "0",
-      "profit_forgone": "110.000",
-      "net_of_refusing": "-110.000",
+      "profit_forgone": "102.000",
+      "net_of_refusing": "-102.000",
       "hit_rate": "0%",
       "by_gate": {
         "risk gate": {
@@ -524,7 +532,7 @@
           "priced": 4,
           "correct": 0,
           "costly": 4,
-          "net": "-110.000",
+          "net": "-102.000",
           "hit_rate": "0%"
         }
       }
@@ -539,7 +547,7 @@
         "width": "5",
         "reason": "credit/width 0.100 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "51.000",
+        "pnl_if_taken": "49.000",
         "verdict": "refusal costly"
       },
       {
@@ -551,7 +559,7 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "16.000",
+        "pnl_if_taken": "13.000",
         "verdict": "refusal costly"
       },
       {
@@ -563,7 +571,7 @@
         "width": "2",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "28.000",
+        "pnl_if_taken": "27.000",
         "verdict": "refusal costly"
       },
       {
@@ -575,19 +583,19 @@
         "width": "1",
         "reason": "credit/width 0.140 below minimum 0.15",
         "refused_by": "risk gate",
-        "pnl_if_taken": "15.000",
+        "pnl_if_taken": "13.000",
         "verdict": "refusal costly"
       }
     ]
   },
   "shadow": {
     "naive": {
-      "decisions": 23,
-      "would_trade": 22,
+      "decisions": 24,
+      "would_trade": 23,
       "would_pass": 1,
-      "contracts": 647,
-      "aggregate_max_loss": "66431.00",
-      "mark_to_market_now": "1056.500",
+      "contracts": 654,
+      "aggregate_max_loss": "68265.00",
+      "mark_to_market_now": "-1329.500",
       "trades": [
         {
           "at": "2026-09-03T18:39:38+00:00",
@@ -597,7 +605,7 @@
           "credit": "0.25",
           "width": "2",
           "rationale": "1-DTE put credit spread at 0.25 credit with 773.81 spot offers a 14% return on margin with short strike 4.81 points OTM (0.62% buffer), and the 0.183 delta suggests manageable risk for a decisive income trade.",
-          "pnl_if_taken": "40.000"
+          "pnl_if_taken": "-20.000"
         },
         {
           "at": "2026-09-03T18:39:41+00:00",
@@ -607,7 +615,7 @@
           "credit": "0.14",
           "width": "1",
           "rationale": "Solid 14% credit on a 1-point spread with 7 DTE, short put at 765 is 9 points OTM with only -0.20 delta, offering favorable risk-reward for a defined-risk SPY put credit spread.",
-          "pnl_if_taken": "25.000"
+          "pnl_if_taken": "-425.000"
         },
         {
           "at": "2026-09-03T18:40:28+00:00",
@@ -617,7 +625,7 @@
           "credit": "0.16",
           "width": "1",
           "rationale": "Short put at 770 is 3.81 points OTM with 1 DTE and ~78% probability of profit; collecting $0.16 credit on $1 spread offers attractive 19% return on margin with manageable 1.7% account risk on 20 contracts.",
-          "pnl_if_taken": "-180.000"
+          "pnl_if_taken": "-140.000"
         },
         {
           "at": "2026-09-03T18:40:39+00:00",
@@ -627,7 +635,7 @@
           "credit": "0.17",
           "width": "1",
           "rationale": "20-delta short put with 7 DTE offers ~80% probability of profit at 17% of width credit; SPY would need a 1.14% drop in a week to threaten the spread, and allocating 25 contracts risks only ~$2,075 max loss.",
-          "pnl_if_taken": "87.500"
+          "pnl_if_taken": "-137.500"
         },
         {
           "at": "2026-09-03T18:49:19+00:00",
@@ -637,7 +645,7 @@
           "credit": "0.15",
           "width": "1",
           "rationale": "Short put at 765 is 8.66 points OTM with ~80% probability of profit and 15% credit on width; 30 contracts risks $2,550 max loss (2.55% of account) for $450 credit.",
-          "pnl_if_taken": "45.000"
+          "pnl_if_taken": "-225.000"
         },
         {
           "at": "2026-09-03T18:57:04+00:00",
@@ -647,7 +655,7 @@
           "credit": "0.17",
           "width": "1",
           "rationale": "Short put at 765 is nearly 1% OTY with only 7 DTE, offering a 17% return on max risk with strong probability of expiry worthless given the wide distance from spot at 773.48.",
-          "pnl_if_taken": "175.000"
+          "pnl_if_taken": "-275.000"
         },
         {
           "at": "2026-09-03T19:04:09+00:00",
@@ -657,7 +665,7 @@
           "credit": "0.17",
           "width": "1",
           "rationale": "1-DTE put credit spread at 0.17 credit with 769 short strike offering 4.5 points of cushion below spot, favorable risk-reward with 20% return on margin in one day.",
-          "pnl_if_taken": "150.000"
+          "pnl_if_taken": "50.000"
         },
         {
           "at": "2026-09-03T19:12:11+00:00",
@@ -667,7 +675,7 @@
           "credit": "0.19",
           "width": "2",
           "rationale": "With 1 DTE and short strike 4.62 points (0.6%) below spot, the 81% probability of profit (per delta) and strong theta decay justify selling 10 contracts for $190 credit against $1,810 max risk (1.8% of account).",
-          "pnl_if_taken": "-40.000"
+          "pnl_if_taken": "-70.000"
         },
         {
           "at": "2026-09-03T19:36:36+00:00",
@@ -677,7 +685,7 @@
           "credit": "0.28",
           "width": "2",
           "rationale": "Short put is ~1.1% OTM with ~79% probability of profit, credit of $0.28 on $2 width offers 16% return on margin in 7 days, and 10 contracts risks only ~1.7% of account.",
-          "pnl_if_taken": "-15.000"
+          "pnl_if_taken": "-85.000"
         },
         {
           "at": "2026-09-03T19:44:19+00:00",
@@ -687,7 +695,7 @@
           "credit": "0.15",
           "width": "1",
           "rationale": "Short put is 4.3 points OTM with 1 DTE offering ~80% probability of full profit; taking 20 contracts collects $300 credit with $1,700 max risk, a reasonable fraction of the $100k account.",
-          "pnl_if_taken": "20.000"
+          "pnl_if_taken": "-20.000"
         },
         {
           "at": "2026-09-03T19:44:24+00:00",
@@ -697,7 +705,7 @@
           "credit": "0.20",
           "width": "1",
           "rationale": "21-delta short put spread with 7 DTE collecting 0.20 on 1.00 width offers 25% return on risk in a defined-risk structure, and 50 contracts risks $4,000 (4% of capital) for $1,000 credit.",
-          "pnl_if_taken": "325.000"
+          "pnl_if_taken": "-125.000"
         },
         {
           "at": "2026-09-03T19:51:29+00:00",
@@ -707,7 +715,7 @@
           "credit": "0.19",
           "width": "1",
           "rationale": "1-DTE put credit spread at 769/768 offers a 0.19 credit with 81 max loss and short strike 4.23 below spot, providing a favorable risk-reward ratio with high probability of expiring worthless.",
-          "pnl_if_taken": "250.000"
+          "pnl_if_taken": "150.000"
         },
         {
           "at": "2026-09-03T19:51:51+00:00",
@@ -717,7 +725,7 @@
           "credit": "0.18",
           "width": "1",
           "rationale": "Short put is ~9 points OTM with ~81% probability of profit and 7 days of theta decay, offering positive expected value at $0.18 credit on a $1 spread.",
-          "pnl_if_taken": "40.000"
+          "pnl_if_taken": "80.00"
         },
         {
           "at": "2026-09-03T19:59:26+00:00",
@@ -727,7 +735,7 @@
           "credit": "0.20",
           "width": "1",
           "rationale": "Short put is 4 points OTM with 1 DTE and ~78% probability of profit via delta, offering attractive theta decay with defined risk of $1,600 on a $100k account.",
-          "pnl_if_taken": "120.000"
+          "pnl_if_taken": "80.000"
         },
         {
           "at": "2026-09-03T19:59:57+00:00",
@@ -737,7 +745,7 @@
           "credit": "0.27",
           "width": "2",
           "rationale": "Short put at 764 is ~1.2% OTM with ~80% probability of profit and 7 DTE offers quick theta decay; sizing 12 contracts risks ~$2,076 (2.1% of account) to collect $324 in credit.",
-          "pnl_if_taken": "-36.000"
+          "pnl_if_taken": "12.00"
         },
         {
           "at": "2026-09-04T13:35:45+00:00",
@@ -747,7 +755,7 @@
           "credit": "0.26",
           "width": "2",
           "rationale": "Short put at 763 is 1.3% OTM with ~80% probability of profit, credit of 13% of spread width in 7 days offers attractive weekly yield, and 20 contracts risks $3,480 (~3.5% of account) for $520 in premium.",
-          "pnl_if_taken": "-110.000"
+          "pnl_if_taken": "-120.000"
         },
         {
           "at": "2026-09-04T13:42:43+00:00",
@@ -757,7 +765,7 @@
           "credit": "0.29",
           "width": "2",
           "rationale": "Short put spread at 763/761 is 9.25 points OTY with 7 DTE, offering $0.29 credit for $1.71 risk (17% return on capital) with delta of -0.208 suggesting ~79% probability of profit, favorable risk/reward for SPY at 772.25.",
-          "pnl_if_taken": "-75.000"
+          "pnl_if_taken": "-90.000"
         },
         {
           "at": "2026-09-04T13:49:47+00:00",
@@ -767,7 +775,7 @@
           "credit": "0.16",
           "width": "1",
           "rationale": "Solid 16% return on capital with 7-day expiry, short put is 9.55 points OTM (1.2% buffer) with low IV, and 50 contracts captures $800 credit while risking only $4,200 (4.2% of account).",
-          "pnl_if_taken": "175.000"
+          "pnl_if_taken": "-50.000"
         },
         {
           "at": "2026-09-04T13:56:53+00:00",
@@ -777,7 +785,7 @@
           "credit": "0.38",
           "width": "3",
           "rationale": "Short put is ~1.2% OTM with ~80% probability of profit and strong 7-day theta decay; sizing 10 contracts risks ~$2,620 or 2.6% of account for $380 max credit.",
-          "pnl_if_taken": "-35.000"
+          "pnl_if_taken": "-75.000"
         },
         {
           "at": "2026-09-04T14:03:56+00:00",
@@ -787,7 +795,7 @@
           "credit": "0.18",
           "width": "1",
           "rationale": "Short put at 763 is ~1.2% OTM with 79% probability of profit via delta, 18% credit on a $1 width is fair, and 30 contracts risks ~$2,460 max loss (2.5% of account) for $540 in premium.",
-          "pnl_if_taken": "165.000"
+          "pnl_if_taken": "30.000"
         },
         {
           "at": "2026-09-04T14:10:50+00:00",
@@ -797,7 +805,7 @@
           "credit": "0.18",
           "width": "1",
           "rationale": "Short put at 762 is nearly 10 points OTM with only -0.201 delta and 7 DTE, offering a favorable 18% return on max risk in a defined-risk spread.",
-          "pnl_if_taken": "-50.000"
+          "pnl_if_taken": "150.000"
         },
         {
           "at": "2026-09-04T14:25:46+00:00",
@@ -807,7 +815,17 @@
           "credit": "0.28",
           "width": "2",
           "rationale": "Solid 14% return on capital with 7-day expiry, short put is 9 points OTM with -0.206 delta giving good probability of profit, and 20 contracts risks $34,400 for $560 credit while keeping ample buying power.",
-          "pnl_if_taken": "-20.000"
+          "pnl_if_taken": "-10.000"
+        },
+        {
+          "at": "2026-09-04T14:32:57+00:00",
+          "short": "SPY260911P00762000",
+          "long": "SPY260911P00759000",
+          "quantity": 7,
+          "credit": "0.38",
+          "width": "3",
+          "rationale": "Short put is 1.14% OTM with ~79% probability of profit and low IV; 7 contracts risks ~1.8% of account for a $266 credit with defined max loss of $1,834.",
+          "pnl_if_taken": "-14.000"
         }
       ]
     },
@@ -947,7 +965,7 @@
     ]
   },
   "falsification": {
-    "graded_at": "2026-09-04T14:25:51+00:00",
+    "graded_at": "2026-09-04T14:33:02+00:00",
     "closes_used": [
       [
         "2026-08-24",
@@ -987,7 +1005,7 @@
       ],
       [
         "2026-09-04",
-        771.08
+        770.89
       ]
     ],
     "summary": {
@@ -2214,7 +2232,7 @@
     ]
   },
   "reconcile": {
-    "reconciled_at": "2026-09-04T14:25:52+00:00",
+    "reconciled_at": "2026-09-04T14:33:03+00:00",
     "summary": {
       "broker_orders": 26,
       "traced": 26,
@@ -2802,7 +2820,7 @@
     ],
     "ledger_orders_missing_at_broker": []
   },
-  "generated_at": "2026-09-04T14:25:53+00:00",
+  "generated_at": "2026-09-04T14:33:04+00:00",
   "account": {
     "number": "PA3BY0HJORNC",
     "equity": "99522.12",
@@ -2817,7 +2835,7 @@
     "decisions": 25,
     "approved": 21,
     "vetoed": 4,
-    "abstained": 65,
+    "abstained": 66,
     "orders_submitted": 17,
     "orders_filled": 18,
     "open_legs": 2
@@ -3341,46 +3359,6 @@
     }
   ],
   "ledger": [
-    {
-      "id": "543fcde69cce",
-      "at": "2026-09-03T19:50:55+00:00",
-      "kind": "cycle_start",
-      "market_open": true,
-      "equity": "99253.53",
-      "open_positions": 2,
-      "expiry": "2026-09-04"
-    },
-    {
-      "id": "64a37373a3c4",
-      "at": "2026-09-03T19:50:56+00:00",
-      "kind": "regime",
-      "regime": "neutral",
-      "reason": "spot 773.26 mixed against SMAs (767.23/769.16)",
-      "spot": 773.26,
-      "sma_short": 767.234,
-      "sma_long": 769.16275,
-      "return_20d": 0.0001293393346784022,
-      "realised_vol": 0.11257054004686884
-    },
-    {
-      "id": "dae8c6f0e4b8",
-      "at": "2026-09-03T19:50:59+00:00",
-      "kind": "analyst_view",
-      "model": "zai-org/GLM-5.2",
-      "trade": false,
-      "confidence": 0.85,
-      "target_delta": 0.2,
-      "rationale": "IV of 12.96% is well above matched realised vol of 4.79%, so there is VRP to harvest, but the 0.14 credit-to-width fails the 0.15 risk gate minimum and the 1-DTE structure offers inadequate premium for the risk.",
-      "invalidated_if": "N/A \u2014 trade declined",
-      "clamped": [],
-      "failed": false
-    },
-    {
-      "id": "201f6f894126",
-      "at": "2026-09-03T19:50:59+00:00",
-      "kind": "abstain",
-      "reason": "analyst declined: IV of 12.96% is well above matched realised vol of 4.79%, so there is VRP to harvest, but the 0.14 credit-to-width fails the 0.15 risk gate minimum and the 1-DTE structure offers inadequate premium for the risk."
-    },
     {
       "id": "875b1a26bbcc",
       "at": "2026-09-03T19:57:46+00:00",
@@ -4079,6 +4057,51 @@
     {
       "id": "3b25e3eb1ad6",
       "at": "2026-09-04T14:25:46+00:00",
+      "kind": "abstain",
+      "reason": "no expiry offered a structure with a significant edge",
+      "expiries": [
+        "2026-09-11"
+      ]
+    },
+    {
+      "id": "7c674ce2e623",
+      "at": "2026-09-04T14:32:38+00:00",
+      "kind": "position_review",
+      "short": "SPY260910C00777000",
+      "long": "SPY260910C00778000",
+      "quantity": 15,
+      "credit": "0.201333",
+      "cost_to_close": "0.24",
+      "captured": "-0.192055",
+      "open_pnl": "-58.000500",
+      "action": "hold",
+      "reason": "captured -19%, below the 50% target"
+    },
+    {
+      "id": "d4f405d9cf63",
+      "at": "2026-09-04T14:32:40+00:00",
+      "kind": "cycle_start",
+      "market_open": true,
+      "rehearsal": false,
+      "equity": "99522.12",
+      "open_positions": 1,
+      "expiry": "2026-09-11"
+    },
+    {
+      "id": "e36783177d14",
+      "at": "2026-09-04T14:32:41+00:00",
+      "kind": "regime",
+      "regime": "neutral",
+      "reason": "spot 770.79 mixed against SMAs (767.51/769.04)",
+      "spot": 770.79,
+      "sma_short": 767.507,
+      "sma_long": 769.037,
+      "return_20d": -0.002884789526791054,
+      "realised_vol": 0.11153187929912618
+    },
+    {
+      "id": "5e4dfd962b15",
+      "at": "2026-09-04T14:32:41+00:00",
       "kind": "abstain",
       "reason": "no expiry offered a structure with a significant edge",
       "expiries": [

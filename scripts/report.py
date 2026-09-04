@@ -76,7 +76,10 @@ def main() -> int:
 
     frontier = {}
     refusals = {}
-    for name, target in (("frontier.json", "frontier"), ("refusals.json", "refusals")):
+    shadow = {}
+    scan = {}
+    for name, target in (("frontier.json", "frontier"), ("refusals.json", "refusals"),
+                         ("shadow.json", "shadow"), ("scan.json", "scan")):
         path = Path("public") / name
         if path.exists():
             try:
@@ -85,13 +88,19 @@ def main() -> int:
                 continue
             if target == "frontier":
                 frontier = payload
-            else:
+            elif target == "refusals":
                 refusals = payload
+            elif target == "shadow":
+                shadow = payload
+            else:
+                scan = payload
 
     data = {
         "equity_curve": deduped,
         "frontier": frontier,
         "refusals": refusals,
+        "shadow": shadow,
+        "scan": scan,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "account": {
             "number": account["account_number"],

@@ -78,6 +78,17 @@ construction, which bounds the understatement. And realised volatility is a
 backward-looking estimate; with implied below realised all week, the simulation
 is if anything pessimistic.
 
+**Every trade is priced under both volatility beliefs.** Everything this
+agent earns depends on realised volatility coming in below implied — the
+variance risk premium. That is real and documented, but on any single trade it
+is a bet, so expected value is reported twice: at horizon-matched realised
+volatility and at the option's own implied. On 3 September every candidate
+strike was positive at realised and negative at implied. The honest claim is
+therefore not *"positive expected value"* but *"positive expected value
+conditional on the premium persisting over the holding period"* — and the
+ledger records, per decision, whether the trade depends entirely on that
+condition.
+
 **The gate refuses trades, and the refusals are published.** Of 9 decisions,
 4 were vetoed on credit-to-width. It was never loosened to let one through.
 

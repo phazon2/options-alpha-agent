@@ -37,6 +37,21 @@ credit captured. `(0.16 − 0.07) × 100 × 17 = $153`.
 
 </details>
 
+
+## What it found out about itself
+
+The agent's own instrumentation produced four findings this week, all in the
+public ledger:
+
+| Finding | How it surfaced | What changed |
+| --- | --- | --- |
+| The risk floor was miscalibrated | Counterfactual scorer: all 4 vetoes would have profited | Floor 0.15 → 0.12, on evidence |
+| A position-pairing bug let the book breach its own cap | Cash and equity diverged $2,000 while the agent reported a flat book | Pairing rewritten, 6 regression tests, aggregate-risk brake outside the agent |
+| No edge existed at 7 DTE at any width or delta | Monte Carlo sweep of the live chain | Selection re-ranked by expected value; 1 DTE added to the ladder |
+| The edge is conditional on realised < implied | Priced every strike under both volatilities | Both reported on every decision |
+
+The second one cost $731. It is not hidden; it is in `docs/POSTMORTEM.md`.
+
 ## Alpaca options production hardening
 
 Three behaviours that are not in the docs, each found by running against the live

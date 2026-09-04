@@ -146,6 +146,27 @@ footer a{color:var(--accent)}
     <div class="note" id="ref-note"></div>
   </section>
 
+
+  <section>
+    <div class="shead"><h2>Same model, no gates</h2>
+      <p>A naive agent — the same model, the same live chain, the same spreads — with the regime filter,
+        challenger, risk officer, floor and position limit removed. It never submits. Its would-be trades are
+        re-priced by the same scorer that grades our refusals.</p></div>
+    <div class="tiles" id="shadow-tiles"></div>
+    <div class="scroll"><table id="shadow-table"><thead><tr>
+      <th>When</th><th>Spread</th><th>Would size</th><th>Credit</th><th>Marked now</th><th>Its reasoning</th>
+    </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section>
+    <div class="shead"><h2>Where the edge is — and isn't</h2>
+      <p>The deterministic layers run across four index ETFs at 1 and 7 days to expiry. Expected value at
+        horizon-matched realised volatility and at the option's own implied.</p></div>
+    <div class="scroll"><table id="scan-table"><thead><tr>
+      <th>Symbol</th><th>DTE</th><th>Regime</th><th>Short</th><th>δ</th><th>Credit</th><th>PoP</th><th>E @ realised</th><th>E @ implied</th><th>Verdict</th>
+    </tr></thead><tbody></tbody></table></div>
+  </section>
+
   <section>
     <div class="shead"><h2>Risk frontier</h2>
       <p>What the portfolio would be worth under each candidate minimum credit-to-width.</p></div>
@@ -284,6 +305,37 @@ fetch("data.json?ts="+Date.now()).then(r=>{if(!r.ok)throw new Error("data.json "
          0.10. The scorer keeps grading the new floor the same way.`
       : `Scored symmetrically — refusals that avoided a loss and refusals that missed a profit both count.`;
   }
+
+
+  // shadow
+  const sh=d.shadow&&d.shadow.naive;
+  if(sh){
+    const mtm=parseFloat(sh.mark_to_market_now||0);
+    $("#shadow-tiles").innerHTML=[
+      `<div class="tile"><span class="k">Naive would trade</span><b>${sh.would_trade}</b><span class="s">of ${sh.decisions} decisions</span></div>`,
+      `<div class="tile"><span class="k">Contracts it would hold</span><b>${sh.contracts}</b><span class="s">no position limit</span></div>`,
+      `<div class="tile"><span class="k">Risk it would carry</span><b class="neg">${money(parseFloat(sh.aggregate_max_loss||0))}</b><span class="s">vs our $1,500 cap</span></div>`,
+      `<div class="tile"><span class="k">Marked now</span><b class="${mtm>0?"pos":mtm<0?"neg":""}">${mtm>=0?"+":"−"}${money(Math.abs(mtm))}</b><span class="s">if it had traded</span></div>`,
+    ].join("");
+    $("#shadow-table").querySelector("tbody").innerHTML=(sh.trades||[]).map(t=>{
+      const p=t.pnl_if_taken==null?null:parseFloat(t.pnl_if_taken);
+      return `<tr><td class="m">${when(t.at)}</td><td class="m">${esc(t.short.slice(3))}<br>${esc(t.long.slice(3))}</td>
+        <td class="m">${esc(t.quantity)}×</td><td class="m">${esc(t.credit)}</td>
+        <td class="m ${p==null?"":p>0?"pos":p<0?"neg":""}">${p==null?"—":(p>=0?"+":"−")+money(Math.abs(p))}</td>
+        <td>${esc(t.rationale)}</td></tr>`;}).join("")||`<tr><td colspan="6">No shadow decisions yet.</td></tr>`;
+  }
+  // scan
+  const sc=(d.scan&&d.scan.rows)||[];
+  $("#scan-table").querySelector("tbody").innerHTML=sc.map(r=>{
+    const edge=(r.result||"").startsWith("edge");
+    const tag=edge?`<span class="tag t-good">${esc(r.result)}</span>`:`<span class="tag t-mute">${esc(r.result)}</span>`;
+    if(r.short==null) return `<tr><td class="m">${esc(r.symbol)}</td><td class="m">${r.dte}</td><td>${esc(r.regime)}</td><td colspan="6" class="m">—</td><td>${tag}</td></tr>`;
+    return `<tr><td class="m">${esc(r.symbol)}</td><td class="m">${r.dte}</td><td>${esc(r.regime)}</td>
+      <td class="m">${esc(r.short.slice(-8,-3))}</td><td class="m">${r.short_delta}</td><td class="m">${esc(r.credit)}</td>
+      <td class="m">${Math.round(r.pop*100)}%</td>
+      <td class="m ${r.expected_at_realised>0?"pos":"neg"}">${r.expected_at_realised>=0?"+":"−"}${money(Math.abs(r.expected_at_realised))}</td>
+      <td class="m ${r.expected_at_implied>0?"pos":"neg"}">${r.expected_at_implied>=0?"+":"−"}${money(Math.abs(r.expected_at_implied))}</td>
+      <td>${tag}</td></tr>`;}).join("")||`<tr><td colspan="10">No scan yet.</td></tr>`;
 
   // frontier
   const fr=d.frontier||{};

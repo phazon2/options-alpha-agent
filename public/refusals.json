@@ -29,7 +29,7 @@
       "width": "5",
       "reason": "credit/width 0.100 below minimum 0.15",
       "refused_by": "risk gate",
-      "pnl_if_taken": "51.000",
+      "pnl_if_taken": "50.000",
       "verdict": "refusal costly"
     },
     {
@@ -65,7 +65,7 @@
       "width": "1",
       "reason": "credit/width 0.140 below minimum 0.15",
       "refused_by": "risk gate",
-      "pnl_if_taken": "13.000",
+      "pnl_if_taken": "14.000",
       "verdict": "refusal costly"
     }
   ]

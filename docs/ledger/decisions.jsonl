@@ -681,3 +681,6 @@
 {"id": "cf5ba8bcddb8", "at": "2026-09-04T19:41:25+00:00", "kind": "cycle_start", "market_open": true, "rehearsal": false, "equity": "99641.37", "open_positions": 0, "expiry": "2026-09-11"}
 {"id": "95d88862519c", "at": "2026-09-04T19:41:26+00:00", "kind": "regime", "regime": "neutral", "reason": "spot 769.77 mixed against SMAs (767.30/768.99)", "spot": 769.77, "sma_short": 767.303, "sma_long": 768.986, "return_20d": -0.004204289669090033, "realised_vol": 0.11182010338871194}
 {"id": "c994ccd60e82", "at": "2026-09-04T19:41:26+00:00", "kind": "abstain", "reason": "no expiry offered a structure with a significant edge", "expiries": ["2026-09-11"]}
+{"id": "33ab5727dbbb", "at": "2026-09-04T19:48:31+00:00", "kind": "cycle_start", "market_open": true, "rehearsal": false, "equity": "99641.37", "open_positions": 0, "expiry": "2026-09-11"}
+{"id": "9ba3739e80f7", "at": "2026-09-04T19:48:32+00:00", "kind": "regime", "regime": "neutral", "reason": "spot 770.14 mixed against SMAs (767.38/769.00)", "spot": 770.14, "sma_short": 767.377, "sma_long": 769.0045, "return_20d": -0.003725647460608994, "realised_vol": 0.11170555732972089}
+{"id": "eddf750f01aa", "at": "2026-09-04T19:48:32+00:00", "kind": "abstain", "reason": "no expiry offered a structure with a significant edge", "expiries": ["2026-09-11"]}

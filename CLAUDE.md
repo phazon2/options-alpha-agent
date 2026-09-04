@@ -47,3 +47,24 @@ Do not collapse those three into "blocked."
   too often is how we lost $731.
 
 See docs/POSTMORTEM.md for the full account.
+
+## Learned the night before the deadline (4 Sep 2026)
+- Check `date -u` at the start of every turn near a deadline. The summary said
+  "tomorrow"; it was already 11:36 UTC on the day, 1h54m before the open.
+- Verify every claim about an API against the live API before it goes into a
+  README, deck or video. Two of three "undocumented" claims were documented and
+  the third did not reproduce; the judges were the people who would know.
+- `pgrep -f pattern` matches the shell running the pgrep. Use `ps -eo cmd | grep`
+  with `grep -v grep`, or match on something not in your own command line.
+- The local `main` branch goes stale. Always `git fetch origin main` and merge
+  `origin/main` before pushing main; a rejected push here cost a round trip.
+- The container runs `session.sh` on `main` so every cycle's push deploys. The
+  Actions workflow is dispatch-only: a cron is a second runner the moment the
+  secrets exist. Exactly one runner, ever.
+- Film scenes: `data-t` must be the cumulative start in DOM order or `__paint`
+  shows the wrong scene and two frames come out identical. Check with md5sum.
+- A rehearsal must be labelled in the ledger (`rehearsal: true` on cycle_start,
+  and a `note` record), never deleted. Append-only means append-only.
+- Any refusal after a spread is chosen must carry the legs, or it cannot be
+  graded. "Only the risk gate's refusals are re-priceable" was a ledger gap,
+  not a fact about the gates.

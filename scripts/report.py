@@ -74,28 +74,19 @@ def main() -> int:
         else:
             deduped.append(point)
 
-    frontier = {}
-    refusals = {}
-    shadow = {}
-    scan = {}
-    for name, target in (("frontier.json", "frontier"), ("refusals.json", "refusals"),
-                         ("shadow.json", "shadow"), ("scan.json", "scan"),
-                         ("falsification.json", "falsification"),
-                         ("reconcile.json", "reconcile")):
-        path = Path("public") / name
+    embeds = {k: {} for k in ("frontier", "refusals", "shadow", "scan",
+                              "falsification", "reconcile")}
+    for name in embeds:
+        path = Path("public") / f"{name}.json"
         if path.exists():
             try:
-                payload = json.loads(path.read_text())
+                embeds[name] = json.loads(path.read_text())
             except json.JSONDecodeError:
                 continue
-            if target == "frontier":
-                frontier = payload
-            elif target == "refusals":
-                refusals = payload
-            elif target == "shadow":
-                shadow = payload
-            else:
-                scan = payload
+    frontier, refusals, shadow, scan = (
+        embeds[k] for k in ("frontier", "refusals", "shadow", "scan")
+    )
+    falsification, reconcile = embeds["falsification"], embeds["reconcile"]
 
     data = {
         "equity_curve": deduped,
@@ -103,6 +94,8 @@ def main() -> int:
         "refusals": refusals,
         "shadow": shadow,
         "scan": scan,
+        "falsification": falsification,
+        "reconcile": reconcile,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "account": {
             "number": account["account_number"],
